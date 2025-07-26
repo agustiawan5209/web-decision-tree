@@ -11,16 +11,18 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
+import { BarChart2Icon, BookOpen, Folder, FolderClockIcon, GalleryHorizontal, Home, LayoutGrid, LeafyGreen, Menu, Search } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
 const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
+    { title: 'Dashboard', icon: Home , href: route('dashboard'),  },
+        { title: 'Kriteria', icon: BarChart2Icon , href: route('admin.kriteria.index'),  },
+        { title: 'Label', icon: BarChart2Icon , href: route('admin.label.index'),  },
+        { title: 'jenis Tanaman', icon: LeafyGreen , href: route('admin.jenisTanaman.index'), },
+        { title: 'Training Tanaman', icon: FolderClockIcon , href: route('admin.dataset.index'),  },
+        { title: 'Random Forest', icon: GalleryHorizontal , href: route('randomForest.index'), },
+        { title: 'Riwayat Klasifikasi', icon: FolderClockIcon , href: route('admin.riwayat.index'), },
 ];
 
 const rightNavItems: NavItem[] = [

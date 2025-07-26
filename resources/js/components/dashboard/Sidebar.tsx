@@ -4,17 +4,19 @@ import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
-import { BarChart2Icon, ChevronLeft, ChevronRight, FolderClockIcon, GalleryHorizontal, Home, Leaf, LeafyGreen } from 'lucide-react';
+import { BarChart2Icon, ChevronLeft, ChevronRight, FolderClockIcon, GalleryHorizontal, Home, Leaf, LeafyGreen, X } from 'lucide-react';
 import { useState } from 'react';
 import { NavUser } from '../nav-user';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface SidebarProps {
     className?: string;
     collapsed?: boolean;
     onToggleCollapse?: () => void;
+    handleSidebarIsMobile?: () => void;
 }
 
-const Sidebar = ({ className, collapsed = false, onToggleCollapse }: SidebarProps) => {
+const Sidebar = ({ className, collapsed = false, onToggleCollapse,handleSidebarIsMobile  }: SidebarProps) => {
     const [isCollapsed, setIsCollapsed] = useState(collapsed);
     const activeSection = usePage().url.split('/').pop() || 'Dashboard';
     // console.log('Active Section:', activeSection);
@@ -37,6 +39,7 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse }: SidebarProp
         { name: 'Riwayat Klasifikasi', icon: <FolderClockIcon size={20} />, href: route('admin.riwayat.index'), active: 'riwayat-forest' },
     ];
 
+    const isMobile = useIsMobile();
     return (
         <div className={cn('flex h-full flex-col border-r bg-background transition-all duration-300', isCollapsed ? 'w-16' : 'w-64', className)}>
             {/* Logo and collapse button */}
@@ -45,9 +48,15 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse }: SidebarProp
                     <Leaf className="text-primary" size={24} />
                     {!isCollapsed && <span className="text-lg font-semibold">HydroMonitor</span>}
                 </div>
-                <Button variant="ghost" size="icon" onClick={handleToggleCollapse} className="h-8 w-8">
+                {!isMobile ?(
+                    <Button variant="ghost" size="icon" onClick={handleToggleCollapse} className="h-8 w-8">
                     {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
                 </Button>
+                ):(
+                    <Button variant="ghost" size="icon" onClick={handleSidebarIsMobile} className="h-8 w-8">
+                    <X size={16} />
+                </Button>
+                )}
             </div>
 
             <Separator />
@@ -87,10 +96,6 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse }: SidebarProp
                 </nav>
             </ScrollArea>
 
-            {/* Footer */}
-            <div className="static bottom-0 p-4">
-                <NavUser />
-            </div>
         </div>
     );
 };

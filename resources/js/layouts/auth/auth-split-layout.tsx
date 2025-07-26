@@ -1,4 +1,5 @@
 import AppLogoIcon from '@/components/app-logo-icon';
+import HeroSection from '@/components/hero-section';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { type SharedData } from '@/types';
@@ -19,15 +20,7 @@ export default function AuthSplitLayout({ children, title, description }: PropsW
             <div className="relative hidden h-full flex-col bg-zinc-900 p-10 text-white lg:flex dark:border-r">
                 {/* <div className="absolute inset-0 bg-zinc-900" /> */}
                 <div className="container mx-auto text-center">
-                    <Badge className="mb-4 bg-green-100 text-green-800 hover:bg-green-100">🚀 Teknologi AI Terdepan untuk Hidroponik</Badge>
-                    <h1 className="mb-6 text-4xl leading-tight font-bold text-gray-200 md:text-6xl">
-                        Sistem Pendukung Keputusan untuk
-                        <span className="block text-green-600">Nutrisi Tanaman Hidroponik</span>
-                    </h1>
-                    <p className="mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-gray-600">
-                        Menggunakan Algoritma Random Forest dan Kecerdasan Buatan untuk memberikan rekomendasi nutrisi yang optimal, meningkatkan
-                        hasil panen, dan membantu petani hidroponik mencapai efisiensi maksimal.
-                    </p>
+                   <HeroSection/>
                 </div>
                 {quote && (
                     <div className="relative z-20 mt-auto">
