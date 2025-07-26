@@ -31,7 +31,7 @@ class DashboardController extends Controller
 
     private function getData()
     {
-        // Logic to retrieve data for the Random Forest model
+        // Logic to retrieve data for the Decision Tree model
 
         $data = [];
         $dataset = Dataset::with(['detail', 'detail.kriteria'])->orderBy('id', 'desc')->get();

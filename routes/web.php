@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\JenisTanamanController;
 use App\Http\Controllers\LabelController;
-use App\Http\Controllers\RandomForestController;
+use App\Http\Controllers\DecisionTreeController;
 use App\Http\Controllers\RiwayatKlasifikasiController;
 
 Route::get('/', function () {
@@ -75,9 +75,9 @@ Route::middleware(['auth', 'verified', 'role:admin|super_admin'])->group(functio
             });
         });
     });
-    // Route for random forest model
-    Route::group(['prefix' => 'random-forest', 'as' => 'randomForest.'], function () {
-        Route::controller(RandomForestController::class)->group(function () {
+    // Route for decision tree model
+    Route::group(['prefix' => 'decision-tree', 'as' => 'DecisionTree.'], function () {
+        Route::controller(DecisionTreeController::class)->group(function () {
             Route::get('/', 'index')->name('index');
         });
     });
@@ -88,5 +88,5 @@ require __DIR__ . '/guest.php';
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
 
-Route::post('/random-forest/store', [RandomForestController::class, 'store'])->name('randomForest.store');
-Route::get('/random-forest/get-model', [RandomForestController::class, 'getModel'])->name('randomForest.getModel');
+Route::post('/decision-tree/store', [DecisionTreeController::class, 'store'])->name('DecisionTree.store');
+Route::get('/decision-tree/get-model', [DecisionTreeController::class, 'getModel'])->name('DecisionTree.getModel');

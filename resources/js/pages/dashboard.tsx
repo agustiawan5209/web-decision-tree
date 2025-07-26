@@ -30,7 +30,7 @@ export default function Dashboard({ meanKriteriaValue, distributionLabel, label 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                             {label.map((item: any, index) => (
                                 <KPICard
-                                    key-={item.id}
+                                    key={item.id}
                                     title={`Jumlah Dataset ${item.nama}`}
                                     value={distributionLabel[item.nama].length}
                                     unit={'data'}

@@ -5,9 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Toast } from '@/components/ui/toast';
 import { JenisTanamanTypes, KriteriaTypes, LabelTypes, SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
-import axios from 'axios';
-import { RandomForestClassifier } from 'ml-random-forest';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 interface FormData {
     feature1: string;
@@ -67,7 +65,6 @@ const FormClassifier = ({
         text: '',
     });
     const [loading, setLoading] = useState(false);
-    const [model, setModel] = useState<RandomForestClassifier | null>(null);
     const { data, setData, post, processing, errors } = useForm<Dataset>({
         jenis_tanaman: '',
         label: '',
@@ -79,38 +76,6 @@ const FormClassifier = ({
         message: '',
         type: 'success',
     });
-    const getModel = async () => {
-        try {
-            const response = await axios.get('/random-forest/get-model');
-
-            // Pastikan response memiliki struktur yang diharapkan
-            if (!response.data?.model) {
-                throw new Error('Invalid model response structure');
-            }
-
-            // Rekonstruksi model dari data serialisasi
-            const modelData = response.data.model;
-            const classifier = RandomForestClassifier.load(modelData);
-
-            setModel(classifier);
-            return classifier; // Mengembalikan model untuk penggunaan lanjutan
-        } catch (error) {
-            console.error('Failed to load model:', error);
-            setToast({
-                title: 'Error',
-                show: true,
-                message: 'Gagal memuat model',
-                type: 'error',
-            });
-            // Tambahkan penanganan error ke user (misal: toast notification)
-            throw error; // Re-throw untuk penanganan di komponen pemanggil
-        } finally {
-            setLoading(false);
-        }
-    };
-    useEffect(() => {
-        getModel();
-    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -156,56 +121,6 @@ const FormClassifier = ({
         e.preventDefault();
         setLoading(true);
         setResult({ predict: '', text: '' });
-        try {
-            const attribut = data.attribut.map((item) => {
-                const found = opsiGejala.find((gejala) => gejala.label === item);
-                return found ? found.value : Number(item);
-            });
-            const tanaman = jenisTanaman.find((item) => item.nama === data.jenis_tanaman);
-            attribut.push(tanaman?.id || 0);
-            const options = {
-                seed: 42,
-                maxFeatures: 2,
-                replacement: true,
-                nEstimators: 100,
-                // maxDepth: 5, // Tambahkan pembatasan kedalaman
-                useSampleBagging: true,
-            };
-
-            if (model) {
-                const classifier = model.predict([attribut]);
-
-                const { predict, text } = findLabel(classifier[0]);
-                setResult({
-                    predict: predict,
-                    text: text,
-                });
-                if (auth.role !== 'admin') {
-                    const response = await axios.post(route('riwayat-klasifikasi.store'), {
-                        user: auth.user,
-                        jenis_tanaman: data.jenis_tanaman,
-                        label: predict,
-                        attribut: data.attribut,
-                        kriteria: kriteria.map((item) => item.nama),
-                    });
-                }
-            }
-            // const predict = model?.predict();
-            // Replace with your API endpoint for classification
-        } catch (error) {
-            setResult({
-                predict: 'Tidak Ditemukan',
-                text: 'Tidak Ditemukan',
-            });
-            setToast({
-                title: 'Error',
-                show: true,
-                message: 'Gagal memuat hasil klasifikasi',
-                type: 'error',
-            });
-        } finally {
-            setLoading(false);
-        }
     };
     return (
         <div>
@@ -217,7 +132,7 @@ const FormClassifier = ({
                 duration={5000}
                 variant={toast.type}
             />
-            <h2 className="mb-4 text-2xl font-bold">Random Forest Classification</h2>
+            <h2 className="mb-4 text-2xl font-bold">Decision Tree Classification</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>

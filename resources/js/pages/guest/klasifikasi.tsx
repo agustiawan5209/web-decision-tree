@@ -4,13 +4,13 @@ import MainLayout from '@/layouts/guest/main-layout';
 import { JenisTanamanTypes, KriteriaTypes, LabelTypes } from '@/types';
 import { Link } from '@inertiajs/react';
 
-interface RandomForestViewProps {
+interface DecisionTreeViewProps {
     titlePage?: string;
     kriteria?: KriteriaTypes[];
     jenisTanaman?: JenisTanamanTypes[];
     opsiLabel: LabelTypes[];
 }
-export default function KlasifikasiView({ titlePage, kriteria, jenisTanaman, opsiLabel }: RandomForestViewProps) {
+export default function KlasifikasiView({ titlePage, kriteria, jenisTanaman, opsiLabel }: DecisionTreeViewProps) {
     return (
         <>
             <MainLayout>

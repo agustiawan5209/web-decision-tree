@@ -29,7 +29,7 @@ class RiwayatKlasifikasiController extends Controller
      */
     public function index()
     {
-          // Handle the request to display the Random Forest model index page
+          // Handle the request to display the Decision Tree model index page
           $data = RiwayatKlasifikasi::orderBy('created_at', 'desc')->paginate(10);
         //   dd($data);
         return Inertia::render('admin/riwayat/index', [
@@ -38,7 +38,7 @@ class RiwayatKlasifikasiController extends Controller
             "jenisTanaman" => JenisTanaman::all(),
             "opsiLabel"=> Label::all(),
             'breadcrumb' => self::BASE_BREADCRUMB,
-            'titlePage' => 'randomForest',
+            'titlePage' => 'DecisionTree',
             'can' => [
                 'add' => true,
                 'edit' => true,
@@ -85,7 +85,7 @@ class RiwayatKlasifikasiController extends Controller
             "jenisTanaman" => JenisTanaman::all(),
             "opsiLabel"=> Label::all(),
             'breadcrumb' => self::BASE_BREADCRUMB,
-            'titlePage' => 'randomForest',
+            'titlePage' => 'DecisionTree',
             'can' => [
                 'add' => true,
                 'edit' => true,

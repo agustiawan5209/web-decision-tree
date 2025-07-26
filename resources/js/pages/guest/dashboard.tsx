@@ -65,7 +65,7 @@ export default function GuestDashboard({ meanKriteriaValue, distributionLabel, l
                             <span className="block text-green-600">Nutrisi Tanaman Hidroponik</span>
                         </h1>
                         <p className="mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-gray-600">
-                            Menggunakan Algoritma Random Forest dan Kecerdasan Buatan untuk memberikan rekomendasi nutrisi yang optimal, meningkatkan
+                            Menggunakan Algoritma Decision Tree dan Kecerdasan Buatan untuk memberikan rekomendasi nutrisi yang optimal, meningkatkan
                             hasil panen, dan membantu petani hidroponik mencapai efisiensi maksimal.
                         </p>
                         <div className="flex flex-col justify-center gap-4 sm:flex-row">

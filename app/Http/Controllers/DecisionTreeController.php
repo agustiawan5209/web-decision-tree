@@ -7,12 +7,12 @@ use App\Models\Label;
 use App\Models\Dataset;
 use App\Models\Kriteria;
 use App\Models\JenisTanaman;
-use App\Models\RandomForest;
+use App\Models\DecisionTree;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
 
-class RandomForestController extends Controller
+class DecisionTreeController extends Controller
 {
     private const BASE_BREADCRUMB = [
         [
@@ -20,26 +20,26 @@ class RandomForestController extends Controller
             'href' => '/dashboard',
         ],
         [
-            'title' => 'random-forest',
-            'href' => '/admin/random-forest/',
+            'title' => 'decision-tree',
+            'href' => '/admin/decision-tree/',
         ],
     ];
     public function train(array $data): void
     {
-        // Logic to train the Random Forest model with the provided data
+        // Logic to train the Decision Tree model with the provided data
     }
 
     public function index(Request $request)
     {
-        // Handle the request to display the Random Forest model index page
+        // Handle the request to display the Decision Tree model index page
         // dd($this->getData());
-        return Inertia::render('RandomForest/Index', [
+        return Inertia::render('DecisionTree/Index', [
             'dataTraining' => $this->getData(),
             "kriteria" => Kriteria::all(),
             "jenisTanaman" => JenisTanaman::all(),
             "opsiLabel"=> Label::all(),
             'breadcrumb' => self::BASE_BREADCRUMB,
-            'titlePage' => 'randomForest',
+            'titlePage' => 'DecisionTree',
             'can' => [
                 'add' => true,
                 'edit' => true,
@@ -51,7 +51,7 @@ class RandomForestController extends Controller
 
     private function getData()
     {
-        // Logic to retrieve data for the Random Forest model
+        // Logic to retrieve data for the Decision Tree model
 
         $data = [];
         $dataset = Dataset::with(['detail', 'detail.kriteria'])->orderBy('id', 'desc')->get();
@@ -92,7 +92,7 @@ class RandomForestController extends Controller
             ]);
         }
 
-        RandomForest::updateOrCreate(
+        DecisionTree::updateOrCreate(
             ['model_path' => json_encode($request->model)],
             ['model_path' => json_encode($request->model)]
         );
@@ -105,7 +105,7 @@ class RandomForestController extends Controller
 
     public function getModel()
     {
-        $model = RandomForest::latest()->first();
+        $model = DecisionTree::latest()->first();
         if ($model) {
             return response()->json([
                 'model' => json_decode($model->model_path),

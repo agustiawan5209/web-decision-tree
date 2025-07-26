@@ -21,7 +21,7 @@ const mainNavItems: NavItem[] = [
         { title: 'Label', icon: BarChart2Icon , href: route('admin.label.index'),  },
         { title: 'jenis Tanaman', icon: LeafyGreen , href: route('admin.jenisTanaman.index'), },
         { title: 'Training Tanaman', icon: FolderClockIcon , href: route('admin.dataset.index'),  },
-        { title: 'Random Forest', icon: GalleryHorizontal , href: route('randomForest.index'), },
+        { title: 'Decision Tree', icon: GalleryHorizontal , href: route('DecisionTree.index'), },
         { title: 'Riwayat Klasifikasi', icon: FolderClockIcon , href: route('admin.riwayat.index'), },
 ];
 

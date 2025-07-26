@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('random_forests', function (Blueprint $table) {
+        Schema::create('decision_trees', function (Blueprint $table) {
             $table->id();
-            $table->json('model_path')->comment('Path to the stored Random Forest model');
+            $table->json('model_path')->comment('Path to the stored Decision Tree model');
             $table->timestamps();
         });
     }
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('random_forests');
+        Schema::dropIfExists('decision_trees');
     }
 };

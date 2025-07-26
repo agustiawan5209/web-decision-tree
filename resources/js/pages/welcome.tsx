@@ -10,7 +10,7 @@ export default function LandingPage() {
         {
             icon: <Brain className="h-8 w-8 text-green-600" />,
             title: 'AI-Powered Analysis',
-            description: 'Algoritma Random Forest yang canggih menganalisis data nutrisi untuk memberikan rekomendasi yang akurat dan optimal.',
+            description: 'Algoritma Decision Tree yang canggih menganalisis data nutrisi untuk memberikan rekomendasi yang akurat dan optimal.',
         },
         {
             icon: <BarChart3 className="h-8 w-8 text-blue-600" />,

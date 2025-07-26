@@ -18,14 +18,14 @@ class KlasifikasiController extends Controller
             'href' => '/dashboard',
         ],
         [
-            'title' => 'random-forest',
-            'href' => '/admin/random-forest/',
+            'title' => 'decision-tree',
+            'href' => '/admin/decision-tree/',
         ],
     ];
 
     public function index(Request $request)
     {
-        // Handle the request to display the Random Forest model index page
+        // Handle the request to display the Decision Tree model index page
         // dd($this->getData());
         return Inertia::render('guest/klasifikasi', [
             'dataTraining' => $this->getData(),
@@ -33,7 +33,7 @@ class KlasifikasiController extends Controller
             "jenisTanaman" => JenisTanaman::all(),
             "opsiLabel" => Label::all(),
             'breadcrumb' => self::BASE_BREADCRUMB,
-            'titlePage' => 'randomForest',
+            'titlePage' => 'DecisionTree',
             'can' => [
                 'add' => true,
                 'edit' => true,
@@ -45,7 +45,7 @@ class KlasifikasiController extends Controller
 
     private function getData()
     {
-        // Logic to retrieve data for the Random Forest model
+        // Logic to retrieve data for the Decision Tree model
 
         $data = [];
         $dataset = Dataset::with(['detail', 'detail.kriteria'])->orderBy('id', 'desc')->get();

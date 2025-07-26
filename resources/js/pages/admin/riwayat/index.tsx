@@ -44,8 +44,6 @@ export default function IndikatorIndex({ riwayat, breadcrumb, titlePage }: Indik
         [breadcrumb],
     );
 
-    const [isDeleteDialog, setisDeleteDialog] = useState(false);
-    console.log(riwayat);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={titlePage ?? 'Indikator'} />
