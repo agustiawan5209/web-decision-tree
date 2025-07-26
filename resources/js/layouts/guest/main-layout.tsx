@@ -1,7 +1,7 @@
 import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { BarChart2, Home, Info, Leaf, Menu, User, X } from 'lucide-react';
+import { BarChart2, Home, Info, Leaf, Menu, Sprout, User, X } from 'lucide-react';
 import { PropsWithChildren, useState } from 'react';
 export default function MainLayout({ children }: PropsWithChildren<{}>) {
     const page = usePage<SharedData>();
@@ -39,7 +39,7 @@ export default function MainLayout({ children }: PropsWithChildren<{}>) {
                         {/* Logo */}
                         <div className="flex flex-shrink-0 items-center">
                             <Link href="/" className="flex items-center">
-                                <Leaf className="h-8 w-8 text-green-600" />
+                                <Sprout className="h-8 w-8 text-green-600" />
                                 <span className="ml-2 text-xl font-bold text-gray-900">NutriVege</span>
                             </Link>
                         </div>
@@ -137,7 +137,7 @@ export default function MainLayout({ children }: PropsWithChildren<{}>) {
                 <div className="container mx-auto">
                     <div className="grid gap-8 md:grid-cols-2">
                         <div className="mb-4 flex items-center space-x-2">
-                            <Leaf className="h-8 w-8 text-green-400" />
+                            <Sprout className="h-8 w-8 text-green-400" />
                             <span className="text-xl font-bold">HydroAI</span>
                         </div>
                         <p className="text-gray-400">Sistem pendukung keputusan berbasis AI untuk nutrisi tanaman hidroponik yang optimal.</p>

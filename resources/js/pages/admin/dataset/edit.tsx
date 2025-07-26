@@ -25,7 +25,7 @@ interface PropsDatasetView {
 }
 type Form = {
     id: number;
-    jenis_tanaman: string;
+    jenis_kelamin: string;
     label: string;
     attribut: {
         kriteria_id: number;
@@ -39,7 +39,7 @@ export default function EditDatasetView({ breadcrumb, kriteria, jenisTanaman, ti
     // Initialize form with existing dataset data if available
     const { data, setData, put, processing, errors } = useForm<Form>({
         id: dataset?.id ?? 0,
-        jenis_tanaman: dataset?.jenis_tanaman || '',
+        jenis_kelamin: dataset?.jenis_kelamin || '',
         label: dataset?.label || '',
         attribut: kriteria.map((kriteriaItem, index) => {
             // Find the existing attribute value if editing
@@ -83,7 +83,7 @@ export default function EditDatasetView({ breadcrumb, kriteria, jenisTanaman, ti
 
     const handleSelectChange = (name: string, value: string) => {
         if (name && value !== undefined && data && data.attribut) {
-            if (name === 'label' || name === 'jenis_tanaman') {
+            if (name === 'label' || name === 'jenis_kelamin') {
                 setData((prevData) => ({
                     ...prevData,
                     [name]: value,
@@ -111,20 +111,20 @@ export default function EditDatasetView({ breadcrumb, kriteria, jenisTanaman, ti
                     {/* Informasi Dasar */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div>
-                            <Label className="text-xs text-gray-600">Jenis Tanaman</Label>
-                            <Select value={data.jenis_tanaman} required onValueChange={(value) => handleSelectChange('jenis_tanaman', value)}>
+                            <Label className="text-xs text-gray-600">Jenis Kelamin</Label>
+                            <Select value={data.jenis_kelamin} required onValueChange={(value) => handleSelectChange('jenis_kelamin', value)}>
                                 <SelectTrigger className="input-minimal">
                                     <SelectValue placeholder="Pilih" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {jenisTanaman.map((item: any, index) => (
-                                        <SelectItem key={index} value={item.nama}>
-                                            {item.nama}
+                                    {(['laki-laki', 'perempuan']).map((item: any, index) => (
+                                        <SelectItem key={index} value={item}>
+                                            {item}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
-                            {errors.jenis_tanaman && <InputError message={errors.jenis_tanaman} className="mt-2" />}
+                            {errors.jenis_kelamin && <InputError message={errors.jenis_kelamin} className="mt-2" />}
                         </div>
                         <div>
                             <Label className="text-xs text-gray-600">Label</Label>

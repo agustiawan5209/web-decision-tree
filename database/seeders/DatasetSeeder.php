@@ -14,7 +14,7 @@ class DatasetSeeder extends Seeder
      */
     public function run(): void
     {
-        $jenis_tanaman = ["Kangkung", "Selada", "Seledri", "Bayam", "Pakcoy"];
+        $jenis_kelamin = ["Kangkung", "Selada", "Seledri", "Bayam", "Pakcoy"];
         $label = ["Buruk", "Cukup", "Baik", "Sangat Baik"];
         $gejala = [
             "Buruk" => ["daun menguning", "pertumbuhan lambat", "ujung daun mengering", "batang rapuh"],
@@ -69,7 +69,7 @@ class DatasetSeeder extends Seeder
 
             $data = Dataset::create([
             'data' => json_encode($attribut),
-            'jenis_tanaman' => fake()->randomElement($jenis_tanaman),
+            'jenis_kelamin' => fake()->randomElement($jenis_kelamin),
             'label' => $selected_label,
             ]);
 

@@ -4,7 +4,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
-import { BarChart2Icon, ChevronLeft, ChevronRight, FolderClockIcon, GalleryHorizontal, Home, Leaf, LeafyGreen, X } from 'lucide-react';
+import { BarChart2Icon, ChevronLeft, ChevronRight, FolderClockIcon, GalleryHorizontal, Home, Leaf, LeafyGreen, SproutIcon, X } from 'lucide-react';
 import { useState } from 'react';
 import { NavUser } from '../nav-user';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -33,7 +33,7 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse,handleSidebarI
         { name: 'Dashboard', icon: <Home size={20} />, href: route('dashboard'), active: 'dashboard' },
         { name: 'Kriteria', icon: <BarChart2Icon size={20} />, href: route('admin.kriteria.index'), active: 'kriterias' },
         { name: 'Label', icon: <BarChart2Icon size={20} />, href: route('admin.label.index'), active: 'label' },
-        { name: 'jenis Tanaman', icon: <LeafyGreen size={20} />, href: route('admin.jenisTanaman.index'), active: 'jenis-tanaman' },
+        { name: 'Jenis Sayuran', icon: <LeafyGreen size={20} />, href: route('admin.jenisTanaman.index'), active: 'jenis-tanaman' },
         { name: 'Training Tanaman', icon: <FolderClockIcon size={20} />, href: route('admin.dataset.index'), active: 'dataset' },
         { name: 'Decision Tree', icon: <GalleryHorizontal size={20} />, href: route('DecisionTree.index'), active: 'decision-tree' },
         { name: 'Riwayat Klasifikasi', icon: <FolderClockIcon size={20} />, href: route('admin.riwayat.index'), active: 'riwayat-forest' },
@@ -45,7 +45,7 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse,handleSidebarI
             {/* Logo and collapse button */}
             <div className="flex items-center justify-between p-4">
                 <div className="flex items-center space-x-2">
-                    <Leaf className="text-primary" size={24} />
+                    <SproutIcon className="text-primary" size={24} />
                     {!isCollapsed && <span className="text-lg font-semibold">HydroMonitor</span>}
                 </div>
                 {!isMobile ?(

@@ -14,7 +14,7 @@ interface IndikatorIndexProps {
         data: {
             id: number;
             user: string;
-            jenis_tanaman: string;
+            jenis_kelamin: string;
             label: string;
             attribut: string[];
         }[];
@@ -52,7 +52,7 @@ export default function IndikatorIndex({ riwayat, breadcrumb, titlePage }: Indik
             <Card>
                 <div className="container mx-auto px-4">
                     <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <h2 className="text-lg font-bold md:text-xl">Riwayat Klasifikasi Nutrisi Tanaman</h2>
+                        <h2 className="text-lg font-bold md:text-xl">Riwayat Klasifikasi Nutrisi Anak</h2>
 
                     </div>
                     <div className="overflow-x-auto rounded-md border">
@@ -61,7 +61,7 @@ export default function IndikatorIndex({ riwayat, breadcrumb, titlePage }: Indik
                                 <TableRow>
                                     <TableHead className="cursor-pointer">no</TableHead>
                                     <TableHead className="cursor-pointer">Pengguna</TableHead>
-                                    <TableHead className="cursor-pointer">Jenis Tanaman</TableHead>
+                                    <TableHead className="cursor-pointer">Jenis Kelamin</TableHead>
                                     <TableHead className="cursor-pointer">Label (Nutrisi)</TableHead>
                                     <TableHead className="cursor-pointer">Aksi</TableHead>
                                 </TableRow>
@@ -72,7 +72,7 @@ export default function IndikatorIndex({ riwayat, breadcrumb, titlePage }: Indik
                                         <TableRow key={item.id}>
                                             <TableCell>{index + 1}</TableCell>
                                             <TableCell>{JSON.parse(item.user).name}</TableCell>
-                                            <TableCell>{item.jenis_tanaman}</TableCell>
+                                            <TableCell>{item.jenis_kelamin}</TableCell>
                                             <TableCell>{item.label}</TableCell>
                                             <TableCell>
                                                 <div className="flex flex-row items-center gap-2">

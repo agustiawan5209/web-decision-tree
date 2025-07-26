@@ -106,7 +106,7 @@ export default function JenisTanamanIndex({ jenisTanaman, breadcrumb, titlePage,
             <Card>
                 <div className="container mx-auto px-4">
                     <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <h2 className="text-lg font-bold md:text-xl">Jenis Tanaman</h2>
+                        <h2 className="text-lg font-bold md:text-xl">Jenis Sayuran</h2>
                         <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
                           {can?.add && (
                                 <Button variant={'default'} type="button" className="cursor-pointer" onClick={() => setIsOpenDialog(true)}>

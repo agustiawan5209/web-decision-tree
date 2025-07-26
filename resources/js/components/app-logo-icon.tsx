@@ -1,4 +1,4 @@
-import { Leaf } from 'lucide-react';
+import { SproutIcon } from 'lucide-react';
 export default function AppLogoIcon(props: any) {
-    return <Leaf  {...props} />;
+    return <SproutIcon  {...props} />;
 }

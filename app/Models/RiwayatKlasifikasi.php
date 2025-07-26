@@ -13,7 +13,7 @@ class RiwayatKlasifikasi extends Model
     protected $fillable = [
         "user",
         "label",
-        "jenis_tanaman",
+        "jenis_kelamin",
         "attribut",
         "kriteria",
     ];

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('datasets', function (Blueprint $table) {
             $table->id();
             $table->json('data');
-            $table->string('jenis_tanaman');
+            $table->string('jenis_kelamin');
             $table->string('label');
             $table->timestamps();
         });

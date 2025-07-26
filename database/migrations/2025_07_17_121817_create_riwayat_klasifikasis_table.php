@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->json('user');
             $table->string('label');
-            $table->string('jenis_tanaman');
+            $table->string('jenis_kelamin');
             $table->json('attribut');
             $table->json('kriteria');
             $table->timestamps();

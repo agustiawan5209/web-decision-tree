@@ -12,7 +12,7 @@ class Dataset extends Model
 
     protected $fillable = [
         'data',
-        'jenis_tanaman',
+        'jenis_kelamin',
         'label',
     ];
 

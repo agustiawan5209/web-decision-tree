@@ -62,7 +62,7 @@ export default function GuestDashboard({ meanKriteriaValue, distributionLabel, l
                         <Badge className="mb-4 bg-green-100 text-green-800 hover:bg-green-100">🚀 Teknologi AI Terdepan untuk Hidroponik</Badge>
                         <h1 className="mb-6 text-4xl leading-tight font-bold text-gray-900 md:text-6xl">
                             Sistem Pendukung Keputusan untuk
-                            <span className="block text-green-600">Nutrisi Tanaman Hidroponik</span>
+                            <span className="block text-green-600">Nutrisi Anak Hidroponik</span>
                         </h1>
                         <p className="mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-gray-600">
                             Menggunakan Algoritma Decision Tree dan Kecerdasan Buatan untuk memberikan rekomendasi nutrisi yang optimal, meningkatkan

@@ -40,21 +40,17 @@ class DashboardController extends Controller
         foreach ($dataset as $row) {
             $attribut = [];
             foreach ($row->detail as $key => $detail) {
-                if ($key === 3 || $detail->kriteria_id == 4 || $detail->kriteria->nama === "gejala") {
-                    $attribut[$detail->kriteria->nama] = $gejala[$detail->nilai];
-                } else {
-                    $attribut[$detail->kriteria->nama] = intval($detail->nilai);
-                }
+               $attribut[$detail->kriteria->nama] = floatval($detail->nilai);
             }
             $data[] = array_merge($attribut, [
-                'jenis_tanaman' => JenisTanaman::where('nama', $row->jenis_tanaman)->first()->id,
+                'jenis_kelamin' => $row->jenis_kelamin,
                 'label' => $row->label,
             ]);
         }
         // dd($data);
         return [
             'training' => $data,
-            'kriteria' => array_merge($kriteria, ["jenis_tanaman", 'label']),
+            'kriteria' => array_merge($kriteria, ["jenis_kelamin", 'label']),
         ];
     }
     private function setDistribusiLabel($training, $label)
@@ -82,7 +78,7 @@ class DashboardController extends Controller
         $gejala = ["daun menguning" => 1, "pertumbuhan lambat" => 2, "ujung daun mengering" => 3, "daun sehat" => 4, "batang rapuh" => 5, "daun menggulung" => 6];
         try {
             $result = [];
-            $kriterias = collect($kriteria)->diff(['jenis_tanaman', 'label'])->values();
+            $kriterias = collect($kriteria)->diff(['jenis_kelamin', 'label'])->values();
 
             foreach ($kriterias as $item) {
                 if ($item === 'gejala') {

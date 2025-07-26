@@ -29,7 +29,7 @@ const opsiGejala = [
     { label: 'daun menggulung', value: 5 },
 ];
 type Dataset = {
-    jenis_tanaman: string;
+    jenis_kelamin: string;
     label: string;
     attribut: string[];
 };
@@ -66,7 +66,7 @@ const FormClassifier = ({
     });
     const [loading, setLoading] = useState(false);
     const { data, setData, post, processing, errors } = useForm<Dataset>({
-        jenis_tanaman: '',
+        jenis_kelamin: '',
         label: '',
         attribut: kriteria.map((_, index) => ''),
     });
@@ -95,7 +95,7 @@ const FormClassifier = ({
 
     const handleSelectChange = (name: string, value: string) => {
         if (name && value !== undefined && data && data.attribut) {
-            if (name === 'label' || name === 'jenis_tanaman') {
+            if (name === 'label' || name === 'jenis_kelamin') {
                 setData((prevData) => ({
                     ...prevData,
                     [name]: value,
@@ -136,20 +136,20 @@ const FormClassifier = ({
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                        <Label className="text-xs text-gray-600">Jenis Tanaman</Label>
-                        <Select value={data.jenis_tanaman} required onValueChange={(value) => handleSelectChange('jenis_tanaman', value)}>
+                        <Label className="text-xs text-gray-600">Jenis Kelamin</Label>
+                        <Select value={data.jenis_kelamin} required onValueChange={(value) => handleSelectChange('jenis_kelamin', value)}>
                             <SelectTrigger className="input-minimal">
                                 <SelectValue placeholder="Pilih" />
                             </SelectTrigger>
                             <SelectContent>
-                                {jenisTanaman.map((item: any, index) => (
-                                    <SelectItem key={index} value={item.nama}>
-                                        {item.nama}
+                                {(['laki-laki', 'perempuan']).map((item: any, index) => (
+                                    <SelectItem key={index} value={item}>
+                                        {item}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
-                        {errors.jenis_tanaman && <InputError message={errors.jenis_tanaman} className="mt-2" />}
+                        {errors.jenis_kelamin && <InputError message={errors.jenis_kelamin} className="mt-2" />}
                     </div>
                     {kriteria.map((item: any, index: number) => {
                         if (item.nama === 'gejala') {
@@ -213,7 +213,7 @@ const FormClassifier = ({
                                             : 'bg-blue-400'
                                 }`}
                             />
-                            <span className="text-gray-600">Hasil Klasifikasi Nutrisi Tanaman: {result.predict}</span>
+                            <span className="text-gray-600">Hasil Klasifikasi Nutrisi Anak: {result.predict}</span>
                         </div>
                         <div className="mt-1 text-sm text-gray-500">{result.text}</div>
                     </div>

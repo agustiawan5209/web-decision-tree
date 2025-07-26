@@ -48,7 +48,7 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage }: Indik
             <Card>
                 <div className="container mx-auto px-4">
                     <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <h2 className="text-lg font-bold md:text-xl">Data Nutrisi Tanaman</h2>
+                        <h2 className="text-lg font-bold md:text-xl">Data Nutrisi Anak</h2>
                         <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
                             <Link href={route('admin.dataset.create')}>
                                 <Button variant={'default'} type="button" className="cursor-pointer">
@@ -62,7 +62,7 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage }: Indik
                             <TableHeader>
                                 <TableRow>
                                     <TableHead className="cursor-pointer">no</TableHead>
-                                    <TableHead className="cursor-pointer">Jenis Tanaman</TableHead>
+                                    <TableHead className="cursor-pointer">Jenis Kelamin</TableHead>
                                     <TableHead className="cursor-pointer">Label (Nutrisi)</TableHead>
                                     <TableHead className="cursor-pointer">Aksi</TableHead>
                                 </TableRow>
@@ -72,7 +72,7 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage }: Indik
                                     dataset.data.map((item, index) => (
                                         <TableRow key={item.id}>
                                             <TableCell>{index + 1}</TableCell>
-                                            <TableCell>{item.jenis_tanaman}</TableCell>
+                                            <TableCell>{item.jenis_kelamin}</TableCell>
                                             <TableCell>{item.label}</TableCell>
                                             <TableCell>
                                                 <div className="flex flex-row items-center gap-2">

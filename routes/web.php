@@ -45,7 +45,7 @@ Route::middleware(['auth', 'verified', 'role:admin|super_admin'])->group(functio
             });
         });
 
-        // Route for jenis Tanaman
+        // Route for Jenis Sayuran
         Route::group(['prefix' => 'jenis-tanaman', 'as' => 'jenisTanaman.'], function () {
             Route::controller(JenisTanamanController::class)->group(function () {
                 Route::get('/', 'index')->name('index');

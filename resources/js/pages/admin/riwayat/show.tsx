@@ -22,7 +22,7 @@ interface RiwayatNutrisiTanamanProps {
     riwayat: {
         id: number;
         user: string;
-        jenis_tanaman: string;
+        jenis_kelamin: string;
         label: string;
         attribut: string;
         kriteria: string;
@@ -74,8 +74,8 @@ export default function RiwayatNutrisiTanamanPage({ riwayat, breadcrumb, titlePa
                             <h3 className="text-lg font-medium text-gray-500">Data Kelas</h3>
                             <div className="mt-4 space-y-3">
                                 <div className="flex justify-between">
-                                    <span className="text-base text-gray-600">Jenis Tanaman</span>
-                                    <span className="text-base font-medium">{riwayat.jenis_tanaman} Ha</span>
+                                    <span className="text-base text-gray-600">Jenis Kelamin</span>
+                                    <span className="text-base font-medium">{riwayat.jenis_kelamin} Ha</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-base text-gray-600">Label (Nutrisi)</span>

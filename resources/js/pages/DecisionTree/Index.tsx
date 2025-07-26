@@ -76,6 +76,7 @@ export default function DecisionTreeView({ dataTraining, breadcrumb, titlePage, 
     const itemsPerPage = 5;
 
     // Paginate data
+    console.log(dataTraining)
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = dataTraining?.training.slice(indexOfFirstItem, indexOfLastItem);

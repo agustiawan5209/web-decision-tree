@@ -67,7 +67,7 @@ export interface JenisTanamanTypes{
 
 export interface DatasetTypes{
     id: number;
-    jenis_tanaman:string;
+    jenis_kelamin:string;
     label:string;
     data: string[];
     created_at?: string;

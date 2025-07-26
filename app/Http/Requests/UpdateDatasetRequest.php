@@ -22,7 +22,7 @@ class UpdateDatasetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'jenis_tanaman'=> 'required|string|max:50|exists:jenis_tanamen,nama',
+            'jenis_kelamin'=> 'required|string|max:50',
             'label'=> 'required|string|max:50',
             'attribut'=> 'required',
         ];

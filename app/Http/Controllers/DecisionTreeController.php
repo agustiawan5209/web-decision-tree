@@ -60,21 +60,17 @@ class DecisionTreeController extends Controller
         foreach ($dataset as $row) {
             $attribut = [];
             foreach ($row->detail as $key => $detail) {
-                if ($key === 3 || $detail->kriteria_id == 4 || $detail->kriteria->nama === "gejala") {
-                    $attribut[$key] = $gejala[$detail->nilai];
-                } else {
-                    $attribut[$key] = intval($detail->nilai);
-                }
+               $attribut[$key] = floatval($detail->nilai);
             }
             $data[] = array_merge($attribut, [
-                JenisTanaman::where('nama', $row->jenis_tanaman)->first()->id,
+                $row->jenis_kelamin,
                 $row->label,
             ]);
         }
         // dd($data);
         return [
             'training' => array_values($data),
-            'kriteria' => array_merge($kriteria, ["jenis_tanaman", 'label']),
+            'kriteria' => array_merge($kriteria, ["jenis_kelamin", 'label']),
         ];
     }
 
