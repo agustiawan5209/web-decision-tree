@@ -13,44 +13,13 @@ class KriteriaSeeder extends Seeder
      */
     public function run(): void
     {
-        $kriterias = array(
-            array(
-                "nama" => "pH air",
-                "deskripsi" => "pH",
-                "created_at" => "2025-07-15 17:44:30",
-                "updated_at" => "2025-07-15 17:44:30",
-            ),
-            array(
-                "nama" => "Part Per Million (PPM)",
-                "deskripsi" => "Part Per Million (PPM)",
-                "created_at" => "2025-07-15 17:44:41",
-                "updated_at" => "2025-07-15 17:44:41",
-            ),
-            array(
-                "nama" => "ketinggian air",
-                "deskripsi" => "ketinggian air",
-                "created_at" => "2025-07-15 17:44:49",
-                "updated_at" => "2025-07-15 17:44:49",
-            ),
-            array(
-                "nama" => "gejala",
-                "deskripsi" => "gejala",
-                "created_at" => "2025-07-15 17:44:54",
-                "updated_at" => "2025-07-15 17:44:54",
-            ),
-            array(
-                "nama" => "umur panen",
-                "deskripsi" => "umur panen",
-                "created_at" => "2025-07-15 17:45:03",
-                "updated_at" => "2025-07-15 17:45:03",
-            ),
-            array(
-                "nama" => "luas lahan",
-                "deskripsi" => "luas lahan",
-                "created_at" => "2025-07-15 17:45:14",
-                "updated_at" => "2025-07-15 17:45:14",
-            ),
-        );
+      $kriterias = array(
+  array('id' => '1','nama' => 'Jenis Kelamin','deskripsi' => 'Jenis Kelamin','created_at' => '2025-07-31 23:20:34','updated_at' => '2025-07-31 23:20:34'),
+  array('id' => '2','nama' => 'Umur','deskripsi' => 'Umur','created_at' => '2025-07-31 23:20:59','updated_at' => '2025-07-31 23:20:59'),
+  array('id' => '3','nama' => 'BB (kg)','deskripsi' => 'BB','created_at' => '2025-07-31 23:21:10','updated_at' => '2025-07-31 23:21:10'),
+  array('id' => '4','nama' => 'TB (cm)','deskripsi' => 'Tinggi Badan','created_at' => '2025-07-31 23:21:24','updated_at' => '2025-07-31 23:21:24'),
+  array('id' => '5','nama' => 'IMT','deskripsi' => 'IMT','created_at' => '2025-07-31 23:21:31','updated_at' => '2025-07-31 23:21:31')
+);
 
         Kriteria::insert($kriterias);
     }

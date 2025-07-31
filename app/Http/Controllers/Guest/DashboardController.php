@@ -40,17 +40,20 @@ class DashboardController extends Controller
         foreach ($dataset as $row) {
             $attribut = [];
             foreach ($row->detail as $key => $detail) {
-               $attribut[$detail->kriteria->nama] = floatval($detail->nilai);
+             if(strtolower($detail->kriteria->nama) == 'jenis kelamin'){
+                    $attribut[$key] = strtolower($detail->nilai) == 'laki-laki' ? 0 : 1;
+                }else{
+               $attribut[$key] = floatval($detail->nilai);
+                }
             }
             $data[] = array_merge($attribut, [
-                'jenis_kelamin' => $row->jenis_kelamin,
                 'label' => $row->label,
             ]);
         }
         // dd($data);
         return [
             'training' => $data,
-            'kriteria' => array_merge($kriteria, ["jenis_kelamin", 'label']),
+            'kriteria' => array_merge($kriteria, [ 'label']),
         ];
     }
     private function setDistribusiLabel($training, $label)
@@ -78,7 +81,7 @@ class DashboardController extends Controller
         $gejala = ["daun menguning" => 1, "pertumbuhan lambat" => 2, "ujung daun mengering" => 3, "daun sehat" => 4, "batang rapuh" => 5, "daun menggulung" => 6];
         try {
             $result = [];
-            $kriterias = collect($kriteria)->diff(['jenis_kelamin', 'label'])->values();
+            $kriterias = collect($kriteria)->diff(['label'])->values();
 
             foreach ($kriterias as $item) {
                 if ($item === 'gejala') {

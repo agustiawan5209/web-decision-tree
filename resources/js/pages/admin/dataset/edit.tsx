@@ -8,13 +8,6 @@ import { BreadcrumbItem, DatasetTypes, JenisTanamanTypes, KriteriaTypes, LabelTy
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
-type JenisRumputLaut = {
-    nama: string;
-    jumlah: number;
-};
-
-
-
 interface PropsDatasetView {
     breadcrumb: BreadcrumbItem[];
     kriteria: KriteriaTypes[];
@@ -25,7 +18,6 @@ interface PropsDatasetView {
 }
 type Form = {
     id: number;
-    jenis_kelamin: string;
     label: string;
     attribut: {
         kriteria_id: number;
@@ -33,20 +25,19 @@ type Form = {
     }[];
 };
 
-export default function EditDatasetView({ breadcrumb, kriteria, jenisTanaman, titlePage, dataset , opsiLabel}: PropsDatasetView) {
+export default function EditDatasetView({ breadcrumb, kriteria, titlePage, dataset, opsiLabel }: PropsDatasetView) {
     const breadcrumbs: BreadcrumbItem[] = breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : [];
 
     // Initialize form with existing dataset data if available
     const { data, setData, put, processing, errors } = useForm<Form>({
         id: dataset?.id ?? 0,
-        jenis_kelamin: dataset?.jenis_kelamin || '',
         label: dataset?.label || '',
-        attribut: kriteria.map((kriteriaItem, index) => {
+        attribut: kriteria.map((kriteriaItem) => {
             // Find the existing attribute value if editing
-            const existingAttribut = dataset?.detail.find(attr => attr.kriteria_id === kriteriaItem.id);
+            const existingAttribut = dataset?.detail.find((attr) => attr.kriteria_id === kriteriaItem.id);
             return {
                 kriteria_id: kriteriaItem.id,
-                nilai: existingAttribut?.nilai || null
+                nilai: existingAttribut?.nilai || null,
             };
         }),
     });
@@ -83,7 +74,7 @@ export default function EditDatasetView({ breadcrumb, kriteria, jenisTanaman, ti
 
     const handleSelectChange = (name: string, value: string) => {
         if (name && value !== undefined && data && data.attribut) {
-            if (name === 'label' || name === 'jenis_kelamin') {
+            if (name === 'label') {
                 setData((prevData) => ({
                     ...prevData,
                     [name]: value,
@@ -111,22 +102,6 @@ export default function EditDatasetView({ breadcrumb, kriteria, jenisTanaman, ti
                     {/* Informasi Dasar */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div>
-                            <Label className="text-xs text-gray-600">Jenis Kelamin</Label>
-                            <Select value={data.jenis_kelamin} required onValueChange={(value) => handleSelectChange('jenis_kelamin', value)}>
-                                <SelectTrigger className="input-minimal">
-                                    <SelectValue placeholder="Pilih" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {(['laki-laki', 'perempuan']).map((item: any, index) => (
-                                        <SelectItem key={index} value={item}>
-                                            {item}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {errors.jenis_kelamin && <InputError message={errors.jenis_kelamin} className="mt-2" />}
-                        </div>
-                        <div>
                             <Label className="text-xs text-gray-600">Label</Label>
                             <Select value={data.label} required onValueChange={(value) => handleSelectChange('label', value)}>
                                 <SelectTrigger className="input-minimal">
@@ -147,6 +122,29 @@ export default function EditDatasetView({ breadcrumb, kriteria, jenisTanaman, ti
                     {/* Parameter Lingkungan */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         {kriteria.map((item: any, index: number) => {
+                            if (item.nama.toLowerCase() === 'jenis kelamin') {
+                                return (
+                                    <div key={index} className="space-y-2">
+                                        <Label className="text-sm font-medium text-gray-700">{item.nama}</Label>
+                                        <Select
+                                            value={data.attribut[index].nilai || ''}
+                                            required
+                                            onValueChange={(value) => handleSelectChange(index.toLocaleString(), value)}
+                                        >
+                                            <SelectTrigger className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                                                <SelectValue placeholder="Select symptoms" />
+                                            </SelectTrigger>
+                                            <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
+                                                {['laki-laki', 'perempuan'].map((gejala, idx) => (
+                                                    <SelectItem key={idx} value={gejala} className="px-4 py-2 hover:bg-gray-50">
+                                                        {gejala}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                );
+                            }
                             return (
                                 <div key={index}>
                                     <Label className="text-xs text-gray-600">{item.nama}</Label>

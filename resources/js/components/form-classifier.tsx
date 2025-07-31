@@ -22,7 +22,6 @@ const opsiGejala = [
     { label: 'daun menggulung', value: 5 },
 ];
 type Dataset = {
-    jenis_kelamin: string;
     label: string;
     attribut: string[];
 };
@@ -56,7 +55,6 @@ const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
     const [loading, setLoading] = useState(false);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, setData, post, processing, errors } = useForm<Dataset>({
-        jenis_kelamin: '',
         label: '',
         attribut: kriteria.map(() => ''),
     });
@@ -85,7 +83,7 @@ const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
 
     const handleSelectChange = (name: string, value: string) => {
         if (name && value !== undefined && data && data.attribut) {
-            if (name === 'label' || name === 'jenis_kelamin') {
+            if (name === 'label') {
                 setData((prevData) => ({
                     ...prevData,
                     [name]: value,
@@ -137,27 +135,11 @@ const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    {/* Gender Selection */}
-                    <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">Gender</Label>
-                        <Select value={data.jenis_kelamin} required onValueChange={(value) => handleSelectChange('jenis_kelamin', value)}>
-                            <SelectTrigger className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
-                                <SelectValue placeholder="Select gender" />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
-                                {['laki-laki', 'perempuan'].map((item, index) => (
-                                    <SelectItem key={index} value={item} className="px-4 py-2 hover:bg-gray-50">
-                                        {item.charAt(0).toUpperCase() + item.slice(1)}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        {errors.jenis_kelamin && <InputError message={errors.jenis_kelamin} className="mt-1 text-sm text-red-600" />}
-                    </div>
 
                     {/* Dynamic Criteria Inputs */}
                     {kriteria.map((item, index) => {
-                        if (item.nama === 'gejala') {
+                        if (item.nama === 'jenis kelamin') {
+
                             return (
                                 <div key={index} className="space-y-2">
                                     <Label className="text-sm font-medium text-gray-700">{item.nama}</Label>
@@ -170,9 +152,9 @@ const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
                                             <SelectValue placeholder="Select symptoms" />
                                         </SelectTrigger>
                                         <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
-                                            {opsiGejala.map((gejala, idx) => (
-                                                <SelectItem key={idx} value={gejala.label} className="px-4 py-2 hover:bg-gray-50">
-                                                    {gejala.label}
+                                            {['laki-laki', 'perempuan'].map((gejala, idx) => (
+                                                <SelectItem key={idx} value={gejala} className="px-4 py-2 hover:bg-gray-50">
+                                                    {gejala}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

@@ -1,20 +1,18 @@
-import { DeleteConfirmationForm } from '@/components/delete-confirmation-form';
 import PaginationTable from '@/components/pagination-table';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, DatasetTypes } from '@/types';
+import { BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { EyeIcon, PenBoxIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { EyeIcon } from 'lucide-react';
+import { useMemo } from 'react';
 interface IndikatorIndexProps {
     riwayat: {
         current_page: number;
         data: {
             id: number;
             user: string;
-            jenis_kelamin: string;
             label: string;
             attribut: string[];
         }[];
@@ -53,7 +51,6 @@ export default function IndikatorIndex({ riwayat, breadcrumb, titlePage }: Indik
                 <div className="container mx-auto px-4">
                     <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <h2 className="text-lg font-bold md:text-xl">Riwayat Klasifikasi Nutrisi Anak</h2>
-
                     </div>
                     <div className="overflow-x-auto rounded-md border">
                         <Table className="min-w-full">
@@ -72,7 +69,6 @@ export default function IndikatorIndex({ riwayat, breadcrumb, titlePage }: Indik
                                         <TableRow key={item.id}>
                                             <TableCell>{index + 1}</TableCell>
                                             <TableCell>{JSON.parse(item.user).name}</TableCell>
-                                            <TableCell>{item.jenis_kelamin}</TableCell>
                                             <TableCell>{item.label}</TableCell>
                                             <TableCell>
                                                 <div className="flex flex-row items-center gap-2">

@@ -1,28 +1,13 @@
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, DatasetTypes } from '@/types';
+import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
-
-const formatNumber = (num: number) => {
-    return new Intl.NumberFormat('id-ID').format(num);
-};
-
-const capitalize = (str: string) => {
-    return str.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
-};
-
-const getWaterQualityColor = (ph: number) => {
-    if (ph < 6.5) return 'bg-red-100 text-red-800';
-    if (ph < 7.5) return 'bg-green-100 text-green-800';
-    return 'bg-yellow-100 text-yellow-800';
-};
+import { useMemo } from 'react';
 
 interface RiwayatNutrisiTanamanProps {
     riwayat: {
         id: number;
         user: string;
-        jenis_kelamin: string;
         label: string;
         attribut: string;
         kriteria: string;
@@ -35,10 +20,10 @@ export default function RiwayatNutrisiTanamanPage({ riwayat, breadcrumb, titlePa
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
         [breadcrumb],
     );
-    console.log(riwayat)
-    const attribut : any = JSON.parse(riwayat.attribut)
-    const user : any = JSON.parse(riwayat.user)
-    const kriteria : any = JSON.parse(riwayat.kriteria)
+    console.log(riwayat);
+    const attribut: any = JSON.parse(riwayat.attribut);
+    const user: any = JSON.parse(riwayat.user);
+    const kriteria: any = JSON.parse(riwayat.kriteria);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={titlePage ?? 'Detail'} />
@@ -74,10 +59,6 @@ export default function RiwayatNutrisiTanamanPage({ riwayat, breadcrumb, titlePa
                             <h3 className="text-lg font-medium text-gray-500">Data Kelas</h3>
                             <div className="mt-4 space-y-3">
                                 <div className="flex justify-between">
-                                    <span className="text-base text-gray-600">Jenis Kelamin</span>
-                                    <span className="text-base font-medium">{riwayat.jenis_kelamin} Ha</span>
-                                </div>
-                                <div className="flex justify-between">
                                     <span className="text-base text-gray-600">Label (Nutrisi)</span>
                                     <span className="text-base font-medium">{riwayat.label}</span>
                                 </div>
@@ -88,7 +69,7 @@ export default function RiwayatNutrisiTanamanPage({ riwayat, breadcrumb, titlePa
                         <div className="overflow-hidden border-l-4 border-chart-4 bg-white p-6 shadow-md">
                             <h3 className="text-sm font-medium text-gray-500">Detail Tanaman</h3>
                             <div className="mt-4 space-y-3">
-                                {kriteria.map((item :any, index: number) => (
+                                {kriteria.map((item: any, index: number) => (
                                     <div key={index} className="flex justify-between border-b-2">
                                         <span className="text-base text-gray-800">{item}</span>
                                         <span className="text-base font-medium">{attribut[index]}</span>

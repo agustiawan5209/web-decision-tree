@@ -8,13 +8,7 @@ import { BreadcrumbItem, JenisTanamanTypes, KriteriaTypes, LabelTypes } from '@/
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
-type JenisRumputLaut = {
-    nama: string;
-    jumlah: number;
-};
-
 type Dataset = {
-    jenis_kelamin: string;
     label: string;
     attribut: {
         kriteria_id: number;
@@ -42,7 +36,6 @@ interface PropsDatasetView {
 export default function FormDatasetView({ breadcrumb, kriteria, jenisTanaman, titlePage, opsiLabel }: PropsDatasetView) {
     const breadcrumbs: BreadcrumbItem[] = breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : [];
     const { data, setData, post, processing, errors } = useForm<Dataset>({
-        jenis_kelamin: '',
         label: '',
         attribut: kriteria.map((_, index) => ({
             kriteria_id: kriteria[index].id,
@@ -71,7 +64,7 @@ export default function FormDatasetView({ breadcrumb, kriteria, jenisTanaman, ti
     };
     const handleSelectChange = (name: string, value: string) => {
         if (name && value !== undefined && data && data.attribut) {
-            if (name === 'label' || name === 'jenis_kelamin') {
+            if (name === 'label') {
                 setData((prevData) => ({
                     ...prevData,
                     [name]: value,
@@ -105,8 +98,6 @@ export default function FormDatasetView({ breadcrumb, kriteria, jenisTanaman, ti
         });
     };
 
-
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={titlePage ?? 'Input Data Panen Rumput Laut'} />
@@ -115,22 +106,7 @@ export default function FormDatasetView({ breadcrumb, kriteria, jenisTanaman, ti
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Informasi Dasar */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                        <div>
-                            <Label className="text-xs text-gray-600">Jenis Kelamin</Label>
-                            <Select value={data.jenis_kelamin} required onValueChange={(value) => handleSelectChange('jenis_kelamin', value)}>
-                                <SelectTrigger className="input-minimal">
-                                    <SelectValue placeholder="Pilih" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {(['laki-laki', 'perempuan']).map((item: any, index) => (
-                                        <SelectItem key={index} value={item}>
-                                            {item}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {errors.jenis_kelamin && <InputError message={errors.jenis_kelamin} className="mt-2" />}
-                        </div>
+
                         <div>
                             <Label className="text-xs text-gray-600">Label</Label>
                             <Select value={data.label} required onValueChange={(value) => handleSelectChange('label', value)}>
@@ -152,22 +128,22 @@ export default function FormDatasetView({ breadcrumb, kriteria, jenisTanaman, ti
                     {/* Parameter Lingkungan */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         {kriteria.map((item: { nama: string; id: number; deskripsi: string }, index: number) => {
-                            if (item.nama.toLowerCase() === 'gejala') {
+                            if (item.nama.toLowerCase() === 'jenis kelamin') {
                                 return (
-                                    <div key={index}>
-                                        <Label className="text-xs text-gray-600">{item.nama}</Label>
+                                    <div key={index} className="space-y-2">
+                                        <Label className="text-sm font-medium text-gray-700">{item.nama}</Label>
                                         <Select
                                             value={data.attribut[index].nilai || ''}
                                             required
                                             onValueChange={(value) => handleSelectChange(index.toLocaleString(), value)}
                                         >
-                                            <SelectTrigger className="input-minimal">
-                                                <SelectValue placeholder="Pilih" />
+                                            <SelectTrigger className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                                                <SelectValue placeholder="Select symptoms" />
                                             </SelectTrigger>
-                                            <SelectContent>
-                                                {opsiGejala.map((gejala: any, index) => (
-                                                    <SelectItem key={index} value={gejala.label}>
-                                                        {gejala.label}
+                                            <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
+                                                {['laki-laki', 'perempuan'].map((gejala, idx) => (
+                                                    <SelectItem key={idx} value={gejala} className="px-4 py-2 hover:bg-gray-50">
+                                                        {gejala}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>

@@ -64,7 +64,6 @@ class RiwayatKlasifikasiController extends Controller
         $klasifikasi = RiwayatKlasifikasi::create([
             'user'=> json_encode($request->user),
             'label' => $request->label,
-            'jenis_kelamin' => $request->jenis_kelamin,
             'attribut'=> json_encode($request->attribut),
             'kriteria'=> json_encode($request->kriteria),
         ]);

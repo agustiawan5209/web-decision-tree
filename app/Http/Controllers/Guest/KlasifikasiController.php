@@ -54,17 +54,20 @@ class KlasifikasiController extends Controller
         foreach ($dataset as $row) {
             $attribut = [];
             foreach ($row->detail as $key => $detail) {
-               $attribut[$detail->kriteria->nama] = floatval($detail->nilai);
+               if(strtolower($detail->kriteria->nama) == 'jenis kelamin'){
+                    $attribut[$key] = strtolower($detail->nilai) == 'laki-laki' ? 0 : 1;
+                }else{
+               $attribut[$key] = floatval($detail->nilai);
+                }
             }
             $data[] = array_merge($attribut, [
-                $row->jenis_kelamin,
                 $row->label,
             ]);
         }
         // dd($data);
         return [
             'training' => array_values($data),
-            'kriteria' => array_merge($kriteria, ["jenis_kelamin", 'label']),
+            'kriteria' => array_merge($kriteria, ['label']),
         ];
     }
 }

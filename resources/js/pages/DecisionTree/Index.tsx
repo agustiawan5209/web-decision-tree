@@ -2,7 +2,7 @@ import FormClassifier from '@/components/form-classifier';
 import { Card } from '@/components/ui/card';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, JenisTanamanTypes, KriteriaTypes, LabelTypes } from '@/types';
+import { BreadcrumbItem, JenisTanamanTypes, KriteriaTypes } from '@/types';
 import { Head } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
 
@@ -15,12 +15,11 @@ interface DecisionTreeViewProps {
     titlePage?: string;
     kriteria?: KriteriaTypes[];
     jenisTanaman?: JenisTanamanTypes[];
-    opsiLabel: LabelTypes[];
 }
 
 
 
-export default function DecisionTreeView({ dataTraining, breadcrumb, titlePage, kriteria, jenisTanaman, opsiLabel }: DecisionTreeViewProps) {
+export default function DecisionTreeView({ dataTraining, breadcrumb, titlePage, kriteria, jenisTanaman }: DecisionTreeViewProps) {
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
         [breadcrumb],

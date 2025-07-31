@@ -73,17 +73,7 @@ export default function HarvestDetailPage({ dataset, breadcrumb, titlePage }: Ha
                                 <h3 className="text-xl font-semibold text-gray-800">Class Data</h3>
                             </div>
                             <div className="space-y-4">
-                                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3 transition-colors hover:bg-gray-100">
-                                    <div className="flex items-center">
-                                        <svg className="mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                        </svg>
-                                        <span className="text-gray-700">Jenis Kelamin</span>
-                                    </div>
-                                    <span className="bg-opacity-10 rounded-full bg-primary px-3 py-1 text-sm font-medium text-white">
-                                        {data.jenis_kelamin}
-                                    </span>
-                                </div>
+
                                 <div className="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3 transition-colors hover:bg-gray-100">
                                     <div className="flex items-center">
                                         <svg className="mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

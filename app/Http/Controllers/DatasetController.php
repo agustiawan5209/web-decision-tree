@@ -69,7 +69,6 @@ class DatasetController extends Controller
     {
         $dataset = new Dataset();
         $dataset->label = $request['label'];
-        $dataset->jenis_kelamin = $request['jenis_kelamin'];
         $dataset->data = json_encode($request['attribut']);
         $dataset->save();
 
@@ -133,7 +132,6 @@ class DatasetController extends Controller
     private function editDataset($request, $dataset)
     {
         $dataset->label = $request['label'];
-        $dataset->jenis_kelamin = $request['jenis_kelamin'];
         $dataset->data = json_encode($request['attribut']);
         $dataset->save();
 

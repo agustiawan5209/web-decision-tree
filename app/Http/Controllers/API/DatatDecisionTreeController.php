@@ -21,16 +21,19 @@ class DatatDecisionTreeController extends Controller
         foreach ($dataset as $row) {
             $attribut = [];
             foreach ($row->detail as $key => $detail) {
+              if(strtolower($detail->kriteria->nama) == 'jenis kelamin'){
+                    $attribut[$key] = strtolower($detail->nilai) == 'laki-laki' ? 0 : 1;
+                }else{
                $attribut[$key] = floatval($detail->nilai);
+                }
             }
             $data[] = array_merge($attribut, [
-                strtolower($row->jenis_kelamin) == "laki-laki" ? 0 : 1,
                 $row->label,
             ]);
         }
         return [
             'training' => array_values($data),
-            'kriteria' => array_merge($kriteria, ["jenis_kelamin", 'label']),
+            'kriteria' => array_merge($kriteria, [ 'label']),
             "label"=> Label::orderBy('id', 'desc')->get(),
         ];
     }

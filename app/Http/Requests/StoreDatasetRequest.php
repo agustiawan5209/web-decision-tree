@@ -22,7 +22,6 @@ class StoreDatasetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'jenis_kelamin'=> 'required|string|max:50',
             'label'=> 'required|string|max:50',
             'attribut'=> 'required',
         ];

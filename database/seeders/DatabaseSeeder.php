@@ -19,10 +19,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             RoleSeeder::class,
+            KriteriaSeeder::class,
+            LabelSeeder::class,
+            DatasetSeeder::class,
             // JenisTanamanSeeder::class,
-            // LabelSeeder::class,
-            // KriteriaSeeder::class,
-            // DatasetSeeder::class,
         ]);
     }
 }

@@ -62,7 +62,6 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage }: Indik
                             <TableHeader>
                                 <TableRow>
                                     <TableHead className="cursor-pointer">no</TableHead>
-                                    <TableHead className="cursor-pointer">Jenis Kelamin</TableHead>
                                     <TableHead className="cursor-pointer">Label (Nutrisi)</TableHead>
                                     <TableHead className="cursor-pointer">Aksi</TableHead>
                                 </TableRow>
@@ -72,7 +71,6 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage }: Indik
                                     dataset.data.map((item, index) => (
                                         <TableRow key={item.id}>
                                             <TableCell>{index + 1}</TableCell>
-                                            <TableCell>{item.jenis_kelamin}</TableCell>
                                             <TableCell>{item.label}</TableCell>
                                             <TableCell>
                                                 <div className="flex flex-row items-center gap-2">
