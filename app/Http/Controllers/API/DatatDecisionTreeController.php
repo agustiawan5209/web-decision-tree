@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Models\Label;
+use App\Models\Dataset;
+use App\Models\Kriteria;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class DatatDecisionTreeController extends Controller
+{
+     public function getData()
+    {
+        // Logic to retrieve data for the Decision Tree model
+
+        $data = [];
+        $dataset = Dataset::with(['detail', 'detail.kriteria'])->orderBy('id', 'desc')->get();
+        $kriteria = Kriteria::select('nama')->orderBy('id', 'asc')->get()->pluck('nama')->toArray();
+        $gejala = ["daun menguning" => 1, "pertumbuhan lambat" => 2, "ujung daun mengering" => 3, "daun sehat" => 4, "batang rapuh" => 5, "daun menggulung" => 6];
+        foreach ($dataset as $row) {
+            $attribut = [];
+            foreach ($row->detail as $key => $detail) {
+               $attribut[$key] = floatval($detail->nilai);
+            }
+            $data[] = array_merge($attribut, [
+                strtolower($row->jenis_kelamin) == "laki-laki" ? 0 : 1,
+                $row->label,
+            ]);
+        }
+        return [
+            'training' => array_values($data),
+            'kriteria' => array_merge($kriteria, ["jenis_kelamin", 'label']),
+            "label"=> Label::orderBy('id', 'desc')->get(),
+        ];
+    }
+}

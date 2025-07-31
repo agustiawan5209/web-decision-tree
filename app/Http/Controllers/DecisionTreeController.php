@@ -37,7 +37,7 @@ class DecisionTreeController extends Controller
             'dataTraining' => $this->getData(),
             "kriteria" => Kriteria::all(),
             "jenisTanaman" => JenisTanaman::all(),
-            "opsiLabel"=> Label::all(),
+            "opsiLabel"=> Label::orderBy('id', 'desc')->get(),
             'breadcrumb' => self::BASE_BREADCRUMB,
             'titlePage' => 'DecisionTree',
             'can' => [
@@ -49,7 +49,7 @@ class DecisionTreeController extends Controller
         ]);
     }
 
-    private function getData()
+    public function getData()
     {
         // Logic to retrieve data for the Decision Tree model
 
@@ -63,7 +63,7 @@ class DecisionTreeController extends Controller
                $attribut[$key] = floatval($detail->nilai);
             }
             $data[] = array_merge($attribut, [
-                $row->jenis_kelamin,
+                strtolower($row->jenis_kelamin) == "laki-laki" ? 0 : 1,
                 $row->label,
             ]);
         }

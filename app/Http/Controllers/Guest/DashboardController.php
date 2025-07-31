@@ -14,7 +14,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // dd(Label::all());
+        // dd(Label::orderBy('id', 'desc')->get());
         $label = Label::select('nama')->orderBy('id', 'asc')->get()->pluck('nama')->toArray();
 
         $data = $this->getData();
@@ -25,7 +25,7 @@ class DashboardController extends Controller
         return Inertia::render("guest/dashboard", [
             "distributionLabel"=> $distributionLabel,
             "meanKriteriaValue"=> $meanKriteriaValue,
-            "label"=> Label::all(),
+            "label"=> Label::orderBy('id', 'desc')->get(),
         ]);
     }
 

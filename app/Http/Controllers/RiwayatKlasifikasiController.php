@@ -36,7 +36,7 @@ class RiwayatKlasifikasiController extends Controller
             'riwayat' => $data,
             "kriteria" => Kriteria::all(),
             "jenisTanaman" => JenisTanaman::all(),
-            "opsiLabel"=> Label::all(),
+            "opsiLabel"=> Label::orderBy('id', 'desc')->get(),
             'breadcrumb' => self::BASE_BREADCRUMB,
             'titlePage' => 'DecisionTree',
             'can' => [
@@ -83,7 +83,7 @@ class RiwayatKlasifikasiController extends Controller
             'riwayat' => $riwayat,
             "kriteria" => Kriteria::all(),
             "jenisTanaman" => JenisTanaman::all(),
-            "opsiLabel"=> Label::all(),
+            "opsiLabel"=> Label::orderBy('id', 'desc')->get(),
             'breadcrumb' => self::BASE_BREADCRUMB,
             'titlePage' => 'DecisionTree',
             'can' => [

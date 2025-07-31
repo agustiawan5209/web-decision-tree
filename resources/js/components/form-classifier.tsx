@@ -1,24 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Toast } from '@/components/ui/toast';
-import { JenisTanamanTypes, KriteriaTypes, LabelTypes, SharedData } from '@/types';
-import { useForm, usePage } from '@inertiajs/react';
+import { useDataset } from '@/hooks/use-decision-tree';
+import { KriteriaTypes } from '@/types';
+import { useForm } from '@inertiajs/react';
+import { Loader2 } from 'lucide-react';
+import { DecisionTreeClassifier } from 'ml-cart';
 import React, { useState } from 'react';
-
-interface FormData {
-    feature1: string;
-    feature2: string;
-    feature3: string;
-    // Add more features as needed
-}
-
-const initialFormData: FormData = {
-    feature1: '',
-    feature2: '',
-    feature3: '',
-};
+import { Button } from './ui/button';
 
 const opsiGejala = [
     { label: 'daun menguning', value: 0 },
@@ -34,41 +27,38 @@ type Dataset = {
     attribut: string[];
 };
 
-const FormClassifier = ({
-    kriteria,
-    jenisTanaman,
-    opsiLabel,
-}: {
-    kriteria: KriteriaTypes[];
-    jenisTanaman: JenisTanamanTypes[];
-    opsiLabel: LabelTypes[];
-}) => {
-    const page = usePage<SharedData>().props;
-    const { auth } = page;
-    const findLabel = (value: number) => {
-        const result = opsiLabel.find((label) => label.id === value);
-        if (result) {
-            return {
-                predict: result.nama,
-                text: result.deskripsi,
-            };
-        } else {
-            return {
-                predict: 'Tidak Ditemukan',
-                text: 'Tidak Ditemukan',
-            };
-        }
-    };
-    const [formData, setFormData] = useState<FormData>(initialFormData);
+const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
+    const [treeModel, setTreeModel] = useState<DecisionTreeClassifier | null>(null);
+    const [prediction, setPrediction] = useState<string>('');
+    const { trainingData, isLoading } = useDataset();
+
     const [result, setResult] = useState<{ predict: string; text: string }>({
         predict: '',
         text: '',
     });
+
+    const trainModel = () => {
+        if (!isLoading) {
+            const { features, labels }: { features: any; labels: any } = { features: trainingData?.features, labels: trainingData?.labels };
+
+            const options = {
+                gainFunction: 'gini',
+                maxDepth: 3,
+                minNumSamples: 1,
+            };
+
+            const classifier = new DecisionTreeClassifier(options);
+            classifier.train(features, labels);
+            setTreeModel(classifier);
+        }
+    };
+
     const [loading, setLoading] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, setData, post, processing, errors } = useForm<Dataset>({
         jenis_kelamin: '',
         label: '',
-        attribut: kriteria.map((_, index) => ''),
+        attribut: kriteria.map(() => ''),
     });
     const [toast, setToast] = useState<{ title: string; show: boolean; message: string; type: 'success' | 'default' | 'error' }>({
         title: '',
@@ -119,11 +109,18 @@ const FormClassifier = ({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
+        if (!treeModel) {
+            console.log('tree model tidak dimuat!!', treeModel);
+            return;
+        }
+        // const feature = Array(data.attribut)[0];
+        // feature[feature.length] = data.jenis_kelamin.toLocaleLowerCase() == 'laki-laki' ? 0 : 1;
+        // console.log(feature);
         setResult({ predict: '', text: '' });
     };
+
     return (
-        <div>
+        <div className="mx-auto max-w-3xl">
             <Toast
                 open={toast.show}
                 onOpenChange={() => setToast((prev) => ({ ...prev, show: false }))}
@@ -132,43 +129,49 @@ const FormClassifier = ({
                 duration={5000}
                 variant={toast.type}
             />
-            <h2 className="mb-4 text-2xl font-bold">Decision Tree Classification</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div>
-                        <Label className="text-xs text-gray-600">Jenis Kelamin</Label>
+
+            <div className="mb-8">
+                <h2 className="mb-2 text-3xl font-bold text-gray-900">Nutrition Classification</h2>
+                <p className="text-gray-600">Analyze children's nutrition status using decision tree algorithm</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {/* Gender Selection */}
+                    <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700">Gender</Label>
                         <Select value={data.jenis_kelamin} required onValueChange={(value) => handleSelectChange('jenis_kelamin', value)}>
-                            <SelectTrigger className="input-minimal">
-                                <SelectValue placeholder="Pilih" />
+                            <SelectTrigger className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                                <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
-                            <SelectContent>
-                                {(['laki-laki', 'perempuan']).map((item: any, index) => (
-                                    <SelectItem key={index} value={item}>
-                                        {item}
+                            <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
+                                {['laki-laki', 'perempuan'].map((item, index) => (
+                                    <SelectItem key={index} value={item} className="px-4 py-2 hover:bg-gray-50">
+                                        {item.charAt(0).toUpperCase() + item.slice(1)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
-                        {errors.jenis_kelamin && <InputError message={errors.jenis_kelamin} className="mt-2" />}
+                        {errors.jenis_kelamin && <InputError message={errors.jenis_kelamin} className="mt-1 text-sm text-red-600" />}
                     </div>
-                    {kriteria.map((item: any, index: number) => {
+
+                    {/* Dynamic Criteria Inputs */}
+                    {kriteria.map((item, index) => {
                         if (item.nama === 'gejala') {
                             return (
-                                <div key={index}>
-                                    <Label htmlFor={`attribut.${index}`} className="text-xs text-gray-600">
-                                        {item.nama}
-                                    </Label>
+                                <div key={index} className="space-y-2">
+                                    <Label className="text-sm font-medium text-gray-700">{item.nama}</Label>
                                     <Select
                                         value={data.attribut[index] || ''}
                                         required
                                         onValueChange={(value) => handleSelectChange(index.toLocaleString(), value)}
                                     >
-                                        <SelectTrigger className="input-minimal">
-                                            <SelectValue placeholder="Pilih" />
+                                        <SelectTrigger className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                                            <SelectValue placeholder="Select symptoms" />
                                         </SelectTrigger>
-                                        <SelectContent>
-                                            {opsiGejala.map((gejala: any, index) => (
-                                                <SelectItem key={index} value={gejala.label}>
+                                        <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
+                                            {opsiGejala.map((gejala, idx) => (
+                                                <SelectItem key={idx} value={gejala.label} className="px-4 py-2 hover:bg-gray-50">
                                                     {gejala.label}
                                                 </SelectItem>
                                             ))}
@@ -178,44 +181,64 @@ const FormClassifier = ({
                             );
                         }
                         return (
-                            <div key={index}>
-                                <Label className="text-xs text-gray-600">{item.nama}</Label>
+                            <div key={index} className="space-y-2">
+                                <Label className="text-sm font-medium text-gray-700">{item.nama.charAt(0).toUpperCase() + item.nama.slice(1)}</Label>
                                 <Input
                                     type="text"
                                     name={`attribut.${index}`}
                                     value={data.attribut[index] || ''}
                                     onChange={handleChange}
-                                    className="input-minimal"
-                                    placeholder={`masukkan ${item.nama}`}
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                                    placeholder={`Enter ${item.nama}`}
+                                    disabled={processing}
                                     required
                                 />
                             </div>
                         );
                     })}
                 </div>
-                {/* Add more feature inputs as needed */}
-                <button type="submit" className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:bg-blue-300" disabled={loading}>
-                    {loading ? 'running...' : 'Mulai Klasifikasi'}
-                </button>
+
+                <div className="flex flex-row gap-3">
+                    <Button type="button" variant={'secondary'} onClick={() => trainModel()}>
+                        Latih Model
+                    </Button>
+                    <Button type="submit" variant={'default'} disabled={loading}>
+                        {loading || processing ? <Loader2 className="animate-spin" /> : 'Start Classification'}
+                    </Button>
+                </div>
             </form>
+
             {result && (
-                <div className="mt-4 rounded-lg bg-white p-4 shadow-md">
-                    <div className="mt-2 flex flex-col items-start justify-center">
-                        <div className="flex items-center">
+                <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                    <div className="flex items-start">
+                        <div
+                            className={`mt-1 h-4 w-4 flex-shrink-0 rounded-full ${
+                                result.predict === 'Buruk'
+                                    ? 'bg-red-500'
+                                    : result.predict === 'Cukup'
+                                      ? 'bg-yellow-500'
+                                      : result.predict === 'Baik'
+                                        ? 'bg-green-500'
+                                        : 'bg-blue-500'
+                            }`}
+                        />
+                        <div className="ml-3">
+                            <h3 className="text-lg font-medium text-gray-900">Nutrition Classification Result</h3>
                             <div
-                                className={`mr-3 h-3 w-3 rounded-full ${
+                                className={`mt-1 text-lg font-semibold ${
                                     result.predict === 'Buruk'
-                                        ? 'bg-red-400'
+                                        ? 'text-red-600'
                                         : result.predict === 'Cukup'
-                                          ? 'bg-yellow-400'
+                                          ? 'text-yellow-600'
                                           : result.predict === 'Baik'
-                                            ? 'bg-green-400'
-                                            : 'bg-blue-400'
+                                            ? 'text-green-600'
+                                            : 'text-blue-600'
                                 }`}
-                            />
-                            <span className="text-gray-600">Hasil Klasifikasi Nutrisi Anak: {result.predict}</span>
+                            >
+                                {result.predict}
+                            </div>
+                            <p className="mt-2 text-gray-600">{result.text}</p>
                         </div>
-                        <div className="mt-1 text-sm text-gray-500">{result.text}</div>
                     </div>
                 </div>
             )}

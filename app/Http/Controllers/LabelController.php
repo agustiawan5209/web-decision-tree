@@ -28,7 +28,7 @@ class LabelController extends Controller
     public function index(Request $request)
     {
         return Inertia::render("admin/label/index", [
-            'label' => Label::all(),
+            'label' => Label::orderBy('id', 'desc')->get(),
             'breadcrumb' => self::BASE_BREADCRUMB,
             'titlePage'=> 'Label',
             'can'=> [

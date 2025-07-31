@@ -31,7 +31,7 @@ class KlasifikasiController extends Controller
             'dataTraining' => $this->getData(),
             "kriteria" => Kriteria::all(),
             "jenisTanaman" => JenisTanaman::all(),
-            "opsiLabel" => Label::all(),
+            "opsiLabel" => Label::orderBy('id', 'desc')->get(),
             'breadcrumb' => self::BASE_BREADCRUMB,
             'titlePage' => 'DecisionTree',
             'can' => [

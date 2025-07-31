@@ -45,7 +45,7 @@ class DatasetController extends Controller
         return Inertia::render("admin/dataset/create", [
             'kriteria' => Kriteria::all(),
             'jenisTanaman' => JenisTanaman::all(),
-            "opsiLabel"=> Label::all(),
+            "opsiLabel"=> Label::orderBy('id', 'desc')->get(),
             'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 ['title' => 'tambah', 'href' => '/admin/dataset/create'],
             ])
@@ -108,7 +108,7 @@ class DatasetController extends Controller
         return Inertia::render('admin/dataset/edit', [
             'dataset' => $dataset,
             'kriteria' => Kriteria::all(),
-            "opsiLabel"=> Label::all(),
+            "opsiLabel"=> Label::orderBy('id', 'desc')->get(),
             'jenisTanaman' => JenisTanaman::all(),
             'breadrumb' => array_merge(self::BASE_BREADCRUMB, [[
                 "title" => 'edit',

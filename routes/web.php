@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DatasetController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\API\DatatDecisionTreeController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\JenisTanamanController;
 use App\Http\Controllers\LabelController;
@@ -90,3 +91,5 @@ require __DIR__ . '/auth.php';
 
 Route::post('/decision-tree/store', [DecisionTreeController::class, 'store'])->name('DecisionTree.store');
 Route::get('/decision-tree/get-model', [DecisionTreeController::class, 'getModel'])->name('DecisionTree.getModel');
+Route::get('/api/decision-tree/get-data', [DatatDecisionTreeController::class, 'getData'])->name('api.DecisionTree.getData');
+
