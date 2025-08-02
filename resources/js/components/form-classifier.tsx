@@ -1,124 +1,181 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Toast } from '@/components/ui/toast';
-import { useDataset } from '@/hooks/use-decision-tree';
-import { KriteriaTypes } from '@/types';
-import { useForm } from '@inertiajs/react';
+import DecisionTreeModel from '@/services/decision-tree-model';
+import { KriteriaTypes, LabelTypes, SharedData } from '@/types';
+import { useForm, usePage } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
-import { DecisionTreeClassifier } from 'ml-cart';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from './ui/button';
 
-const opsiGejala = [
-    { label: 'daun menguning', value: 0 },
-    { label: 'pertumbuhan lambat', value: 1 },
-    { label: 'ujung daun mengering', value: 2 },
-    { label: 'daun sehat', value: 3 },
-    { label: 'batang rapuh', value: 4 },
-    { label: 'daun menggulung', value: 5 },
-];
 type Dataset = {
     label: string;
     attribut: string[];
 };
 
+interface PredictionResult {
+    prediction: number | number[] | null;
+    label: string | string[] | null;
+    error: string | null;
+}
+interface TrainingData {
+    features: number[][];
+    labelsY: number[];
+    featureNames: string[];
+    label: LabelTypes[];
+}
+interface EvaluationResult {
+    accuracy: number;
+    confusionMatrix: number[][];
+}
 const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
-    const [treeModel, setTreeModel] = useState<DecisionTreeClassifier | null>(null);
-    const [prediction, setPrediction] = useState<string>('');
-    const { trainingData, isLoading } = useDataset();
-
-    const [result, setResult] = useState<{ predict: string; text: string }>({
-        predict: '',
-        text: '',
-    });
-
-    const trainModel = () => {
-        if (!isLoading) {
-            const { features, labels }: { features: any; labels: any } = { features: trainingData?.features, labels: trainingData?.labels };
-
-            const options = {
-                gainFunction: 'gini',
-                maxDepth: 3,
-                minNumSamples: 1,
-            };
-
-            const classifier = new DecisionTreeClassifier(options);
-            classifier.train(features, labels);
-            setTreeModel(classifier);
-        }
-    };
-
+    const { auth } = usePage<SharedData>().props;
+    // State management
     const [loading, setLoading] = useState(false);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { data, setData, post, processing, errors } = useForm<Dataset>({
+    const [trainingData, setTrainingData] = useState<TrainingData | null>(null);
+    const [model] = useState(new DecisionTreeModel());
+    const [prediction, setPrediction] = useState<PredictionResult | null>(null);
+    const [evaluationResult, setEvaluationResult] = useState<EvaluationResult | null>(null);
+
+    // Form handling
+    const { data, setData, processing } = useForm<Dataset>({
         label: '',
         attribut: kriteria.map(() => ''),
     });
-    const [toast, setToast] = useState<{ title: string; show: boolean; message: string; type: 'success' | 'default' | 'error' }>({
+
+    const [toast, setToast] = useState<{
+        title: string;
+        show: boolean;
+        message: string;
+        type: 'success' | 'default' | 'error';
+    }>({
         title: '',
         show: false,
         message: '',
         type: 'success',
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
+    // Input handlers
+    const handleChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            const { name, value } = e.target;
+            const key = name.split('.')[1];
 
-        const key = name.split('.')[1];
-        setData((prevData) => ({
-            ...prevData,
-            attribut: prevData.attribut.map((item, index) => {
-                if (index === Number(key)) {
-                    return value;
-                } else {
-                    return item;
-                }
-            }),
-        }));
-    };
-
-    const handleSelectChange = (name: string, value: string) => {
-        if (name && value !== undefined && data && data.attribut) {
-            if (name === 'label') {
-                setData((prevData) => ({
-                    ...prevData,
-                    [name]: value,
-                }));
-            } else {
-                setData((prevData) => ({
-                    ...prevData,
-                    attribut: prevData.attribut.map((item, index) => {
-                        if (index === Number(name)) {
-                            return value;
-                        } else {
-                            return item;
-                        }
-                    }),
+            if (value === '' || /^-?\d*\.?\d*$/.test(value)) {
+                setData((prev) => ({
+                    ...prev,
+                    attribut: prev.attribut.map((item, index) => (index === Number(key) ? value : item)),
                 }));
             }
-        } else {
-            console.error('Invalid data: name, value, or attribut may be undefined');
+        },
+        [setData],
+    );
+
+    const handleSelectChange = useCallback(
+        (name: string, value: string) => {
+            if (name === 'label') {
+                setData((prev) => ({ ...prev, [name]: value }));
+            } else {
+                setData((prev) => ({
+                    ...prev,
+                    attribut: prev.attribut.map((item, index) => (index === Number(name) ? value : item)),
+                }));
+            }
+        },
+        [setData],
+    );
+
+    // Load data saat komponen mount
+    useEffect(() => {
+        const loadData = async () => {
+            setLoading(true);
+            try {
+                const data = await model.fetchAndProcessData();
+                await model.loadModel();
+                setTrainingData(data as any);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, []);
+
+    const handleTrainAndEvaluate = async () => {
+        setLoading(true);
+        try {
+            await model.trainModel();
+            const evalResult = await model.evaluateModel();
+
+            await model.saveModel();
+            setEvaluationResult(evalResult);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handlePredict = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!treeModel) {
-            console.log('tree model tidak dimuat!!', treeModel);
-            return;
+        setLoading(true);
+        try {
+            const feature = data.attribut.map((item: any) => {
+                const lowerItem = String(item).toLowerCase();
+
+                if (lowerItem === 'laki-laki') {
+                    return 0;
+                } else if (lowerItem === 'perempuan') {
+                    return 1;
+                } else if (!isNaN(parseFloat(item)) && isFinite(item)) {
+                    return parseFloat(item); // ubah ke angka
+                } else {
+                    return item; // biarkan tetap string
+                }
+            });
+
+            const result = await model.predict([feature]); // Contoh fitur
+            console.log(result);
+            setPrediction(result);
+        } catch (error) {
+            console.error(error);
+            setToast({
+                title: 'Hasil Prediksi',
+                show: true,
+                message: error as string,
+                type: 'success',
+            });
+        } finally {
+            setLoading(false);
         }
-        // const feature = Array(data.attribut)[0];
-        // feature[feature.length] = data.jenis_kelamin.toLocaleLowerCase() == 'laki-laki' ? 0 : 1;
-        // console.log(feature);
-        setResult({ predict: '', text: '' });
     };
+
+    const dataState = model.getDataLoadingState();
+    const trainingState = model.getTrainingState();
+    const evalState = model.getEvaluationState();
+    const predState = model.getPredictionState();
+    // Determine prediction color
+    const predictionColor = useMemo(() => {
+        if (!prediction) return '';
+        switch (prediction.label) {
+            case 'Buruk':
+                return 'bg-red-100 border-red-300 text-red-800';
+            case 'Cukup':
+                return 'bg-yellow-100 border-yellow-300 text-yellow-800';
+            case 'Baik':
+                return 'bg-green-100 border-green-300 text-green-800';
+            default:
+                return 'bg-blue-100 border-blue-300 text-blue-800';
+        }
+    }, [prediction]);
 
     return (
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-7xl px-4 py-8">
             <Toast
                 open={toast.show}
                 onOpenChange={() => setToast((prev) => ({ ...prev, show: false }))}
@@ -128,102 +185,116 @@ const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
                 variant={toast.type}
             />
 
-            <div className="mb-8">
-                <h2 className="mb-2 text-3xl font-bold text-gray-900">Nutrition Classification</h2>
-                <p className="text-gray-600">Analyze children's nutrition status using decision tree algorithm</p>
+            <div className="mb-10 text-center">
+                <h1 className="mb-2 text-4xl font-bold text-gray-800">Nutrisi Klasifikasi</h1>
+                <p className="mx-auto max-w-2xl text-gray-600">Klasifikasi Jenis Sayuran Berdasarkan Nutrisi untuk Anak</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-
-                    {/* Dynamic Criteria Inputs */}
-                    {kriteria.map((item, index) => {
-                        if (item.nama === 'jenis kelamin') {
-
-                            return (
+            <div className="grid grid-cols-1 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm md:grid-cols-2">
+                <div className="p-6 ring-1 md:p-8">
+                    <form onSubmit={(e) => handlePredict(e)} className="space-y-6">
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            {kriteria.map((item, index) => (
                                 <div key={index} className="space-y-2">
-                                    <Label className="text-sm font-medium text-gray-700">{item.nama}</Label>
-                                    <Select
-                                        value={data.attribut[index] || ''}
-                                        required
-                                        onValueChange={(value) => handleSelectChange(index.toLocaleString(), value)}
-                                    >
-                                        <SelectTrigger className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
-                                            <SelectValue placeholder="Select symptoms" />
-                                        </SelectTrigger>
-                                        <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
-                                            {['laki-laki', 'perempuan'].map((gejala, idx) => (
-                                                <SelectItem key={idx} value={gejala} className="px-4 py-2 hover:bg-gray-50">
-                                                    {gejala}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <Label className="text-sm font-medium text-gray-700">
+                                        {item.nama.charAt(0).toUpperCase() + item.nama.slice(1)}
+                                    </Label>
+                                    {item.nama.toLowerCase() === 'jenis kelamin' ? (
+                                        <Select
+                                            value={data.attribut[index] || ''}
+                                            required
+                                            onValueChange={(value) => handleSelectChange(index.toString(), value)}
+                                        >
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select gender" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {['laki-laki', 'perempuan'].map((gender, idx) => (
+                                                    <SelectItem key={idx} value={gender}>
+                                                        {gender}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    ) : (
+                                        <Input
+                                            type="text"
+                                            name={`attribut.${index}`}
+                                            value={data.attribut[index] || ''}
+                                            onChange={handleChange}
+                                            placeholder={`Enter ${item.nama}`}
+                                            disabled={processing}
+                                            required
+                                        />
+                                    )}
                                 </div>
-                            );
-                        }
-                        return (
-                            <div key={index} className="space-y-2">
-                                <Label className="text-sm font-medium text-gray-700">{item.nama.charAt(0).toUpperCase() + item.nama.slice(1)}</Label>
-                                <Input
-                                    type="text"
-                                    name={`attribut.${index}`}
-                                    value={data.attribut[index] || ''}
-                                    onChange={handleChange}
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                                    placeholder={`Enter ${item.nama}`}
-                                    disabled={processing}
-                                    required
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
-
-                <div className="flex flex-row gap-3">
-                    <Button type="button" variant={'secondary'} onClick={() => trainModel()}>
-                        Latih Model
-                    </Button>
-                    <Button type="submit" variant={'default'} disabled={loading}>
-                        {loading || processing ? <Loader2 className="animate-spin" /> : 'Start Classification'}
-                    </Button>
-                </div>
-            </form>
-
-            {result && (
-                <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                    <div className="flex items-start">
-                        <div
-                            className={`mt-1 h-4 w-4 flex-shrink-0 rounded-full ${
-                                result.predict === 'Buruk'
-                                    ? 'bg-red-500'
-                                    : result.predict === 'Cukup'
-                                      ? 'bg-yellow-500'
-                                      : result.predict === 'Baik'
-                                        ? 'bg-green-500'
-                                        : 'bg-blue-500'
-                            }`}
-                        />
-                        <div className="ml-3">
-                            <h3 className="text-lg font-medium text-gray-900">Nutrition Classification Result</h3>
-                            <div
-                                className={`mt-1 text-lg font-semibold ${
-                                    result.predict === 'Buruk'
-                                        ? 'text-red-600'
-                                        : result.predict === 'Cukup'
-                                          ? 'text-yellow-600'
-                                          : result.predict === 'Baik'
-                                            ? 'text-green-600'
-                                            : 'text-blue-600'
-                                }`}
-                            >
-                                {result.predict}
-                            </div>
-                            <p className="mt-2 text-gray-600">{result.text}</p>
+                            ))}
                         </div>
-                    </div>
+
+                        <div className="flex flex-wrap gap-3 pt-4">
+                            {(auth.role === 'admin' || auth.role === 'super_admin') && (
+                                <Button type="button" variant="outline" onClick={handleTrainAndEvaluate} disabled={loading}>
+                                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                    Train Model
+                                </Button>
+                            )}
+                            <Button
+                                type="submit"
+                                disabled={loading || !model}
+                                className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600"
+                            >
+                                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                Mulai Klasifikasi
+                            </Button>
+                        </div>
+                    </form>
                 </div>
-            )}
+
+                <div className="p-6 md:p-8">
+                    {evaluationResult && (
+                        <div className={`border p-6 transition-all duration-300`}>
+                            <div className="flex items-center">
+                                <div className={`h-5 w-5 flex-shrink-0 rounded-full bg-green-500`} />
+                                <div className="ml-4">
+                                    <h3 className="text-lg font-semibold">Hasil Evaluasi Model</h3>
+                                    <div className="mt-1 text-2xl font-bold">{(evaluationResult.accuracy * 100)} %</div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {prediction ? (
+                        <div className={`border ${predictionColor} p-6 transition-all duration-300`}>
+                            <div className="flex items-center">
+                                <div
+                                    className={`h-5 w-5 flex-shrink-0 rounded-full ${
+                                        prediction.label === 'Buruk'
+                                            ? 'bg-red-500'
+                                            : prediction.label === 'Cukup'
+                                              ? 'bg-yellow-500'
+                                              : prediction.label === 'Baik'
+                                                ? 'bg-green-500'
+                                                : 'bg-blue-500'
+                                    }`}
+                                />
+                                <div className="ml-4">
+                                    <h3 className="text-lg font-semibold">Hasil Klasifikasi</h3>
+                                    <div className="mt-1 text-2xl font-bold">{prediction.label}</div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="border border-gray-200 p-6 transition-all duration-300">
+                            <div className="flex items-center">
+                                <div className="h-5 w-5 flex-shrink-0 rounded-full bg-gray-500" />
+                                <div className="ml-4">
+                                    <h3 className="text-lg font-semibold">Hasil Klasifikasi</h3>
+                                    <div className="mt-1 text-2xl font-bold">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };
