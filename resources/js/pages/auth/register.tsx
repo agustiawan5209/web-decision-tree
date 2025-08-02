@@ -32,12 +32,12 @@ export default function Register() {
     };
 
     return (
-        <AuthLayout title="Create an account" description="Enter your details below to create your account">
+        <AuthLayout title="Buat Akun" description="isi form sebelum masuk">
             <Head title="Register" />
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="name">Nama Lengkap</Label>
                         <Input
                             id="name"
                             type="text"
@@ -54,7 +54,7 @@ export default function Register() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+                        <Label htmlFor="email">Alamat Email</Label>
                         <Input
                             id="email"
                             type="email"
@@ -103,14 +103,14 @@ export default function Register() {
 
                     <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Create account
+                        Buat Akun
                     </Button>
                 </div>
 
                 <div className="text-center text-sm text-muted-foreground">
-                    Already have an account?{' '}
+                    Sudah Punya Akun?{' '}
                     <TextLink href={route('login')} tabIndex={6}>
-                        Log in
+                        Masuk
                     </TextLink>
                 </div>
             </form>

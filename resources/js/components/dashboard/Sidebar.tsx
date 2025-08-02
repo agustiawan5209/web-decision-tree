@@ -2,12 +2,11 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
-import { BarChart2Icon, ChevronLeft, ChevronRight, FolderClockIcon, GalleryHorizontal, Home, Leaf, LeafyGreen, SproutIcon, X } from 'lucide-react';
+import { BarChart2Icon, ChevronLeft, ChevronRight, FolderClockIcon, GalleryHorizontal, Home, LeafyGreen, SproutIcon, X } from 'lucide-react';
 import { useState } from 'react';
-import { NavUser } from '../nav-user';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface SidebarProps {
     className?: string;
@@ -16,7 +15,7 @@ interface SidebarProps {
     handleSidebarIsMobile?: () => void;
 }
 
-const Sidebar = ({ className, collapsed = false, onToggleCollapse,handleSidebarIsMobile  }: SidebarProps) => {
+const Sidebar = ({ className, collapsed = false, onToggleCollapse, handleSidebarIsMobile }: SidebarProps) => {
     const [isCollapsed, setIsCollapsed] = useState(collapsed);
     const activeSection = usePage().url.split('/').pop() || 'Dashboard';
     // console.log('Active Section:', activeSection);
@@ -41,21 +40,21 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse,handleSidebarI
 
     const isMobile = useIsMobile();
     return (
-        <div className={cn('flex h-full flex-col border-r bg-background transition-all duration-300', isCollapsed ? 'w-16' : 'w-64', className)}>
+        <div className={cn('flex h-full flex-col border-r bg-sidebar transition-all duration-300', isCollapsed ? 'w-16' : 'w-64', className)}>
             {/* Logo and collapse button */}
             <div className="flex items-center justify-between p-4">
                 <div className="flex items-center space-x-2">
                     <SproutIcon className="text-primary" size={24} />
                     {!isCollapsed && <span className="text-lg font-semibold">HydroMonitor</span>}
                 </div>
-                {!isMobile ?(
+                {!isMobile ? (
                     <Button variant="ghost" size="icon" onClick={handleToggleCollapse} className="h-8 w-8">
-                    {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-                </Button>
-                ):(
+                        {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+                    </Button>
+                ) : (
                     <Button variant="ghost" size="icon" onClick={handleSidebarIsMobile} className="h-8 w-8">
-                    <X size={16} />
-                </Button>
+                        <X size={16} />
+                    </Button>
                 )}
             </div>
 
@@ -70,16 +69,16 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse,handleSidebarI
                                 <li key={item.name}>
                                     <Link
                                         href={item.href}
-                                        className={cn('flex items-center', item.active == activeSection ? 'text-primary' : 'text-foreground')}
+                                        className={cn('flex items-center', item.active == activeSection ? 'text-primary' : 'text-white')}
                                     >
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <Button
-                                                    variant={item.active == activeSection ? 'secondary' : 'ghost'}
+                                                    variant={item.active == activeSection ? 'outline' : 'ghost'}
                                                     className={cn('w-full justify-start', isCollapsed ? 'px-2' : 'px-3')}
                                                 >
                                                     <span className="flex items-center">
-                                                        <span className={cn(item.active == activeSection ? 'text-primary' : 'text-foreground')}>
+                                                        <span className={cn(item.active == activeSection ? 'text-primary' : 'text-white')}>
                                                             {item.icon}
                                                         </span>
                                                         {!isCollapsed && <span className="ml-3">{item.name}</span>}
@@ -95,7 +94,6 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse,handleSidebarI
                     </TooltipProvider>
                 </nav>
             </ScrollArea>
-
         </div>
     );
 };

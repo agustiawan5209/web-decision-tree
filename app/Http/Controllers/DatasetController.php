@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateDatasetRequest;
 use App\Models\DetailDataset;
 use App\Models\JenisTanaman;
 use App\Models\Label;
+use Illuminate\Http\Request;
 
 class DatasetController extends Controller
 {
@@ -27,13 +28,19 @@ class DatasetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $datasets = Dataset::paginate(10);
+       $datasets = Dataset::query();
 
+if ($request->has('orderBy')) {
+    $datasets->where('label', $request->orderBy);
+}
+
+$datasets = $datasets->paginate(10);
         return Inertia::render("admin/dataset/index", [
             "dataset" => $datasets,
             "breadcrumb" => self::BASE_BREADCRUMB,
+            "opsiLabel"=> Label::orderBy('id', 'desc')->get(),
         ]);
     }
 

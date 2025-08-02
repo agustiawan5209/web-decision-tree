@@ -24,7 +24,7 @@ class DatasetSeeder extends Seeder
         $range = [
             "Buruk" => [
             1 => [20, 23],    // kriteria_id 1
-            2 => [600, 650],  // kriteria_id 2
+            2 => [10, 30],  // kriteria_id 2
             3 => [20, 28],    // kriteria_id 3
             4 => [30, 35],    // kriteria_id 5
             5 => [30, 35],    // kriteria_id 5
@@ -32,7 +32,7 @@ class DatasetSeeder extends Seeder
             ],
             "Baik" => [
             1 => [26, 28],
-            2 => [701, 800],
+            2 => [30, 10],
             3 => [36, 45],
             4 => [41, 45],
             5 => [41, 45],

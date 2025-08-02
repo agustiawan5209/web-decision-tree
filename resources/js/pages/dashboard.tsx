@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import KPICard from '@/components/dashboard/KPICard';
 import AppLayout from '@/layouts/app-layout';
 import { LabelTypes, type BreadcrumbItem } from '@/types';
@@ -14,7 +15,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
 ];
-export default function Dashboard({ meanKriteriaValue, distributionLabel, label }: GuestDashboardProps) {
+export default function Dashboard({ distributionLabel, label }: GuestDashboardProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -27,29 +28,18 @@ export default function Dashboard({ meanKriteriaValue, distributionLabel, label 
                 {/* Metric Cards */}
                 <section className="mb-8 flex gap-3">
                     <div>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                             {label.map((item: any, index) => (
                                 <KPICard
-                                    key={item.id}
+                                    key={index}
                                     title={`Jumlah Dataset ${item.nama}`}
                                     value={distributionLabel[item.nama].length}
                                     unit={'data'}
                                     status="normal"
-                                    trend="stable"
+                                    trend="up"
                                 />
                             ))}
                         </div>
-                    </div>
-                    <div className="flex-1/3 space-y-2 rounded bg-gray-50 p-4">
-                        <h4 className="mb-2 font-medium">Rata Rata Kriteria Untuk Nutrisi Sangat Baik</h4>
-                        <ul className="space-y-1">
-                            {meanKriteriaValue &&
-                                Object.entries(meanKriteriaValue).map(([feature, importance], index) => (
-                                    <li key={index} className="text-sm">
-                                        {feature}: {typeof importance === 'string' ? importance : Number(importance).toFixed(4)}
-                                    </li>
-                                ))}
-                        </ul>
                     </div>
                 </section>
             </div>

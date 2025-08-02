@@ -1,4 +1,4 @@
-import { AlignJustify, BarChart3 } from 'lucide-react';
+import { AlignJustify } from 'lucide-react';
 // Import the default export from each file
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import Sidebar from '@/components/dashboard/Sidebar';
@@ -11,11 +11,9 @@ import { useInitials } from '@/hooks/use-initials';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { SharedData, type BreadcrumbItem } from '@/types';
 import { usePage } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 import { useEffect, useState, type PropsWithChildren } from 'react';
-import {motion} from 'framer-motion'
 export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[] }>) {
-    const navigationItems = [{ title: 'Dashboard', href: '/dashboard', icon: BarChart3 }];
-
     const page = usePage<SharedData>();
     const { flash, auth } = page.props;
     const getInitials = useInitials();
@@ -49,10 +47,7 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWi
             });
         }
     }, [flash]);
-    const closeToast = () => {
-        // This function is called when the toast is closed
-        setOpenToast(false);
-    };
+
     const isMobile = useIsMobile();
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -81,11 +76,7 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWi
             {!isMobile && <Sidebar collapsed={false} />}
 
             {isMobile && sidebarOpen && (
-                <motion.div
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                transition={{ duration: 0.3 }}
-                className="fixed z-50 w-full">
+                <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} transition={{ duration: 0.3 }} className="fixed z-50 w-full bg-sidebar">
                     <Sidebar collapsed={false} className="w-full" handleSidebarIsMobile={closeSidebar} />
                 </motion.div>
             )}

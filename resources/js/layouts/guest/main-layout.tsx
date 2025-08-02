@@ -1,9 +1,14 @@
+import { Button } from '@/components/ui/button';
+import {DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { UserInfo } from '@/components/user-info';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { SharedData } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { BarChart2, Home, Info, Leaf, Menu, Sprout, User, X } from 'lucide-react';
+import { BarChart2, ChevronsUpDown, Home, Info, Leaf, LogOut, Menu, Settings, Sprout, User, X } from 'lucide-react';
 import { PropsWithChildren, useState } from 'react';
-export default function MainLayout({ children }: PropsWithChildren<{}>) {
+export default function MainLayout({ children }: PropsWithChildren) {
     const page = usePage<SharedData>();
     const { auth } = page.props;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,6 +30,13 @@ export default function MainLayout({ children }: PropsWithChildren<{}>) {
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+    const cleanup = useMobileNavigation();
+
+    const handleLogout = () => {
+        cleanup();
+        router.flushAll();
+    };
+    const isMobile = useIsMobile();
     return (
         <div className="min-h-screen bg-white to-blue-50">
             {/* Header */}
@@ -68,9 +80,71 @@ export default function MainLayout({ children }: PropsWithChildren<{}>) {
 
                         {/* User Profile */}
                         <div className="hidden items-center md:flex">
-                            <button className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-600 transition-colors duration-200 hover:bg-green-200">
-                                <User className="h-5 w-5" />
-                            </button>
+                            {auth.user ? (
+                                <>
+
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <div className="group flex items-center gap-2 rounded-md p-2 text-sidebar-accent-foreground data-[state=open]:bg-sidebar-accent">
+                                                <UserInfo user={auth.user} />
+                                                <ChevronsUpDown className="ml-auto size-4" />
+                                            </div>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent
+                                            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                                            align="end"
+                                            side={isMobile ? 'bottom' : 'bottom'}
+                                        >
+                                            <DropdownMenuLabel className="p-0 font-normal">
+                                                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                                                    <UserInfo user={auth.user} showEmail={true} />
+                                                </div>
+                                            </DropdownMenuLabel>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuGroup>
+                                                <DropdownMenuItem asChild>
+                                                    <Link
+                                                        className="block w-full"
+                                                        href={route('profile.edit')}
+                                                        as="button"
+                                                        prefetch
+                                                        onClick={cleanup}
+                                                    >
+                                                        <Settings className="mr-2" />
+                                                        Settings
+                                                    </Link>
+                                                </DropdownMenuItem>
+                                            </DropdownMenuGroup>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem asChild>
+                                                <Link
+                                                    className="block w-full"
+                                                    method="post"
+                                                    href={route('logout')}
+                                                    as="button"
+                                                    onClick={handleLogout}
+                                                >
+                                                    <LogOut className="mr-2" />
+                                                    Log out
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </>
+                            ) : (
+                                <div className="flex flex-row gap-3">
+                                    <Link href={route('login')}>
+                                        <Button type="button" variant={'default'}>
+                                            Masuk
+                                        </Button>
+                                    </Link>
+                                    <Link href={route('register')}>
+                                        <Button type="button" variant={'outline'}>
+                                            Daftar
+                                        </Button>
+                                    </Link>
+                                </div>
+                            )}
                         </div>
 
                         {/* Mobile menu button */}

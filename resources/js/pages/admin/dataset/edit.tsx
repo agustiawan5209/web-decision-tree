@@ -132,7 +132,7 @@ export default function EditDatasetView({ breadcrumb, kriteria, titlePage, datas
                                             onValueChange={(value) => handleSelectChange(index.toLocaleString(), value)}
                                         >
                                             <SelectTrigger className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
-                                                <SelectValue placeholder="Select symptoms" />
+                                                <SelectValue placeholder="Select " />
                                             </SelectTrigger>
                                             <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
                                                 {['laki-laki', 'perempuan'].map((gejala, idx) => (

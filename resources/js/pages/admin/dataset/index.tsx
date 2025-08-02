@@ -2,10 +2,11 @@ import { DeleteConfirmationForm } from '@/components/delete-confirmation-form';
 import PaginationTable from '@/components/pagination-table';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, DatasetTypes } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { BreadcrumbItem, DatasetTypes, LabelTypes } from '@/types';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { EyeIcon, PenBoxIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 interface IndikatorIndexProps {
@@ -30,16 +31,27 @@ interface IndikatorIndexProps {
     };
     breadcrumb?: BreadcrumbItem[];
     titlePage?: string;
+    opsiLabel: LabelTypes[];
 }
 
-export default function IndikatorIndex({ dataset, breadcrumb, titlePage }: IndikatorIndexProps) {
+export default function IndikatorIndex({ dataset, breadcrumb, titlePage, opsiLabel }: IndikatorIndexProps) {
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
         [breadcrumb],
     );
+    const { get } = useForm();
 
     const [isDeleteDialog, setisDeleteDialog] = useState(false);
 
+    const [orderBy, setorderBy] = useState('');
+
+    const handleOrderBy = (value: string) => {
+        setorderBy(value);
+        get(route('admin.dataset.index', { orderBy: value }), {
+            preserveScroll: true,
+            preserveState: true,
+        });
+    };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={titlePage ?? 'Indikator'} />
@@ -55,6 +67,21 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage }: Indik
                                     Tambah Data
                                 </Button>
                             </Link>
+
+                            <div className="max-w-sm">
+                                <Select value={orderBy} required onValueChange={(value: string) => handleOrderBy(value)}>
+                                    <SelectTrigger className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                                        <SelectValue placeholder="Pilih Label " />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
+                                        {opsiLabel.map((label, idx) => (
+                                            <SelectItem key={idx} value={label.nama} className="px-4 py-2 hover:bg-gray-50">
+                                                {label.nama}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                     </div>
                     <div className="overflow-x-auto rounded-md border">
@@ -105,7 +132,10 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage }: Indik
                         </Table>
                     </div>
                     <div className="mt-4 flex items-center justify-between">
-                        <PaginationTable links={dataset.links} data={dataset} />
+                        <p className="text-sm text-gray-700">
+                           jumlah data {dataset.total},  halaman {dataset.current_page} dari {dataset.last_page}
+                        </p>
+                        <PaginationTable links={dataset.links} data={{ orderBy: orderBy }} />
                     </div>
                 </div>
             </Card>

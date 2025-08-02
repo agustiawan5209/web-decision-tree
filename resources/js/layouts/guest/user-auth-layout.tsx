@@ -1,14 +1,11 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import MainLayout from '@/layouts/guest/main-layout';
-import { ArrowRight } from 'lucide-react';
 import { PropsWithChildren } from 'react';
 
-export default function UserAuthLayout({children}: PropsWithChildren<{}>) {
+export default function UserAuthLayout({ children }: PropsWithChildren) {
     return (
-        <MainLayout >
+        <MainLayout>
             {/* Hero Section */}
-           {children}
+            {children}
         </MainLayout>
     );
 }

@@ -9,7 +9,7 @@ export default function LandingPage() {
     const features = [
         {
             icon: <Brain className="h-8 w-8 text-green-600" />,
-            title: 'AI-Powered Analysis',
+            title: 'AI-Powered Klasifikasi',
             description: 'Algoritma Decision Tree yang canggih menganalisis data nutrisi untuk memberikan rekomendasi yang akurat dan optimal.',
         },
         {

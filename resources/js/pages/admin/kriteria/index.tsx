@@ -141,7 +141,6 @@ export default function KriteriaIndex({ kriteria, breadcrumb, titlePage }: Krite
                                                         title={`Hapus kriteria ${item.id}`}
                                                         id={item.id}
                                                         url={route('admin.kriteria.destroy', { kriteria: item.id })}
-                                                        param={{ kriteria: item.id }}
                                                         setOpenDialog={setisDeleteDialog}
                                                     />
                                                 </div>

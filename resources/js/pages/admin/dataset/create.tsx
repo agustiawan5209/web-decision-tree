@@ -16,15 +16,6 @@ type Dataset = {
     }[];
 };
 
-const opsiGejala = [
-    { label: 'daun menguning', value: 0 },
-    { label: 'pertumbuhan lambat', value: 1 },
-    { label: 'ujung daun mengering', value: 2 },
-    { label: 'daun sehat', value: 3 },
-    { label: 'batang rapuh', value: 4 },
-    { label: 'daun menggulung', value: 5 },
-];
-
 interface PropsDatasetView {
     breadcrumb: BreadcrumbItem[];
     kriteria: KriteriaTypes[];
@@ -33,7 +24,7 @@ interface PropsDatasetView {
     titlePage?: string;
 }
 
-export default function FormDatasetView({ breadcrumb, kriteria, jenisTanaman, titlePage, opsiLabel }: PropsDatasetView) {
+export default function FormDatasetView({ breadcrumb, kriteria, titlePage, opsiLabel }: PropsDatasetView) {
     const breadcrumbs: BreadcrumbItem[] = breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : [];
     const { data, setData, post, processing, errors } = useForm<Dataset>({
         label: '',
@@ -138,7 +129,7 @@ export default function FormDatasetView({ breadcrumb, kriteria, jenisTanaman, ti
                                             onValueChange={(value) => handleSelectChange(index.toLocaleString(), value)}
                                         >
                                             <SelectTrigger className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
-                                                <SelectValue placeholder="Select symptoms" />
+                                                <SelectValue placeholder="Select " />
                                             </SelectTrigger>
                                             <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
                                                 {['laki-laki', 'perempuan'].map((gejala, idx) => (

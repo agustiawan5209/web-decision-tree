@@ -4,19 +4,6 @@ import { Head } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 
-const formatNumber = (num: number) => {
-    return new Intl.NumberFormat('id-ID').format(num);
-};
-
-const capitalize = (str: string) => {
-    return str.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
-};
-
-const getWaterQualityColor = (ph: number) => {
-    if (ph < 6.5) return 'bg-red-100 text-red-800';
-    if (ph < 7.5) return 'bg-green-100 text-green-800';
-    return 'bg-yellow-100 text-yellow-800';
-};
 
 interface HarvestDetailProps {
     dataset: DatasetTypes;
@@ -41,7 +28,7 @@ export default function HarvestDetailPage({ dataset, breadcrumb, titlePage }: Ha
                 <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     {/* Header */}
                     <motion.div initial={{ y: -20 }} animate={{ y: 0 }} transition={{ duration: 0.5 }} className="mb-12 text-center">
-                        <h1 className="mb-3 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-4xl font-bold text-gray-900 text-transparent">
+                        <h1 className="mb-3 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-4xl font-bold text-gray-900 ">
                             Detail Dataset
                         </h1>
                         <p className="mx-auto max-w-2xl text-lg text-gray-600">
@@ -70,7 +57,7 @@ export default function HarvestDetailPage({ dataset, breadcrumb, titlePage }: Ha
                                         />
                                     </svg>
                                 </div>
-                                <h3 className="text-xl font-semibold text-gray-800">Class Data</h3>
+                                <h3 className="text-xl font-semibold text-gray-800">Klasifikasi</h3>
                             </div>
                             <div className="space-y-4">
 
@@ -84,7 +71,7 @@ export default function HarvestDetailPage({ dataset, breadcrumb, titlePage }: Ha
                                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                                             />
                                         </svg>
-                                        <span className="text-gray-700">Nutrition Label</span>
+                                        <span className="text-gray-700">Nutrisi Label</span>
                                     </div>
                                     <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">{data.label}</span>
                                 </div>
