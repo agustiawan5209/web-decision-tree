@@ -8,7 +8,7 @@ use App\Models\Balita;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreBalitaRequest;
 use App\Http\Requests\UpdateBalitaRequest;
-
+use App\Models\Kriteria;
 
 class BalitaController extends Controller
 {
@@ -19,7 +19,7 @@ class BalitaController extends Controller
         ],
         [
             'title' => 'data balita',
-            'href' => '/admin/balita/',
+            'href' => '/balita/',
         ],
     ];
     /**
@@ -63,6 +63,12 @@ class BalitaController extends Controller
             'balita' => $balita,
             'breadcrumb' => self::BASE_BREADCRUMB,
             'filter' => $request->only('q'),
+            'can' => [
+                'add' => auth()->user()->can('add balita'),
+                'edit' => auth()->user()->can('edit balita'),
+                'delete' => auth()->user()->can('delete balita'),
+                'read' => auth()->user()->can('read balita'),
+            ]
         ]);
     }
 
@@ -76,7 +82,7 @@ class BalitaController extends Controller
         'breadcrumb'=> array_merge(self::BASE_BREADCRUMB,[
             [
                 'title'=> 'tambah data',
-                'href'=> '/admin/balita/create',
+                'href'=> '/balita/create',
             ],
         ])
     ]);
@@ -101,10 +107,11 @@ class BalitaController extends Controller
             'balita'=> $balita,
             'pemeriksaan'=> $balita->pemeriksaan,
             'orangTua'=> $balita->orangtua,
+            'kriteria'=> Kriteria::orderBy('id', 'asc')->get(),
             'breadcrumb'=> array_merge(self::BASE_BREADCRUMB,[
                 [
                     'title'=> 'detail data',
-                    'href'=> '/admin/balita/show',
+                    'href'=> '/balita/show',
                 ],
             ])
         ]);
@@ -122,7 +129,7 @@ class BalitaController extends Controller
             'breadcrumb'=> array_merge(self::BASE_BREADCRUMB,[
                 [
                     'title'=> 'edit data',
-                    'href'=> '/admin/balita/edit',
+                    'href'=> '/balita/edit',
                 ],
             ])
         ]);

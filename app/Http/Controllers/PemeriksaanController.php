@@ -45,7 +45,6 @@ class PemeriksaanController extends Controller
             'balita.orangtua',
             'detailpemeriksaan',
             'detailpemeriksaan.kriteria',
-            'polamakan'
         ]);
 
         // Apply filters
@@ -58,7 +57,7 @@ class PemeriksaanController extends Controller
             'breadcrumb' => self::BASE_BREADCRUMB,
             'filter' => $request->only('search', 'order_by', 'date', 'q'),
             'statusLabel' => self::STATUS_LABELS,
-            'kriteria'=> Kriteria::orderBy('id', 'asc')->get(),
+            'kriteria' => Kriteria::orderBy('id', 'asc')->get(),
             'can' => [
                 'add' => auth()->user()->can('add dataset'),
                 'edit' => auth()->user()->can('edit dataset'),
@@ -149,15 +148,13 @@ class PemeriksaanController extends Controller
 
             $this->createDetailPemeriksaan($pemeriksaan, $request->input('kriteria'), $balita->jenis_kelamin, $request->input('label'));
 
-            if (auth()->user()->hasRole('admin')) {
-               return redirect()
-                ->route('pemeriksaan.show', ['pemeriksaan' => $pemeriksaan->id])
-                ->with('success', 'Data pemeriksaan berhasil ditambahkan!');
-            }
             if (auth()->user()->hasRole('orangtua')) {
                 return redirect()->route('orangtua.pemeriksaan.index')->with('success', 'Data pemeriksaan berhasil ditambahkan!');
             }
 
+             return redirect()
+                    ->route('pemeriksaan.index', ['pemeriksaan' => $pemeriksaan->id])
+                    ->with('success', 'Data pemeriksaan berhasil ditambahkan!');
         } catch (\Exception $exception) {
             $pemeriksaan = Pemeriksaan::latest()->first();
             if ($pemeriksaan) {

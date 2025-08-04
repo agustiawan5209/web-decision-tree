@@ -1,9 +1,10 @@
 // components/CollapsibleRow.tsx
-import { ChevronDownIcon, EyeIcon, Link, PenBoxIcon } from 'lucide-react';
+import { ChevronDownIcon, EyeIcon, PenBoxIcon } from 'lucide-react';
 import React, { useState } from 'react';
-import { TableCell, TableRow } from './ui/table';
 import { DeleteConfirmationForm } from './delete-confirmation-form';
 import { Button } from './ui/button';
+import { TableCell, TableRow } from './ui/table';
+import { Link } from '@inertiajs/react';
 
 interface CollapsibleRowProps {
     num: string | number;
@@ -36,22 +37,23 @@ const CollapsibleRow: React.FC<CollapsibleRowProps> = ({ num, title, columnData 
                 ))}
                 <TableCell>
                     <div className="flex flex-row items-center gap-2">
-                        {destroy && id && <DeleteConfirmationForm
-                            title={`Hapus data`}
-                            id={id as string}
-                            url={destroy}
-                            setOpenDialog={setisDeleteDialog}
-                        />}
-                        {show&&<Link href={show}>
-                            <Button variant={'default'} type="button" className="bg-chart-1">
-                                <EyeIcon size={4} />
-                            </Button>
-                        </Link>}
-                        {edit &&<Link href={edit}>
-                            <Button variant={'default'} type="button" className="bg-chart-4">
-                                <PenBoxIcon size={4} />
-                            </Button>
-                        </Link>}
+                        {destroy && id && (
+                            <DeleteConfirmationForm title={`Hapus data`} id={Number(id) as number} url={destroy} setOpenDialog={setisDeleteDialog} />
+                        )}
+                        {show && (
+                            <Link href={show}>
+                                <Button variant={'default'} type="button" tooltip='detail' className="bg-chart-1">
+                                    <EyeIcon size={4} />
+                                </Button>
+                            </Link>
+                        )}
+                        {edit && (
+                            <Link href={edit}>
+                                <Button variant={'default'} type="button" className="bg-chart-4">
+                                    <PenBoxIcon size={4} />
+                                </Button>
+                            </Link>
+                        )}
                     </div>
                 </TableCell>
             </TableRow>

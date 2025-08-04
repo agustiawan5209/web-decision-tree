@@ -101,7 +101,7 @@ class OrangTuaController extends Controller
             'nohp' => $request->nohp,
         ]);
 
-        $user->assignRole('orangtua');
+        $user->assignRole('user');
 
         return to_route('admin.orangtua.index')->with('success', 'Data orang tua berhasil ditambahkan');
     }

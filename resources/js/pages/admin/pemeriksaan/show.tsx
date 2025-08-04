@@ -1,18 +1,8 @@
-import GrowthChart from '@/components/chart/GrowthChart';
-import FileDownloader from '@/components/FileDownloader';
-import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableColumn, TableContainer, TableHead, TableRow, TableHead } from '@/components/ui/table';
-
 import AppLayout from '@/layouts/app-layout';
-import { SharedData, type BreadcrumbItem } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
-import { File, LucideEye } from 'lucide-react';
+import { SharedData, User, type BreadcrumbItem } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
+import { Baby, ClipboardList, User2, Utensils } from 'lucide-react';
 import { useMemo } from 'react';
-
-interface OrangTua {
-    name: string;
-    email: string;
-}
 
 interface Balita {
     id: string;
@@ -33,7 +23,7 @@ interface Pemeriksaan {
 }
 
 interface DetailPemeriksaan {
-    attribut: {
+    kriteria: {
         nama: string;
     };
     nilai: number | string;
@@ -49,12 +39,12 @@ interface Attribut {
     nama: string;
 }
 export interface PemeriksaanProps {
-    orangTua: OrangTua;
+    orangTua: User;
     balita: Balita;
     pemeriksaan: Pemeriksaan;
     detail: DetailPemeriksaan[];
     polamakan: PolaMakan;
-    attribut: Attribut[];
+    kriteria: Attribut[];
     dataPemeriksaanBalita: Pemeriksaan[];
     breadcrumb: { title: string; href: string }[];
 }
@@ -64,7 +54,7 @@ export default function PemeriksaanShow({
     balita,
     orangTua,
     detail,
-    attribut,
+    kriteria,
     polamakan,
     dataPemeriksaanBalita,
     breadcrumb,
@@ -86,10 +76,10 @@ export default function PemeriksaanShow({
     const handleDownloadError = (error: unknown) => {
         console.error('Download failed:', error);
     };
-    const searchById = (id: string, detail: { attribut_id: string; nilai: string }[]): string => {
+    const searchById = (id: string, detail: { kriteria_id: string; nilai: string }[]): string => {
         if (!detail || !id) return '';
         try {
-            const foundElement = detail.find((element) => String(element.attribut_id).includes(id));
+            const foundElement = detail.find((element) => String(element.kriteria_id).includes(id));
             return foundElement?.nilai ?? '';
         } catch (error) {
             console.error('Error in searchById:', error);
@@ -101,196 +91,103 @@ export default function PemeriksaanShow({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Detail Pemeriksaan" />
-            <div className="dark:bg-elevation-1 flex h-full flex-1 flex-col gap-4 rounded-xl p-0 lg:p-4">
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <div className="mx-auto max-w-7xl rounded-lg bg-white p-1 shadow-lg lg:p-8 dark:bg-gray-900 dark:text-white">
-                        <h2 className="mb-6 text-xl font-bold tracking-tight">Detail Pemeriksaan</h2>
+            <div className="flex h-full flex-1 flex-col rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
+                <div className="flex-1 overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-800">
+                    <div className="mx-auto max-w-7xl p-4 lg:p-6">
+                        <div className="mb-8 flex items-center justify-between">
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Detail Pemeriksaan</h2>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    {new Date(pemeriksaan.tgl_pemeriksaan).toLocaleDateString('id-ID', {
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                    })}
+                                </p>
+                            </div>
+                        </div>
 
-                        <div className="grid grid-cols-1 gap-8 md:gap-0">
-                            <TableContainer>
-                                <Table className="w-full border-collapse">
-                                    <TableHead>
-                                        {pemeriksaan && (
-                                            <TableRow>
-                                                <TableHead
-                                                    colSpan={2}
-                                                    className="text-foreground bg-blue-100 p-4 text-left text-lg font-semibold md:text-xl dark:bg-gray-800"
-                                                >
-                                                    <FileDownloader
-                                                        pdfUrl={route('laporan.pemeriksaan', { balita: balita.id, pemeriksaan: pemeriksaan.id })}
-                                                        fileName="Laporan-Pemeriksaan.pdf"
-                                                        buttonText="Cetak File"
-                                                        onDownloadStart={handleDownloadStart}
-                                                        onDownloadSuccess={handleDownloadSuccess}
-                                                        onDownloadError={handleDownloadError}
-                                                    />
-                                                </TableHead>
-                                            </TableRow>
-                                        )}
-                                        <TableRow>
-                                            <TableColumn className="text-lg">Tanggal Pemeriksaan</TableColumn>
-                                            <TableColumn>{pemeriksaan.tgl_pemeriksaan}</TableColumn>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableHead
-                                                colSpan={2}
-                                                className="text-foreground bg-blue-100 p-4 text-left text-lg font-semibold md:text-xl dark:bg-gray-800"
-                                            >
-                                                Data Orang Tua
-                                            </TableHead>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {/* Parent Data */}
-                                        <TableRow className="border-b">
-                                            <TableColumn className="text-foreground w-1/3 p-3 font-medium">Nama Orang Tua</TableColumn>
-                                            <TableColumn className="p-3">{orangTua.name}</TableColumn>
-                                        </TableRow>
-                                        <TableRow className="border-b">
-                                            <TableColumn className="text-foreground p-3 font-medium">Email Orang Tua</TableColumn>
-                                            <TableColumn className="p-3">{orangTua.email}</TableColumn>
-                                        </TableRow>
-                                        <TableRow className="border-b">
-                                            <TableColumn className="text-foreground p-3 font-medium">Alamat</TableColumn>
-                                            <TableColumn className="p-3">{balita.alamat}</TableColumn>
-                                        </TableRow>
-
-                                        {/* Child Data */}
-                                        <TableRow>
-                                            <TableHead
-                                                colSpan={2}
-                                                className="text-foreground bg-blue-100 p-4 text-left text-lg font-semibold md:text-xl dark:bg-gray-800"
-                                            >
-                                                Data Balita
-                                            </TableHead>
-                                        </TableRow>
-
+                        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                            {/* Left Column - Parent & Child Data */}
+                            <div className="space-y-6">
+                                {/* Parent Data Card */}
+                                <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 dark:border-blue-900/50 dark:bg-blue-900/20">
+                                    <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-blue-800 dark:text-blue-200">
+                                        <User2 className="h-5 w-5" />
+                                        Data Orang Tua
+                                    </h3>
+                                    <div className="space-y-3">
                                         {[
-                                            { attribut: 'Nama', nilai: balita.nama },
-                                            { attribut: 'Tempat Lahir', nilai: balita.tempat_lahir },
-                                            { attribut: 'Tanggal Lahir', nilai: balita.tanggal_lahir },
-                                            { attribut: 'Jenis Kelamin', nilai: balita.jenis_kelamin },
+                                            { label: 'Nama Orang Tua', value: orangTua.name },
+                                            { label: 'Email', value: orangTua.email },
+                                            { label: 'Alamat', value: balita.alamat },
                                         ].map((item) => (
-                                            <TableRow key={item.attribut} className="border-b">
-                                                <TableColumn className="text-foreground p-3 font-medium">{item.attribut}</TableColumn>
-                                                <TableColumn className="p-3">{item.nilai}</TableColumn>
-                                            </TableRow>
+                                            <div key={item.label} className="grid grid-cols-3 gap-4">
+                                                <span className="col-span-1 text-sm font-medium text-gray-500 dark:text-gray-400">{item.label}</span>
+                                                <span className="col-span-2 text-sm text-gray-900 dark:text-gray-100">{item.value || '-'}</span>
+                                            </div>
                                         ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                                    </div>
+                                </div>
 
-                            <section className="border-x">
-                                <h3 className="text-foreground bg-blue-100 p-4 text-left text-lg font-semibold md:text-xl dark:bg-gray-800">
-                                    Data Pemeriksaan
-                                </h3>
-                                <TableContainer className="relative">
-                                    <Table className="w-full">
-                                        <TableBody>
-                                            {detail
-                                                .filter((attr) => !['jenis kelamin'].includes(attr.attribut.nama.toLowerCase()))
-                                                .map((item, index) => (
-                                                    <TableRow key={index} className="border-b py-1">
-                                                        <TableColumn className="text-foreground w-1/3 font-normal">{item.attribut.nama}:</TableColumn>
-                                                        <TableColumn>{item.nilai}</TableColumn>
-                                                    </TableRow>
-                                                ))}
-                                            {polamakan && (
-                                                <>
-                                                    <TableRow>
-                                                        <TableColumn className="text-foreground w-1/3 font-normal">Alasan</TableColumn>
-                                                        <TableColumn
-                                                            className="ql-editor p-3"
-                                                            dangerouslySetInnerHTML={{ __html: pemeriksaan.alasan }}
-                                                        ></TableColumn>
-                                                    </TableRow>
-                                                    <TableRow>
-                                                        <TableColumn className="text-foreground p-3 text-lg font-semibold">
-                                                            Rekomendasi Pola Makan
-                                                        </TableColumn>
-                                                        <TableColumn
-                                                            className="ql-editor p-3"
-                                                            dangerouslySetInnerHTML={{ __html: polamakan.rekomendasi }}
-                                                        ></TableColumn>
-                                                    </TableRow>
-                                                </>
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </section>
+                                {/* Child Data Card */}
+                                <div className="rounded-lg border border-green-100 bg-green-50 p-4 dark:border-green-900/50 dark:bg-green-900/20">
+                                    <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-green-800 dark:text-green-200">
+                                        <Baby className="h-5 w-5" />
+                                        Data Balita
+                                    </h3>
+                                    <div className="space-y-3">
+                                        {[
+                                            { label: 'Nama', value: balita.nama },
+                                            { label: 'Tempat Lahir', value: balita.tempat_lahir },
+                                            { label: 'Tanggal Lahir', value: balita.tanggal_lahir },
+                                            { label: 'Jenis Kelamin', value: balita.jenis_kelamin },
+                                        ].map((item) => (
+                                            <div key={item.label} className="grid grid-cols-3 gap-4">
+                                                <span className="col-span-1 text-sm font-medium text-gray-500 dark:text-gray-400">{item.label}</span>
+                                                <span className="col-span-2 text-sm text-gray-900 dark:text-gray-100">{item.value || '-'}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
 
-                            <br />
-                            <section className="border px-4">
-                                <h3 className="text-foreground p-4 text-left text-lg font-semibold md:text-xl dark:bg-gray-800">
-                                    Riwayat Perkembangan Nutrisi Balita
-                                </h3>
-                                <TableContainer className="relative">
-                                    <Table className="w-full">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableHead className="w-10 bg-blue-100">No.</TableHead>
-                                                <TableHead className="bg-blue-100 px-0 whitespace-nowrap">Tanggal Pemeriksaan</TableHead>
-                                                {attribut.length > 0 &&
-                                                    attribut.map((item) => (
-                                                        <TableHead className="bg-blue-100 text-xs whitespace-nowrap" key={item.id}>
-                                                            {' '}
-                                                            {item.nama}
-                                                        </TableHead>
-                                                    ))}
-                                                <TableHead className="w-10 bg-blue-100">Aksi</TableHead>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {(dataPemeriksaanBalita ?? []).length > 0 &&
-                                                dataPemeriksaanBalita.map((item: any, index: number) => (
-                                                    <TableRow key={index}>
-                                                        <TableColumn>{index + 1}</TableColumn>
-                                                        <TableColumn> {item.tgl_pemeriksaan} </TableColumn>
-                                                        {attribut.length > 0 &&
-                                                            attribut.map((attributs: any) => (
-                                                                <TableColumn key={attributs.id}>
-                                                                    {searchById(attributs.id, item.detailpemeriksaan)}
-                                                                </TableColumn>
-                                                            ))}
+                            {/* Right Column - Examination Data */}
+                            <div className="space-y-6">
+                                {/* Examination Data Card */}
+                                <div className="rounded-lg border border-purple-100 bg-purple-50 p-4 dark:border-purple-900/50 dark:bg-purple-900/20">
+                                    <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-purple-800 dark:text-purple-200">
+                                        <ClipboardList className="h-5 w-5" />
+                                        Data Pemeriksaan
+                                    </h3>
+                                    <div className="space-y-3">
+                                        {detail
+                                            .filter((attr) => !['jenis kelamin'].includes(attr.kriteria.nama.toLowerCase()))
+                                            .map((item) => (
+                                                <div key={item.kriteria.nama} className="grid grid-cols-3 gap-4">
+                                                    <span className="col-span-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                        {item.kriteria.nama}
+                                                    </span>
+                                                    <span className="col-span-2 text-sm text-gray-900 dark:text-gray-100">{item.nilai}</span>
+                                                </div>
+                                            ))}
+                                    </div>
+                                </div>
 
-                                                        <TableColumn>
-                                                            <div className="item-center gap-2 flex flex-row">
-                                                                <FileDownloader
-                                                                    pdfUrl={route('laporan.pemeriksaan', {
-                                                                        balita: balita.id,
-                                                                        pemeriksaan: item.id,
-                                                                    })}
-                                                                    fileName="Laporan-Pemeriksaan.pdf"
-                                                                    icon={<File />}
-                                                                    onDownloadStart={handleDownloadStart}
-                                                                    onDownloadSuccess={handleDownloadSuccess}
-                                                                    onDownloadError={handleDownloadError}
-
-                                                                />
-                                                                <Link href={route('pemeriksaan.show', { pemeriksaan: item.id, balita: balita.id })}>
-                                                                    <Button
-                                                                        type="submit"
-                                                                        size={'xs'}
-                                                                        className=" bg-blue-400 hover:bg-blue-500 md:w-16"
-                                                                        tabIndex={4}
-                                                                    >
-                                                                        <LucideEye />
-                                                                    </Button>
-                                                                </Link>
-                                                            </div>
-                                                        </TableColumn>
-                                                    </TableRow>
-                                                ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </section>
-                            {dataPemeriksaanBalita.length > 1 && (
-                                <section className="my-4">
-                                    <GrowthChart url={defaultUrl + '/api/chart/balita/' + balita.id} title="perkembangan anak secara individual" />
-                                </section>
-                            )}
+                                {polamakan?.rekomendasi && (
+                                    <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-900/20">
+                                        <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-emerald-800 dark:text-emerald-200">
+                                            <Utensils className="h-4 w-4" />
+                                            Rekomendasi Pola Makan
+                                        </h3>
+                                        <div
+                                            className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300"
+                                            dangerouslySetInnerHTML={{ __html: polamakan.rekomendasi }}
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

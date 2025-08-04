@@ -1,14 +1,12 @@
 import ClassifyPemeriksaan from '@/components/classify-pemeriksaan';
 import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input, InputRadio } from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Toast } from '@/components/ui/toast';
 import AppLayout from '@/layouts/app-layout';
 import { KriteriaTypes, PredictionResult, SharedData, type BreadcrumbItem } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { LoaderCircle, SquareCheck } from 'lucide-react';
 import React, { FormEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 interface OrangTua {
     id: string;
@@ -67,7 +65,17 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
         [breadcrumb],
     );
     const [prediction, setPrediction] = useState<PredictionResult | null>(null);
-
+    const [toast, setToast] = useState<{
+        title: string;
+        show: boolean;
+        message: string;
+        type: 'success' | 'default' | 'error';
+    }>({
+        title: '',
+        show: false,
+        message: '',
+        type: 'success',
+    });
     const { auth } = usePage<SharedData>().props;
     const today = new Date();
     const day = today.toISOString().split('T')[0];
@@ -89,10 +97,20 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        if(data.label == ''){
+        if (data.label == '') {
             setData('label', prediction?.label?.toString() ?? '');
         }
-       console.log(data, prediction)
+        post(route('pemeriksaan.store'), {
+            onError: (errors) => {
+                console.log(errors)
+                setToast({
+                    title: 'Error',
+                    show: true,
+                    message: JSON.stringify(errors),
+                    type: 'error',
+                })
+            },
+        });
     };
     // State for selected parent
     const [selectedOrangtua, setSelectedOrangtua] = useState<OrangTua | null>(null);
@@ -143,16 +161,23 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
         }
     }, [idOrangTua, searchById, setData]);
 
-    useEffect(()=>{
-        if(prediction && prediction.label){
-            setData('label', prediction.label.toString())
+    useEffect(() => {
+        if (prediction && prediction.label) {
+            setData('label', prediction.label.toString());
         }
-    }, [prediction])
+    }, [prediction]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create" />
-
+            <Toast
+                open={toast.show}
+                onOpenChange={() => setToast((prev) => ({ ...prev, show: false }))}
+                title={toast.title}
+                description={toast.message}
+                duration={5000}
+                variant={toast.type}
+            />
             <div className="dark:bg-elevation-1 flex h-full flex-1 flex-col gap-4 rounded-xl p-1 lg:p-4">
                 <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                     <Card>
@@ -210,13 +235,19 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
 
                             {kriteria && (
                                 <div className="mt-6">
-                                    <ClassifyPemeriksaan submit={submit} kriteria={kriteria} setResult={setPrediction} data={data} setData={setData as any} processing={processing} errors={errors as any} />
+                                    <ClassifyPemeriksaan
+                                        submit={submit}
+                                        kriteria={kriteria}
+                                        setResult={setPrediction}
+                                        data={data}
+                                        setData={setData as any}
+                                        processing={processing}
+                                        errors={errors as any}
+                                    />
                                 </div>
                             )}
                         </CardContent>
                     </Card>
-
-
                 </div>
             </div>
         </AppLayout>

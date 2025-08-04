@@ -171,10 +171,9 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
         if (!pemeriksaan?.data?.length) return null;
 
         return pemeriksaan.data.map((item, index) => {
+            console.log(item)
             let read_url = null;
-            if (can.read) {
-                read_url = route('pemeriksaan.show', { pemeriksaan: item.id });
-            }
+            read_url = route('pemeriksaan.show', { pemeriksaan: item.id });
             let delete_url = null;
             if (can.delete) {
                 delete_url = route('pemeriksaan.destroy', { pemeriksaan: item.id });

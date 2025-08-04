@@ -35,6 +35,12 @@ export interface BalitaProps {
         per_page: string;
         order_by: string;
     };
+    can: {
+        add: boolean;
+        edit: boolean;
+        read: boolean;
+        delete: boolean;
+    };
 }
 
 type GetForm = {
@@ -43,7 +49,7 @@ type GetForm = {
     order_by?: string;
 };
 
-export default function BalitaIndex({ balita, breadcrumb, filter }: BalitaProps) {
+export default function BalitaIndex({ balita, breadcrumb, filter,can }: BalitaProps) {
     // Memoize breadcrumbs to prevent unnecessary recalculations
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
@@ -136,11 +142,11 @@ export default function BalitaIndex({ balita, breadcrumb, filter }: BalitaProps)
                 <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                     <div className="flex w-full flex-1 flex-row items-end justify-end gap-7 px-1 py-1 md:items-center md:justify-between lg:px-4 lg:py-2">
                         <div className="flex w-full flex-1 flex-col gap-7 px-1 py-1 md:flex-row md:items-center lg:px-4 lg:py-2">
-                            <Link href={route('balita.create')} className="col-span-1 cursor-pointer">
+                           {can.add && <Link href={route('balita.create')} className="col-span-1 cursor-pointer">
                                 <Button variant="default" className="flex cursor-pointer items-center gap-2 bg-primary">
                                     Tambah Data
                                 </Button>
-                            </Link>
+                            </Link>}
                             <div className="col-span-2 flex items-center gap-2">
                                 <label htmlFor="search" className="sr-only">
                                     Cari

@@ -28,9 +28,9 @@ class StorePemeriksaanRequest extends FormRequest
             "tanggal_lahir"=> "required|date",
             "jenis_kelamin"=> "required|string|in:Laki-laki,Perempuan",
             "tanggal_pemeriksaan"=> "required|date",
-            'attribut'=> 'required|array',
-            'attribut.*.nilai'=> 'required|numeric',
-            'attribut.*.attribut_id'=> 'required|exists:attributs,id',
+            'kriteria'=> 'required|array',
+            'kriteria.*.nilai'=> 'required|string',
+            'kriteria.*.kriteria_id'=> 'required|exists:kriterias,id',
 
         ];
     }

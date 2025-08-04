@@ -211,11 +211,6 @@ export default function OrangtuaIndex({ orangtua, breadcrumb, filter }: Orangtua
                                                         url={route('admin.orangtua.destroy', { user: item.id })}
                                                         setOpenDialog={setisDeleteDialog}
                                                     />
-                                                    <Link href={route('admin.orangtua.show', { user: item.id })}>
-                                                        <Button variant={'default'} type="button" className="bg-chart-1">
-                                                            <EyeIcon size={4} />
-                                                        </Button>
-                                                    </Link>
                                                     <Link href={route('admin.orangtua.edit', { user: item.id })}>
                                                         <Button variant={'default'} type="button" className="bg-chart-4">
                                                             <PenBoxIcon size={4} />

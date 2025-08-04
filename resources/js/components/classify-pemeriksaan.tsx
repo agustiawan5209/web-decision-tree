@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Toast } from '@/components/ui/toast';
 import DecisionTreeModel from '@/services/decision-tree-model';
 import { KriteriaTypes, LabelTypes } from '@/types';
-import { Loader2, LoaderCircle, SquareCheck } from 'lucide-react';
-import React, { FormEventHandler, useCallback, useEffect, useState } from 'react';
+import { LeafyGreen, Loader2, LoaderCircle } from 'lucide-react';
+import React, { FormEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 import InputError from './input-error';
 import { Button } from './ui/button';
 
@@ -133,7 +133,12 @@ const ClassifyPemeriksaan = ({
                 await model.loadModel();
                 setTrainingData(data as any);
             } catch (error) {
-                console.error(error);
+                setToast({
+                    title: 'Error',
+                    show: true,
+                    message: `${(error as Error).message}, Lakukan training sebelum masuk klasifikasi`,
+                    type: 'error',
+                });
             } finally {
                 setLoading(false);
             }
@@ -151,10 +156,8 @@ const ClassifyPemeriksaan = ({
                 const lowerItem = String(nilai).toLowerCase();
 
                 if (lowerItem === 'laki-laki') {
-                    setData({ ...data, jenis_kelamin: 'Laki-laki' });
                     return 0;
                 } else if (lowerItem === 'perempuan') {
-                    setData({ ...data, jenis_kelamin: 'Perempuan' });
                     return 1;
                 } else if (!isNaN(parseFloat(nilai)) && isFinite(nilai)) {
                     return parseFloat(nilai); // ubah ke angka
@@ -164,7 +167,7 @@ const ClassifyPemeriksaan = ({
             });
 
             const result = await model.predict([feature ?? []]); // Contoh fitur
-            // console.log(data, result);
+            console.log(data, result);
             if (result.error) {
                 setToast({
                     title: 'Hasil Prediksi',
@@ -228,6 +231,19 @@ const ClassifyPemeriksaan = ({
 
         return `${tahun} tahun, ${bulan} bulan, ${hari} hari`;
     }
+    const predictionColor = useMemo(() => {
+        if (!prediction) return '';
+        switch (prediction.label) {
+            case 'Buruk':
+                return 'bg-red-100 border-red-300 text-red-800';
+            case 'Cukup':
+                return 'bg-yellow-100 border-yellow-300 text-yellow-800';
+            case 'Baik':
+                return 'bg-green-100 border-green-300 text-green-800';
+            default:
+                return 'bg-blue-100 border-blue-300 text-blue-800';
+        }
+    }, [prediction]);
     return (
         <div className="mx-auto max-w-7xl px-4 py-8">
             <Toast
@@ -304,13 +320,16 @@ const ClassifyPemeriksaan = ({
                                         <Select
                                             value={data.kriteria?.[index].nilai || ''}
                                             required
-                                            onValueChange={(value) => handleSelectChange(index.toString(), value)}
+                                            onValueChange={(value) => {
+                                                setData({ ...data, jenis_kelamin: value });
+                                                handleSelectChange(index.toString(), value);
+                                            }}
                                         >
                                             <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select gender" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {['laki-laki', 'perempuan'].map((gender, idx) => (
+                                                {['Laki-laki', 'Perempuan'].map((gender, idx) => (
                                                     <SelectItem key={idx} value={gender}>
                                                         {gender}
                                                     </SelectItem>
@@ -346,47 +365,63 @@ const ClassifyPemeriksaan = ({
                 </div>
                 <Dialog open={openDialog} onOpenChange={setOpenDialog}>
                     <DialogTrigger />
-                    <DialogContent>
+                    <DialogContent className="max-w-md">
                         <DialogTitle>
-                            <div className="flex items-center justify-start gap-2">
-                                <SquareCheck className="size-5 bg-green-500 text-white" /> <span>Hasil Klasifikasi</span>
+                            <div className="flex items-center gap-3 text-foreground">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
+                                    <LeafyGreen className={`h-4 w-4 ${prediction?.label == 'Baik' ? 'text-green-500' : 'text-red-500'}`} />
+                                </div>
+                                <span className="text-lg font-medium">Hasil Klasifikasi</span>
                             </div>
                         </DialogTitle>
-                        <DialogDescription>
-                            <div>
-                                <div className="block list-none space-y-1">
-                                    <div className="flex gap-3">
-                                        <span className="font-semibold text-foreground">Nama Anak:</span>
-                                        <span className="font-normal text-foreground/90">{data.nama}</span>
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <span className="font-semibold text-foreground">Tanggal Lahir:</span>
-                                        <span className="font-normal text-foreground/90">{data.tanggal_lahir}</span>
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <span className="font-semibold text-foreground">usia:</span>
-                                        <span className="font-normal text-foreground/90">{hitungUsia(data.tanggal_lahir)}</span>
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <span className="font-semibold text-foreground">Status Nutrisi:</span>
-                                        <span className="font-normal text-foreground/90">{prediction?.label}</span>
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <span className="font-semibold text-foreground">Jenis Sayuran:</span>
-                                        <span className="font-normal text-foreground/90">{prediction?.rekomendasi}</span>
-                                    </div>
+
+                        <div className="mt-4 space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <p className="text-sm font-medium text-muted-foreground">Nama Anak</p>
+                                    <p className="text-sm font-medium">{data.nama}</p>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <p className="text-sm font-medium text-muted-foreground">Tanggal Lahir</p>
+                                    <p className="text-sm font-medium">{data.tanggal_lahir}</p>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <p className="text-sm font-medium text-muted-foreground">Usia</p>
+                                    <p className="text-sm font-medium">{hitungUsia(data.tanggal_lahir)}</p>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <p className={'text-sm font-medium text-muted-foreground ' + predictionColor}>Status Nutrisi</p>
+                                    <p
+                                        className={`h-auto w-max flex-shrink-0 rounded-full px-2 ${
+                                            prediction?.label === 'Buruk'
+                                                ? 'bg-red-500'
+                                                : prediction?.label === 'Cukup'
+                                                  ? 'bg-yellow-500'
+                                                  : prediction?.label === 'Baik'
+                                                    ? 'bg-green-500'
+                                                    : 'bg-blue-500'
+                                        }`}
+                                    >
+                                        {prediction?.label}
+                                    </p>
                                 </div>
                             </div>
-                        </DialogDescription>
 
-                        <DialogFooter>
-                            <Button type="button" variant="default" size="sm" className="flex-1" disabled={processing} onClick={submit}>
-                                {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium text-muted-foreground">Jenis Sayuran</p>
+                                <p className="text-sm font-medium">{prediction?.rekomendasi}</p>
+                            </div>
+                        </div>
+
+                        <DialogFooter className="mt-6">
+                            <Button type="button" variant="default" size="sm" className="w-full" disabled={processing} onClick={submit}>
+                                {processing ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : null}
                                 Simpan
                             </Button>
                         </DialogFooter>
-
-                        <DialogClose />
                     </DialogContent>
                 </Dialog>
             </div>

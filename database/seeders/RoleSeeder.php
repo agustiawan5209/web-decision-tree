@@ -37,6 +37,10 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'edit jenis_tanaman']);
         Permission::create(['name' => 'read jenis_tanaman']);
         Permission::create(['name' => 'delete jenis_tanaman']);
+        Permission::create(['name' => 'add balita']);
+        Permission::create(['name' => 'edit balita']);
+        Permission::create(['name' => 'read balita']);
+        Permission::create(['name' => 'delete balita']);
         $permission_admin = [
             ['name' => 'add kriteria'],
             ['name' => 'edit kriteria'],
@@ -59,6 +63,9 @@ class RoleSeeder extends Seeder
             $prms = Permission::create($value);
             $admin->givePermissionTo($prms);
         }
+        $admin->givePermissionTo(['name'=> 'delete balita']);
+        $admin->givePermissionTo(['name'=> 'edit balita']);
+        $admin->givePermissionTo(['name'=> 'read balita']);
         $admin->givePermissionTo(['name'=> 'read label']);
         $admin->givePermissionTo(['name'=> 'edit label']);
         $admin->givePermissionTo(['name'=> 'edit jenis_tanaman']);

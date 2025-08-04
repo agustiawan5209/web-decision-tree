@@ -58,27 +58,27 @@ Route::middleware(['auth', 'verified', 'role:admin|super_admin'])->group(functio
     });
     Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
-           // Routes for managing orangtuas
-    Route::prefix('orangtua')->as('orangtua.')->group(function () {
-        // Dataset controller
-        Route::controller(OrangTuaController::class)->group(function () {
-            // Show all orangtuas
-            Route::get('/', 'index')->name('index');
-            // Create a orangtua
-            Route::get('/create', 'create')->name('create');
-            // Edit a orangtua
-            Route::get('/edit/{user}', 'edit')->name('edit');
-            // Show a orangtua
-            Route::get('/show/{user}', 'show')->name('show');
+        // Routes for managing orangtuas
+        Route::prefix('orangtua')->as('orangtua.')->group(function () {
+            // Dataset controller
+            Route::controller(OrangTuaController::class)->group(function () {
+                // Show all orangtuas
+                Route::get('/', 'index')->name('index');
+                // Create a orangtua
+                Route::get('/create', 'create')->name('create');
+                // Edit a orangtua
+                Route::get('/edit/{user}', 'edit')->name('edit');
+                // Show a orangtua
+                Route::get('/show/{user}', 'show')->name('show');
 
-            // Store a orangtua
-            Route::post('/store', 'store')->name('store');
-            // Update a orangtua
-            Route::put('/update/{user}', 'update')->name('update');
-            // Delete a orangtua
-            Route::delete('/destroy/{user}', 'destroy')->name('destroy');
+                // Store a orangtua
+                Route::post('/store', 'store')->name('store');
+                // Update a orangtua
+                Route::put('/update/{user}', 'update')->name('update');
+                // Delete a orangtua
+                Route::delete('/destroy/{user}', 'destroy')->name('destroy');
+            });
         });
-    });
         // Routes for label
         Route::group(['prefix' => 'label', 'as' => 'label.'], function () {
             Route::controller(LabelController::class)->group(function () {
@@ -155,4 +155,4 @@ Route::get('/api/decision-tree/get-data', [DatatDecisionTreeController::class, '
 
 
 // Get Jenis Sayuran Berdasarkan nama gizi
-Route::get('/api/get-sayuran', [JenisTanamanController::class,'getSayuran'])->name('api.get.sayuran');
+Route::get('/api/get-sayuran', [JenisTanamanController::class, 'getSayuran'])->name('api.get.sayuran');
