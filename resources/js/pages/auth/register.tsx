@@ -13,6 +13,8 @@ type RegisterForm = {
     name: string;
     email: string;
     password: string;
+    alamat: string;
+    nohp: string;
     password_confirmation: string;
 };
 
@@ -20,6 +22,8 @@ export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
         name: '',
         email: '',
+        alamat: '',
+        nohp: '',
         password: '',
         password_confirmation: '',
     });
@@ -54,7 +58,7 @@ export default function Register() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Alamat Email</Label>
+                        <Label htmlFor="email">Email</Label>
                         <Input
                             id="email"
                             type="email"
@@ -67,6 +71,36 @@ export default function Register() {
                             placeholder="email@example.com"
                         />
                         <InputError message={errors.email} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="alamat">Alamat Lengkap</Label>
+                        <Input
+                            id="alamat"
+                            type="text"
+                            required
+                            tabIndex={2}
+                            autoComplete="alamat"
+                            value={data.alamat}
+                            onChange={(e) => setData('alamat', e.target.value)}
+                            disabled={processing}
+                            placeholder="masukkan alamat"
+                        />
+                        <InputError message={errors.alamat} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="nohp">No. WhatsApp</Label>
+                        <Input
+                            id="nohp"
+                            type="text"
+                            required
+                            tabIndex={2}
+                            autoComplete="nohp"
+                            value={data.nohp}
+                            onChange={(e) => setData('nohp', e.target.value)}
+                            disabled={processing}
+                            placeholder="masukkan nohp"
+                        />
+                        <InputError message={errors.nohp} />
                     </div>
 
                     <div className="grid gap-2">

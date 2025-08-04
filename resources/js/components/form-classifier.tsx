@@ -31,6 +31,7 @@ interface EvaluationResult {
     accuracy: number;
     confusionMatrix: number[][];
 }
+
 const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
     const { auth } = usePage<SharedData>().props;
     // State management
@@ -251,17 +252,6 @@ const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
                 </div>
 
                 <div className="p-6 md:p-8">
-                    {evaluationResult && (
-                        <div className={`border p-6 transition-all duration-300`}>
-                            <div className="flex items-center">
-                                <div className={`h-5 w-5 flex-shrink-0 rounded-full bg-green-500`} />
-                                <div className="ml-4">
-                                    <h3 className="text-lg font-semibold">Hasil Evaluasi Model</h3>
-                                    <div className="mt-1 text-2xl font-bold">{(evaluationResult.accuracy * 100)} %</div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
                     {prediction ? (
                         <div className={`border ${predictionColor} p-6 transition-all duration-300`}>
                             <div className="flex items-center">
@@ -289,6 +279,17 @@ const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
                                 <div className="ml-4">
                                     <h3 className="text-lg font-semibold">Hasil Klasifikasi</h3>
                                     <div className="mt-1 text-2xl font-bold">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {evaluationResult && (
+                        <div className={`border p-6 transition-all duration-300`}>
+                            <div className="flex items-center">
+                                <div className={`h-5 w-5 flex-shrink-0 rounded-full bg-green-500`} />
+                                <div className="ml-4">
+                                    <h3 className="text-lg font-semibold">Hasil Evaluasi Model</h3>
+                                    <div className="mt-1 text-2xl font-bold">{evaluationResult.accuracy * 100} %</div>
                                 </div>
                             </div>
                         </div>

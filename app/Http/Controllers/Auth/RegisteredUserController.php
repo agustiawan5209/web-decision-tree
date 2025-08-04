@@ -32,14 +32,18 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'alamat' => 'required|string',
+            'nohp' => ['required', 'string', 'max:13'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'alamat' => $request->alamat,
+            'nohp' => $request->nohp,
         ]);
 
         event(new Registered($user));
@@ -47,6 +51,5 @@ class RegisteredUserController extends Controller
         $user->assignRole('user');
         Auth::login($user);
         return redirect()->intended(route('guest.dashboard', absolute: false));
-
     }
 }

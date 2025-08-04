@@ -1,5 +1,13 @@
 import { Button } from '@/components/ui/button';
-import {DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { UserInfo } from '@/components/user-info';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
@@ -82,7 +90,6 @@ export default function MainLayout({ children }: PropsWithChildren) {
                         <div className="hidden items-center md:flex">
                             {auth.user ? (
                                 <>
-
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <div className="group flex items-center gap-2 rounded-md p-2 text-sidebar-accent-foreground data-[state=open]:bg-sidebar-accent">

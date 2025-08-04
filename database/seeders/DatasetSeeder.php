@@ -23,19 +23,19 @@ class DatasetSeeder extends Seeder
         // Aturan nilai berdasarkan label
         $range = [
             "Buruk" => [
-            1 => [20, 23],    // kriteria_id 1
-            2 => [10, 30],  // kriteria_id 2
-            3 => [20, 28],    // kriteria_id 3
-            4 => [30, 35],    // kriteria_id 5
-            5 => [30, 35],    // kriteria_id 5
+            1 => [20, 23],    // kriteria_id jenis kelamin
+            2 => [10, 60],  // kriteria_id umur
+            3 => [20, 28],    // kriteria_id BB
+            4 => [40, 60],    // kriteria_id TB
+            5 => [50, 100],    // kriteria_id IMT
             6 => [11, 15],    // kriteria_id 6
             ],
             "Baik" => [
             1 => [26, 28],
-            2 => [30, 10],
+            2 => [10, 60],
             3 => [36, 45],
-            4 => [41, 45],
-            5 => [41, 45],
+            4 => [60, 80],
+            5 => [50, 100],
             6 => [21, 25],
             ],
         ];
