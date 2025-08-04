@@ -30,17 +30,17 @@ class DatasetController extends Controller
      */
     public function index(Request $request)
     {
-       $datasets = Dataset::query();
+        $datasets = Dataset::query();
 
-if ($request->has('orderBy')) {
-    $datasets->where('label', $request->orderBy);
-}
+        if ($request->filled('orderBy')) {
+            $datasets->where('label', $request->orderBy);
+        }
 
-$datasets = $datasets->paginate(10);
+        $datasets = $datasets->paginate(10);
         return Inertia::render("admin/dataset/index", [
             "dataset" => $datasets,
             "breadcrumb" => self::BASE_BREADCRUMB,
-            "opsiLabel"=> Label::orderBy('id', 'desc')->get(),
+            "opsiLabel" => Label::orderBy('id', 'desc')->get(),
         ]);
     }
 
@@ -52,7 +52,7 @@ $datasets = $datasets->paginate(10);
         return Inertia::render("admin/dataset/create", [
             'kriteria' => Kriteria::all(),
             'jenisTanaman' => JenisTanaman::all(),
-            "opsiLabel"=> Label::orderBy('id', 'desc')->get(),
+            "opsiLabel" => Label::orderBy('id', 'desc')->get(),
             'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 ['title' => 'tambah', 'href' => '/admin/dataset/create'],
             ])
@@ -114,7 +114,7 @@ $datasets = $datasets->paginate(10);
         return Inertia::render('admin/dataset/edit', [
             'dataset' => $dataset,
             'kriteria' => Kriteria::all(),
-            "opsiLabel"=> Label::orderBy('id', 'desc')->get(),
+            "opsiLabel" => Label::orderBy('id', 'desc')->get(),
             'jenisTanaman' => JenisTanaman::all(),
             'breadrumb' => array_merge(self::BASE_BREADCRUMB, [[
                 "title" => 'edit',

@@ -4,8 +4,9 @@ import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BarChart2Icon, ChevronLeft, ChevronRight, FolderClockIcon, GalleryHorizontal, Home, LeafyGreen, SproutIcon, X } from 'lucide-react';
+import { BarChart2Icon, ChevronLeft, ChevronRight, Clock8, FolderClockIcon, GalleryHorizontal, Home, LeafyGreen, SproutIcon, UserCog, Users2, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface SidebarProps {
@@ -18,6 +19,7 @@ interface SidebarProps {
 const Sidebar = ({ className, collapsed = false, onToggleCollapse, handleSidebarIsMobile }: SidebarProps) => {
     const [isCollapsed, setIsCollapsed] = useState(collapsed);
     const activeSection = usePage().url.split('/').pop() || 'Dashboard';
+    const { auth } = usePage<SharedData>().props;
     // console.log('Active Section:', activeSection);
 
     const handleToggleCollapse = () => {
@@ -31,12 +33,18 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse, handleSidebar
     const navItems = [
         { name: 'Dashboard', icon: <Home size={20} />, href: route('dashboard'), active: 'dashboard' },
         { name: 'Kriteria', icon: <BarChart2Icon size={20} />, href: route('admin.kriteria.index'), active: 'kriterias' },
-        { name: 'Label', icon: <BarChart2Icon size={20} />, href: route('admin.label.index'), active: 'label' },
-        { name: 'Jenis Sayuran', icon: <LeafyGreen size={20} />, href: route('admin.jenisTanaman.index'), active: 'jenis-tanaman' },
-        { name: 'Training Tanaman', icon: <FolderClockIcon size={20} />, href: route('admin.dataset.index'), active: 'dataset' },
+        { name: 'Data Pengguna', icon: <Users2 size={20} />, href: route('admin.orangtua.index'), active: 'orangtua' },
+        { name: 'Data Anak', icon: <UserCog size={20} />, href: route('balita.index'), active: 'balita' },
+        { name: 'Training Data Nutrisi', icon: <FolderClockIcon size={20} />, href: route('admin.dataset.index'), active: 'dataset' },
         { name: 'Decision Tree', icon: <GalleryHorizontal size={20} />, href: route('DecisionTree.index'), active: 'decision-tree' },
+        { name: 'Pemeriksaan', icon: <Clock8 size={20} />, href: route('pemeriksaan.index'), active: 'pemeriksaan' },
         { name: 'Riwayat Klasifikasi', icon: <FolderClockIcon size={20} />, href: route('admin.riwayat.index'), active: 'riwayat-forest' },
     ];
+
+    if(auth.role == 'super_admin'){
+        navItems.push({ name: 'Label', icon: <BarChart2Icon size={20} />, href: route('admin.label.index'), active: 'label' })
+        navItems.push({ name: 'Jenis Sayuran', icon: <LeafyGreen size={20} />, href: route('admin.jenisTanaman.index'), active: 'jenis-tanaman' })
+    }
 
     const isMobile = useIsMobile();
     return (

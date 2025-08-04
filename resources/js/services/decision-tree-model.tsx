@@ -1,3 +1,4 @@
+import { JenisTanamanTypes } from '@/types';
 import axios from 'axios';
 import { DecisionTreeClassifier } from 'ml-cart';
 
@@ -23,6 +24,7 @@ interface SplitData {
 interface PredictionResult {
   prediction: number | number[] | null;
   label: string | string[] | null;
+  rekomendasi: string | null;
   error: string | null;
 }
 
@@ -284,6 +286,25 @@ class DecisionTreeModel {
     }
   }
 
+  private async getsayuran(label: string) : Promise<{rekomendasi: string}> {
+
+    let rekomendasi = null
+    try{
+        const response = await axios.get(route('api.get.sayuran'));
+        const sayuran :JenisTanamanTypes[] = response.data as JenisTanamanTypes[];
+        if(response.status == 200){
+            rekomendasi = sayuran.filter((item)=>{
+                return item.nama.toLowerCase() == label.toLowerCase();
+            })[0].deskripsi;
+        }
+    }catch(err){
+        console.log('Terjadi kesalahan ketika memuat data sayuran :', err)
+    }
+
+    return {
+        rekomendasi: rekomendasi ?? '',
+    };
+  }
   public async predict(features: number[] | number[][]): Promise<PredictionResult> {
     this.setState('prediction', { isLoading: true, error: null });
 
@@ -306,9 +327,12 @@ class DecisionTreeModel {
         this.trainingData!.label.find(l => l.id === id)?.nama || 'Unknown'
       );
 
+      const label = labelNames.length === 1 ? labelNames[0] : labelNames;
+      const rekomendasi = await this.getsayuran(label as string);
       const result: PredictionResult = {
         prediction: predictions.length === 1 ? predictions[0] : predictions,
-        label: labelNames.length === 1 ? labelNames[0] : labelNames,
+        label: label,
+        rekomendasi: rekomendasi.rekomendasi,
         error: null
       };
 

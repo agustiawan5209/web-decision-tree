@@ -97,7 +97,7 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage, opsiLab
                                 {dataset.data && dataset.data.length ? (
                                     dataset.data.map((item, index) => (
                                         <TableRow key={item.id}>
-                                            <TableCell>{index + 1}</TableCell>
+                                             <TableCell>{index + 1 + (dataset?.current_page - 1) * dataset?.per_page}</TableCell>
                                             <TableCell>{item.label}</TableCell>
                                             <TableCell>
                                                 <div className="flex flex-row items-center gap-2">
@@ -135,7 +135,7 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage, opsiLab
                         <p className="text-sm text-gray-700">
                            jumlah data {dataset.total},  halaman {dataset.current_page} dari {dataset.last_page}
                         </p>
-                        <PaginationTable links={dataset.links} data={{ orderBy: orderBy }} />
+                        <PaginationTable links={dataset.links} data={{ orderBy: orderBy ?? '' }} />
                     </div>
                 </div>
             </Card>

@@ -35,7 +35,7 @@ const PaginationTable: React.FC<PaginationProps> = ({ links, data }) => {
                     {links[0].url && (
                         <Link
                             href={links[0].url ?? ''}
-                            data={data}
+                            data={data ?? {}}
                             preserveState={true}
                             dangerouslySetInnerHTML={{ __html: links[0].label }}
                             className="rounded border px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
@@ -47,7 +47,7 @@ const PaginationTable: React.FC<PaginationProps> = ({ links, data }) => {
                         <Link
                             key={index}
                             href={link.url ?? ''}
-                            data={data}
+                            data={data ?? {}}
                             preserveState={true}
                             dangerouslySetInnerHTML={{ __html: link.label }}
                             className={`rounded border px-3 py-1 text-sm ${
@@ -64,7 +64,7 @@ const PaginationTable: React.FC<PaginationProps> = ({ links, data }) => {
                     {links[links.length - 1].url && (
                         <Link
                             href={links[links.length - 1].url ?? ''}
-                            data={data}
+                            data={data ?? {}}
                             preserveState={true}
                             dangerouslySetInnerHTML={{ __html: links[links.length - 1].label }}
                             className="rounded border px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
@@ -77,7 +77,7 @@ const PaginationTable: React.FC<PaginationProps> = ({ links, data }) => {
                         <Link
                             key={index}
                             href={link.url ?? ''}
-                            data={data}
+                            data={data ?? {}}
                             preserveState={true}
                             dangerouslySetInnerHTML={{ __html: link.label }}
                             className={`rounded border px-3 py-1 text-sm ${

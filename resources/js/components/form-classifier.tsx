@@ -19,6 +19,7 @@ type Dataset = {
 interface PredictionResult {
     prediction: number | number[] | null;
     label: string | string[] | null;
+    rekomendasi: string | null;
     error: string | null;
 }
 interface TrainingData {
@@ -32,7 +33,17 @@ interface EvaluationResult {
     confusionMatrix: number[][];
 }
 
-const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
+const FormClassifier = ({
+    kriteria,
+    setResult,
+    setFeature,
+    canEvaluate = false,
+}: {
+    kriteria: KriteriaTypes[];
+    setResult?: (predict: PredictionResult) => void;
+    setFeature?: (feature: any) => void;
+    canEvaluate?: boolean;
+}) => {
     const { auth } = usePage<SharedData>().props;
     // State management
     const [loading, setLoading] = useState(false);
@@ -143,6 +154,17 @@ const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
             const result = await model.predict([feature]); // Contoh fitur
             console.log(result);
             setPrediction(result);
+            if (setFeature) {
+                setFeature(data.attribut);
+            }
+            if (result.label !== undefined && setResult) {
+                setResult({
+                    prediction: prediction?.prediction ?? 0,
+                    label: prediction?.label ?? 'tidak dikenali',
+                    rekomendasi: prediction?.rekomendasi ?? 'Label tidak dikenali',
+                    error: prediction?.error ?? 'Label tidak dikenali',
+                });
+            }
         } catch (error) {
             console.error(error);
             setToast({
@@ -186,11 +208,6 @@ const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
                 variant={toast.type}
             />
 
-            <div className="mb-10 text-center">
-                <h1 className="mb-2 text-4xl font-bold text-gray-800">Nutrisi Klasifikasi</h1>
-                <p className="mx-auto max-w-2xl text-gray-600">Klasifikasi Jenis Sayuran Berdasarkan Nutrisi untuk Anak</p>
-            </div>
-
             <div className="grid grid-cols-1 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm md:grid-cols-2">
                 <div className="p-6 ring-1 md:p-8">
                     <form onSubmit={(e) => handlePredict(e)} className="space-y-6">
@@ -233,7 +250,7 @@ const FormClassifier = ({ kriteria }: { kriteria: KriteriaTypes[] }) => {
                         </div>
 
                         <div className="flex flex-wrap gap-3 pt-4">
-                            {(auth.role === 'admin' || auth.role === 'super_admin') && (
+                            {(auth.role === 'admin' || (auth.role === 'super_admin' && canEvaluate)) && (
                                 <Button type="button" variant="outline" onClick={handleTrainAndEvaluate} disabled={loading}>
                                     {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                                     Train Model

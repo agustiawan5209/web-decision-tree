@@ -82,3 +82,11 @@ export interface DetailDatasetTypes{
     nilai: string;
     kriteria: KriteriaTypes;
 }
+
+
+interface PredictionResult {
+    prediction: number | number[] | null;
+    label: string | string[] | null;
+    rekomendasi: string | null;
+    error: string | null;
+}

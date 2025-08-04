@@ -30,16 +30,16 @@ class JenisTanamanController extends Controller
         return Inertia::render("admin/jenisTanaman/index", [
             'jenisTanaman' => JenisTanaman::all(),
             'breadcrumb' => self::BASE_BREADCRUMB,
-            'titlePage'=> 'JenisTanaman',
-            'can'=> [
-                'add'=> Auth::user()->can('add jenis_tanaman'),
-                'edit'=> Auth::user()->can('edit jenis_tanaman'),
-                'read'=> Auth::user()->can('read jenis_tanaman'),
-                'delete'=> Auth::user()->can('delete jenis_tanaman'),
+            'titlePage' => 'JenisTanaman',
+            'can' => [
+                'add' => Auth::user()->can('add jenis_tanaman'),
+                'edit' => Auth::user()->can('edit jenis_tanaman'),
+                'read' => Auth::user()->can('read jenis_tanaman'),
+                'delete' => Auth::user()->can('delete jenis_tanaman'),
             ],
         ]);
     }
- private function applyFilters($query, Request $request): void
+    private function applyFilters($query, Request $request): void
     {
         if ($request->filled('q')) {
             $query->searchByName($request->input('q'));
@@ -58,6 +58,10 @@ class JenisTanamanController extends Controller
         $sortField = $request->input('sort', 'created_at');
         $sortDirection = $request->input('direction', 'desc');
         $query->orderBy($sortField, $sortDirection);
+    }
+
+    public function getSayuran(){
+        return response()->json(JenisTanaman::orderBy('id','desc')->get());
     }
     /**
      * Show the form for creating a new resource.
@@ -131,8 +135,8 @@ class JenisTanamanController extends Controller
         $databaseHelper = App::make('databaseHelper');
         return $databaseHelper(
             operation: fn() => $jenisTanaman->update([
-                'nama'=> $request->nama,
-                'deskripsi'=> $request->deskripsi,
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
             ]),
             successMessage: 'Kategori Berhasil Di Update!',
             redirectRoute: 'admin.jenisTanaman.index'
