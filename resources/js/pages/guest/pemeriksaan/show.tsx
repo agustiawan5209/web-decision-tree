@@ -1,4 +1,4 @@
-import AppLayout from '@/layouts/app-layout';
+import UserAuthLayout from '@/layouts/guest/user-auth-layout';
 import { DetailPemeriksaanTypes, PemeriksaanTypes, SharedData, User, type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { Baby, ClipboardList, User2, Utensils } from 'lucide-react';
@@ -23,7 +23,7 @@ interface Attribut {
     id: string;
     nama: string;
 }
-export interface RiwayatShowProps {
+export interface PemeriksaanProps {
     orangTua: User;
     balita: Balita;
     pemeriksaan: PemeriksaanTypes;
@@ -34,7 +34,7 @@ export interface RiwayatShowProps {
     breadcrumb: { title: string; href: string }[];
 }
 
-export default function RiwayatShowView({
+export default function PemeriksaanShow({
     pemeriksaan,
     balita,
     orangTua,
@@ -43,7 +43,7 @@ export default function RiwayatShowView({
     polamakan,
     dataPemeriksaanBalita,
     breadcrumb,
-}: RiwayatShowProps) {
+}: PemeriksaanProps) {
     // Memoize breadcrumbs to prevent unnecessary recalculations
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
@@ -74,7 +74,7 @@ export default function RiwayatShowView({
     const page = usePage<SharedData>();
     const { defaultUrl } = page.props;
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <UserAuthLayout>
             <Head title="Detail Pemeriksaan" />
             <div className="flex h-full flex-1 flex-col rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
                 <div className="flex-1 overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-800">
@@ -175,6 +175,6 @@ export default function RiwayatShowView({
                     </div>
                 </div>
             </div>
-        </AppLayout>
+        </UserAuthLayout>
     );
 }

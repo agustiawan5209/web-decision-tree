@@ -149,7 +149,7 @@ class PemeriksaanController extends Controller
             $this->createDetailPemeriksaan($pemeriksaan, $request->input('kriteria'), $balita->jenis_kelamin, $request->input('label'));
 
             if (auth()->user()->hasRole('user')) {
-                return redirect()->route('orangtua.pemeriksaan.index')->with('success', 'Data pemeriksaan berhasil ditambahkan!');
+                return redirect()->route('guest.klasifikasi.index')->with('success', 'Data pemeriksaan berhasil ditambahkan!');
             }
 
             return redirect()
@@ -159,6 +159,9 @@ class PemeriksaanController extends Controller
             $pemeriksaan = Pemeriksaan::latest()->first();
             if ($pemeriksaan) {
                 $pemeriksaan->delete();
+            }
+            if (auth()->user()->hasRole('user')) {
+                return redirect()->route('guest.klasifikasi.create-id')->with('error', $exception->getMessage());
             }
             return redirect()
                 ->route('pemeriksaan.create-id')

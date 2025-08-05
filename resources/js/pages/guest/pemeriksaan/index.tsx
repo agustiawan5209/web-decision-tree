@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import AppLayout from '@/layouts/app-layout';
+import UserAuthLayout from '@/layouts/guest/user-auth-layout';
 import { PemeriksaanTypes, type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 
-interface RiwayatPemeriksaanProps {
+interface PemeriksaanProps {
     pemeriksaan?: {
         current_page: number;
         data: PemeriksaanTypes[];
@@ -53,7 +53,7 @@ type GetForm = {
     date?: string;
 };
 
-export default function RiwayatPemeriksaanView({ pemeriksaan, breadcrumb, filter, statusLabel, can }: RiwayatPemeriksaanProps) {
+export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, statusLabel, can }: PemeriksaanProps) {
     // Memoize breadcrumbs to prevent unnecessary recalculations
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
@@ -88,7 +88,7 @@ export default function RiwayatPemeriksaanView({ pemeriksaan, breadcrumb, filter
 
         // Only make request if there are valid changes
         if (cleanedSearch || cleanedDate || !isNaN(numericPerPage)) {
-            get(route('admin.riwayat.index', routeParams), {
+            get(route('guest.klasifikasi.index', routeParams), {
                 preserveState: true,
                 preserveScroll: true,
                 replace: true,
@@ -128,7 +128,7 @@ export default function RiwayatPemeriksaanView({ pemeriksaan, breadcrumb, filter
             setPerPage('10');
             setOrderBy('');
 
-            get(route('admin.riwayat.index'), {
+            get(route('guest.klasifikasi.index'), {
                 preserveState: true,
                 preserveScroll: true,
             });
@@ -141,7 +141,7 @@ export default function RiwayatPemeriksaanView({ pemeriksaan, breadcrumb, filter
         const cleanedOrderBy = orderBy.trim();
         if (cleanedOrderBy) {
             get(
-                route('admin.riwayat.index', {
+                route('guest.klasifikasi.index', {
                     order_by: cleanedOrderBy,
                     per_page: perPage,
                     q: search,
@@ -160,15 +160,19 @@ export default function RiwayatPemeriksaanView({ pemeriksaan, breadcrumb, filter
 
         return pemeriksaan.data.map((item, index) => {
             let read_url = null;
-            read_url = route('admin.riwayat.show', { pemeriksaan: item.id });
+            read_url = route('guest.klasifikasi.show', { pemeriksaan: item.id });
             let delete_url = null;
+            if (can.delete) {
+                delete_url = route('guest.klasifikasi.destroy', { pemeriksaan: item.id });
+            }
             return (
                 <CollapsibleRow
                     key={item.id} // Using item.id as key is better than index
                     num={index + 1 + (pemeriksaan.current_page - 1) * pemeriksaan.per_page}
                     title={item.tgl_pemeriksaan}
                     columnData={[item.balita.nama, item.balita.orangtua.name, `${item.balita.tempat_lahir}/${item.balita.tanggal_lahir}`, item.label]}
-
+                    delete="delete"
+                    url={delete_url ?? ''}
                     id={item.id.toString()}
                     show={read_url ?? ''}
                 >
@@ -179,24 +183,21 @@ export default function RiwayatPemeriksaanView({ pemeriksaan, breadcrumb, filter
     }, [pemeriksaan]);
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <UserAuthLayout>
             <Head title="Pemeriksaan" />
             <div className="dark:bg-elevation-1 flex h-full flex-1 flex-col gap-4 rounded-xl p-1 lg:p-4">
                 <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                     <div className="flex w-full flex-1 flex-col items-start justify-start gap-4 md:gap-7 lg:flex-row lg:items-center lg:justify-between lg:px-4 lg:py-2">
                         <div className="flex w-full flex-1 flex-wrap gap-7 md:items-start lg:flex-row lg:px-4 lg:py-2">
+                            {can.add && (
+                                <Link href={route('guest.klasifikasi.create-id')}>
+                                    <Button type="button" size="lg" tabIndex={4} className="flex cursor-pointer items-center gap-2 bg-primary">
+                                        Pemeriksaan Nutrisi
+                                    </Button>
+                                </Link>
+                            )}
                             <div className="col-span-full flex flex-wrap items-center gap-2 lg:col-span-2">
-                                <label htmlFor="search" className="sr-only">
-                                    Cari
-                                </label>
-                                <Input
-                                    type="search"
-                                    id="search-text"
-                                    value={search}
-                                    className="max-w-max"
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Cari berdasarkan nama atau keterangan"
-                                />
+
                                 <Input
                                     type="date"
                                     id="search-date"
@@ -212,7 +213,7 @@ export default function RiwayatPemeriksaanView({ pemeriksaan, breadcrumb, filter
                                     className="flex items-center gap-2 text-xs"
                                     disabled={processing}
                                 >
-                                    Cari
+                                    Cari Berdasarkan Tanggal
                                 </Button>
                                 <Button
                                     variant="outline"
@@ -221,7 +222,7 @@ export default function RiwayatPemeriksaanView({ pemeriksaan, breadcrumb, filter
                                     className="flex items-center gap-2 border-red-500 text-xs"
                                     disabled={processing}
                                 >
-                                    Clear
+                                    reset
                                 </Button>
                             </div>
                         </div>
@@ -267,43 +268,16 @@ export default function RiwayatPemeriksaanView({ pemeriksaan, breadcrumb, filter
                                 </Table>
                             </div>
                         </div>
-                        <section className="w-full">
-                            <div className="flex flex-col items-center justify-between gap-7 border-x-2 border-b-2 p-2 md:flex-row">
-                                <div className="flex items-center gap-7 lg:px-4 lg:py-2">
-                                    <div className="flex flex-row gap-2">
-                                        <Select value={perPage} onValueChange={setPerPage}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Jumlah Data" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectItem value="10">10</SelectItem>
-                                                    <SelectItem value="20">20</SelectItem>
-                                                    <SelectItem value="50">50</SelectItem>
-                                                    <SelectItem value="100">100</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                        <Button
-                                            variant="outline"
-                                            type="button"
-                                            onClick={submitPerPage}
-                                            className="flex items-center gap-2 text-xs"
-                                            disabled={processing}
-                                        >
-                                            Tampilkan
-                                        </Button>
-                                    </div>
-                                    <div className="text-xs text-gray-600">
-                                        halaman {pemeriksaan?.from} ke {pemeriksaan?.to} dari {pemeriksaan?.total} total
-                                    </div>
+                        {pemeriksaan?.links && (
+                            <section className="w-full">
+                                <div className="flex flex-col items-center justify-between gap-7 border-x-2 border-b-2 p-2 md:flex-row">
+                                    <PaginationTable links={pemeriksaan?.links ?? []} data={filter} />
                                 </div>
-                                <PaginationTable links={pemeriksaan?.links ?? []} data={filter} />
-                            </div>
-                        </section>
+                            </section>
+                        )}
                     </div>
                 </div>
             </div>
-        </AppLayout>
+        </UserAuthLayout>
     );
 }

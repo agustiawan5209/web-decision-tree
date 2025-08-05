@@ -163,7 +163,7 @@ export default function PemeriksaanShow({
                                 <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-900/20">
                                     <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-emerald-800 dark:text-emerald-200">
                                         <Utensils className="h-4 w-4" />
-                                        Rekomendasi Pola Makan
+                                        Rekomendasi Jenis Sayuran
                                     </h3>
                                     <div
                                         className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300"

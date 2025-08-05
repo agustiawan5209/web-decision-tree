@@ -214,20 +214,21 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
                                 </div>
 
                                 {selectedOrangtua && (
-                                    <div className="block space-y-4 rounded-lg border p-2">
-                                        <div className="flex gap-2">
-                                            <Label className="text-muted-foreground">
-                                                Nama Orang Tua/<i>Mewakili</i>:
-                                            </Label>
-                                            <Label className="font-normal">{selectedOrangtua.name}</Label>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <Label className="text-muted-foreground">Email Orang Tua:</Label>
-                                            <Label className="font-normal">{selectedOrangtua.email}</Label>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <Label className="text-muted-foreground">Alamat Orang Tua:</Label>
-                                            <Label className="font-normal">{selectedOrangtua.alamat}</Label>
+                                    <div className="space-y-4 rounded-xl border border-blue-100 bg-blue-50 p-4 dark:border-gray-700 dark:bg-gray-700/50">
+                                        <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-300">Informasi Orang Tua</h3>
+                                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                            <div className="space-y-1">
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">Nama Orang Tua/Mewakili</p>
+                                                <p className="font-medium text-gray-900 dark:text-white">{selectedOrangtua.name}</p>
+                                            </div>
+                                            <div className="space-y-1">
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
+                                                <p className="font-medium text-gray-900 dark:text-white">{selectedOrangtua.email}</p>
+                                            </div>
+                                            <div className="space-y-1 md:col-span-1">
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">Alamat</p>
+                                                <p className="font-medium text-gray-900 dark:text-white">{selectedOrangtua.alamat}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 )}

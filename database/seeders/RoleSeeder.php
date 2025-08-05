@@ -52,6 +52,11 @@ class RoleSeeder extends Seeder
             ['name' => 'read dataset'],
             ['name' => 'delete dataset'],
 
+            ['name' => 'add pemeriksaan'],
+            ['name' => 'edit pemeriksaan'],
+            ['name' => 'read pemeriksaan'],
+            ['name' => 'delete pemeriksaan'],
+
             ['name' => 'add classify'],
             ['name' => 'edit classify'],
             ['name' => 'read classify'],
@@ -66,6 +71,9 @@ class RoleSeeder extends Seeder
         $admin->givePermissionTo(['name'=> 'delete balita']);
         $admin->givePermissionTo(['name'=> 'edit balita']);
         $admin->givePermissionTo(['name'=> 'read balita']);
+        $admin->givePermissionTo(['name'=> 'delete pemeriksaan']);
+        $admin->givePermissionTo(['name'=> 'edit pemeriksaan']);
+        $admin->givePermissionTo(['name'=> 'read pemeriksaan']);
         $admin->givePermissionTo(['name'=> 'read label']);
         $admin->givePermissionTo(['name'=> 'edit label']);
         $admin->givePermissionTo(['name'=> 'edit jenis_tanaman']);

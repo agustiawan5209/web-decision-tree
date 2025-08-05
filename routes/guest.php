@@ -12,12 +12,25 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
 
         Route::group(['prefix' => 'klasifikasi', 'as' => 'klasifikasi.'], function () {
             Route::controller(KlasifikasiController::class)->group(function () {
+                // Show all pemeriksaans
                 Route::get('/', 'index')->name('index');
+                // Create a pemeriksaan
+                Route::get('/create-id', 'createById')->name('create-id');
+
+                // Edit a pemeriksaan
+                Route::get('/edit/{pemeriksaan}', 'edit')->name('edit');
+                // Show a pemeriksaan
+                Route::get('/show/{pemeriksaan}', 'show')->name('show');
+
+                // Store a pemeriksaan
+                Route::post('/store', 'store')->name('store');
+                // Update a pemeriksaan
+                Route::put('/update/{pemeriksaan}', 'update')->name('update');
+                // Delete a pemeriksaan
+                Route::delete('/destroy/{pemeriksaan}', 'destroy')->name('destroy');
             });
         });
     });
 });
-
-Route::post('riwayat-klasifikasi/store-data', [RiwayatKlasifikasiController::class, 'store'])->name('riwayat-klasifikasi.store');
 
 // Route for decision tree model

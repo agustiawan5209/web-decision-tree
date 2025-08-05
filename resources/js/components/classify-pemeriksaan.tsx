@@ -169,7 +169,6 @@ const ClassifyPemeriksaan = ({
             });
 
             const result = await model.predict([feature ?? []]); // Contoh fitur
-            console.log(data, result);
             if (result.error) {
                 setToast({
                     title: 'Hasil Prediksi',

@@ -48,8 +48,6 @@ Route::middleware(['auth', 'verified', 'role:admin|super_admin'])->group(functio
             // Show a pemeriksaan
             Route::get('/show/{pemeriksaan}', 'show')->name('show');
 
-            // Store a pemeriksaan
-            Route::post('/store', 'store')->name('store');
             // Update a pemeriksaan
             Route::put('/update/{pemeriksaan}', 'update')->name('update');
             // Delete a pemeriksaan
@@ -132,7 +130,7 @@ Route::middleware(['auth', 'verified', 'role:admin|super_admin'])->group(functio
         Route::group(['prefix' => 'riwayat', 'as' => 'riwayat.'], function () {
             Route::controller(RiwayatKlasifikasiController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
-                Route::get('/{riwayat}/show', 'show')->name('show');
+                Route::get('/{pemeriksaan}/show', 'show')->name('show');
             });
         });
     });
@@ -143,6 +141,9 @@ Route::middleware(['auth', 'verified', 'role:admin|super_admin'])->group(functio
         });
     });
 });
+
+// Store a pemeriksaan
+Route::post('/pemeriksaan/store', [PemeriksaanController::class, 'store'])->name('pemeriksaan.store')->middleware(['auth', 'verified', 'role:user|admin|super_admin']);
 
 
 
