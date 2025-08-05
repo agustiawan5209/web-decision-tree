@@ -1,85 +1,180 @@
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-import { motion } from 'framer-motion';
+import { DetailPemeriksaanTypes, PemeriksaanTypes, SharedData, User, type BreadcrumbItem } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
+import { Baby, ClipboardList, User2, Utensils } from 'lucide-react';
 import { useMemo } from 'react';
 
-interface RiwayatNutrisiTanamanProps {
-    riwayat: {
-        id: number;
-        user: string;
-        label: string;
-        attribut: string;
-        kriteria: string;
-    };
-    breadcrumb: BreadcrumbItem[];
-    titlePage: string;
+interface Balita {
+    id: string;
+    nama: string;
+    tempat_lahir: string;
+    tanggal_lahir: string;
+    usia: string;
+    jenis_kelamin: string;
+    alamat: string;
 }
-export default function RiwayatNutrisiTanamanPage({ riwayat, breadcrumb, titlePage }: RiwayatNutrisiTanamanProps) {
+
+interface PolaMakan {
+    id: string;
+    rekomendasi: string;
+    catatan_dokter: string;
+}
+interface Attribut {
+    id: string;
+    nama: string;
+}
+export interface RiwayatShowProps {
+    orangTua: User;
+    balita: Balita;
+    pemeriksaan: PemeriksaanTypes;
+    detail: DetailPemeriksaanTypes[];
+    polamakan: PolaMakan;
+    kriteria: Attribut[];
+    dataPemeriksaanBalita: PemeriksaanTypes[];
+    breadcrumb: { title: string; href: string }[];
+}
+
+export default function RiwayatShowView({
+    pemeriksaan,
+    balita,
+    orangTua,
+    detail,
+    kriteria,
+    polamakan,
+    dataPemeriksaanBalita,
+    breadcrumb,
+}: RiwayatShowProps) {
+    // Memoize breadcrumbs to prevent unnecessary recalculations
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
         [breadcrumb],
     );
-    console.log(riwayat);
-    const attribut: any = JSON.parse(riwayat.attribut);
-    const user: any = JSON.parse(riwayat.user);
-    const kriteria: any = JSON.parse(riwayat.kriteria);
+
+    const handleDownloadStart = () => {
+        console.log('Download started');
+    };
+
+    const handleDownloadSuccess = () => {
+        console.log('Download completed successfully');
+    };
+
+    const handleDownloadError = (error: unknown) => {
+        console.error('Download failed:', error);
+    };
+    const searchById = (id: string, detail: { kriteria_id: string; nilai: string }[]): string => {
+        if (!detail || !id) return '';
+        try {
+            const foundElement = detail.find((element) => String(element.kriteria_id).includes(id));
+            return foundElement?.nilai ?? '';
+        } catch (error) {
+            console.error('Error in searchById:', error);
+            return '';
+        }
+    };
+    const page = usePage<SharedData>();
+    const { defaultUrl } = page.props;
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={titlePage ?? 'Detail'} />
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="min-h-screen bg-gray-50">
-                <div className="mx-auto max-w-7xl">
-                    {/* Header */}
-                    <motion.div initial={{ y: -20 }} animate={{ y: 0 }} transition={{ duration: 0.5 }} className="mb-10 text-center">
-                        <h1 className="mb-2 text-3xl font-bold text-gray-900">Detail Riwayat</h1>
-                    </motion.div>
-
-                    {/* Summary Cards */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.5 }}
-                        className="mb-10 grid grid-cols-1"
-                    >
-                        {/* Cultivation Data */}
-                        <div className="overflow-hidden border-b-4 border-l-4 border-destructive bg-white p-6 shadow-md">
-                            <h3 className="text-lg font-medium text-gray-500">Data Pengguna</h3>
-                            <div className="mt-4 space-y-3">
-                                <div className="flex justify-between">
-                                    <span className="text-base text-gray-600">Nama Penguna</span>
-                                    <span className="text-base font-medium">{user.name} Ha</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-base text-gray-600">Email</span>
-                                    <span className="text-base font-medium">{user.email}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="overflow-hidden border-b-4 border-l-4 border-primary bg-white p-6 shadow-md">
-                            <h3 className="text-lg font-medium text-gray-500">Data Kelas</h3>
-                            <div className="mt-4 space-y-3">
-                                <div className="flex justify-between">
-                                    <span className="text-base text-gray-600">Label (Nutrisi)</span>
-                                    <span className="text-base font-medium">{riwayat.label}</span>
-                                </div>
+            <Head title="Detail Pemeriksaan" />
+            <div className="flex h-full flex-1 flex-col rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
+                <div className="flex-1 overflow-hidden rounded-xl bg-white shadow-sm dark:bg-gray-800">
+                    <div className="mx-auto max-w-7xl p-4 lg:p-6">
+                        <div className="mb-8 flex items-center justify-between">
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Detail Pemeriksaan</h2>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    {new Date(pemeriksaan.tgl_pemeriksaan).toLocaleDateString('id-ID', {
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                    })}
+                                </p>
                             </div>
                         </div>
 
-                        {/* Water Quality */}
-                        <div className="overflow-hidden border-l-4 border-chart-4 bg-white p-6 shadow-md">
-                            <h3 className="text-sm font-medium text-gray-500">Detail Tanaman</h3>
-                            <div className="mt-4 space-y-3">
-                                {kriteria.map((item: any, index: number) => (
-                                    <div key={index} className="flex justify-between border-b-2">
-                                        <span className="text-base text-gray-800">{item}</span>
-                                        <span className="text-base font-medium">{attribut[index]}</span>
+                        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                            {/* Left Column - Parent & Child Data */}
+                            <div className="space-y-6">
+                                {/* Parent Data Card */}
+                                <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 dark:border-blue-900/50 dark:bg-blue-900/20">
+                                    <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-blue-800 dark:text-blue-200">
+                                        <User2 className="h-5 w-5" />
+                                        Data Orang Tua
+                                    </h3>
+                                    <div className="space-y-3">
+                                        {[
+                                            { label: 'Nama Orang Tua', value: orangTua.name },
+                                            { label: 'Email', value: orangTua.email },
+                                            { label: 'Alamat', value: balita.alamat },
+                                        ].map((item) => (
+                                            <div key={item.label} className="grid grid-cols-3 gap-4">
+                                                <span className="col-span-1 text-sm font-medium text-gray-500 dark:text-gray-400">{item.label}</span>
+                                                <span className="col-span-2 text-sm text-gray-900 dark:text-gray-100">{item.value || '-'}</span>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                </div>
+
+                                {/* Child Data Card */}
+                                <div className="rounded-lg border border-green-100 bg-green-50 p-4 dark:border-green-900/50 dark:bg-green-900/20">
+                                    <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-green-800 dark:text-green-200">
+                                        <Baby className="h-5 w-5" />
+                                        Data Balita
+                                    </h3>
+                                    <div className="space-y-3">
+                                        {[
+                                            { label: 'Nama', value: balita.nama },
+                                            { label: 'Tempat Lahir', value: balita.tempat_lahir },
+                                            { label: 'Tanggal Lahir', value: balita.tanggal_lahir },
+                                            { label: 'Jenis Kelamin', value: balita.jenis_kelamin },
+                                        ].map((item) => (
+                                            <div key={item.label} className="grid grid-cols-3 gap-4">
+                                                <span className="col-span-1 text-sm font-medium text-gray-500 dark:text-gray-400">{item.label}</span>
+                                                <span className="col-span-2 text-sm text-gray-900 dark:text-gray-100">{item.value || '-'}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Column - Examination Data */}
+                            <div className="space-y-6">
+                                {/* Examination Data Card */}
+                                <div className="rounded-lg border border-purple-100 bg-purple-50 p-4 dark:border-purple-900/50 dark:bg-purple-900/20">
+                                    <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-purple-800 dark:text-purple-200">
+                                        <ClipboardList className="h-5 w-5" />
+                                        Data Pemeriksaan
+                                    </h3>
+                                    <div className="space-y-3">
+                                        {detail
+                                            .filter((attr) => !['jenis kelamin'].includes(attr.kriteria.nama.toLowerCase()))
+                                            .map((item) => (
+                                                <div key={item.kriteria.nama} className="grid grid-cols-3 gap-4">
+                                                    <span className="col-span-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                        {item.kriteria.nama}
+                                                    </span>
+                                                    <span className="col-span-2 text-sm text-gray-900 dark:text-gray-100">{item.nilai}</span>
+                                                </div>
+                                            ))}
+                                    </div>
+                                </div>
+
+                                <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-900/20">
+                                    <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-emerald-800 dark:text-emerald-200">
+                                        <Utensils className="h-4 w-4" />
+                                        Rekomendasi Pola Makan
+                                    </h3>
+                                    <div
+                                        className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300"
+                                        dangerouslySetInnerHTML={{ __html: pemeriksaan.rekomendasi }}
+                                    />
+                                </div>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
-            </motion.div>
+            </div>
         </AppLayout>
     );
 }

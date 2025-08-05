@@ -224,7 +224,7 @@ const FormClassifier = ({
                                             onValueChange={(value) => handleSelectChange(index.toString(), value)}
                                         >
                                             <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select gender" />
+                                                <SelectValue placeholder="Select Jenis Kelamin" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {['laki-laki', 'perempuan'].map((gender, idx) => (

@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { SharedData, User, type BreadcrumbItem } from '@/types';
+import { DetailPemeriksaanTypes, PemeriksaanTypes, SharedData, User, type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { Baby, ClipboardList, User2, Utensils } from 'lucide-react';
 import { useMemo } from 'react';
@@ -14,21 +14,6 @@ interface Balita {
     alamat: string;
 }
 
-interface Pemeriksaan {
-    id: string;
-    tgl_pemeriksaan: string;
-    label: string;
-    alasan: string;
-    detailPemeriksaan: DetailPemeriksaan[];
-}
-
-interface DetailPemeriksaan {
-    kriteria: {
-        nama: string;
-    };
-    nilai: number | string;
-}
-
 interface PolaMakan {
     id: string;
     rekomendasi: string;
@@ -41,11 +26,11 @@ interface Attribut {
 export interface PemeriksaanProps {
     orangTua: User;
     balita: Balita;
-    pemeriksaan: Pemeriksaan;
-    detail: DetailPemeriksaan[];
+    pemeriksaan: PemeriksaanTypes;
+    detail: DetailPemeriksaanTypes[];
     polamakan: PolaMakan;
     kriteria: Attribut[];
-    dataPemeriksaanBalita: Pemeriksaan[];
+    dataPemeriksaanBalita: PemeriksaanTypes[];
     breadcrumb: { title: string; href: string }[];
 }
 
@@ -175,18 +160,16 @@ export default function PemeriksaanShow({
                                     </div>
                                 </div>
 
-                                {polamakan?.rekomendasi && (
-                                    <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-900/20">
-                                        <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-emerald-800 dark:text-emerald-200">
-                                            <Utensils className="h-4 w-4" />
-                                            Rekomendasi Pola Makan
-                                        </h3>
-                                        <div
-                                            className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300"
-                                            dangerouslySetInnerHTML={{ __html: polamakan.rekomendasi }}
-                                        />
-                                    </div>
-                                )}
+                                <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-900/20">
+                                    <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-emerald-800 dark:text-emerald-200">
+                                        <Utensils className="h-4 w-4" />
+                                        Rekomendasi Pola Makan
+                                    </h3>
+                                    <div
+                                        className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300"
+                                        dangerouslySetInnerHTML={{ __html: pemeriksaan.rekomendasi }}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

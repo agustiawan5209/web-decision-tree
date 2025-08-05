@@ -6,26 +6,14 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { PemeriksaanTypes, type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 
 interface PemeriksaanProps {
     pemeriksaan?: {
         current_page: number;
-        data: Array<{
-            id: string;
-            tgl_pemeriksaan: string;
-            label: string;
-            balita: {
-                nama: string;
-                orangtua: { name: string };
-                tempat_lahir: string;
-                tanggal_lahir: string;
-            };
-            detailpemeriksaan: any;
-            alasan: string;
-        }>;
+        data:PemeriksaanTypes[];
         first_page_url: string;
         from: number;
         last_page: number;
@@ -171,7 +159,6 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
         if (!pemeriksaan?.data?.length) return null;
 
         return pemeriksaan.data.map((item, index) => {
-            console.log(item)
             let read_url = null;
             read_url = route('pemeriksaan.show', { pemeriksaan: item.id });
             let delete_url = null;
@@ -186,7 +173,7 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                     columnData={[item.balita.nama, item.balita.orangtua.name, `${item.balita.tempat_lahir}/${item.balita.tanggal_lahir}`, item.label]}
                     delete="delete"
                     url={delete_url ?? ''}
-                    id={item.id}
+                    id={item.id.toString()}
                     show={read_url ?? ''}
                 >
                     <DetailPemeriksaan pemeriksaan={item} detail={item.detailpemeriksaan} />
@@ -214,7 +201,7 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                                     Cari
                                 </label>
                                 <Input
-                                    type="text"
+                                    type="search"
                                     id="search-text"
                                     value={search}
                                     className="max-w-max"
@@ -257,10 +244,8 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                                 <SelectContent>
                                     <SelectGroup>
                                         <SelectLabel>Urutkan</SelectLabel>
-                                        <SelectItem value="A-Z">A-Z</SelectItem>
-                                        <SelectItem value="Z-A">Z-A</SelectItem>
                                         <SelectItem value="desc">Terbaru</SelectItem>
-                                        <SelectItem value="asc">sTerlama</SelectItem>
+                                        <SelectItem value="asc">Terlama</SelectItem>
                                     </SelectGroup>
                                     <SelectGroup>
                                         <SelectLabel>berdasarkan Nutrisi</SelectLabel>
@@ -269,12 +254,6 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                                                 {item}
                                             </SelectItem>
                                         ))}
-                                    </SelectGroup>
-                                    <SelectSeparator />
-                                    <SelectGroup>
-                                        <SelectLabel>Jenis Kelamin</SelectLabel>
-                                        <SelectItem value="Laki-laki">Laki-Laki</SelectItem>
-                                        <SelectItem value="Perempuan">Perempuan</SelectItem>
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>

@@ -1,21 +1,19 @@
+import CollapsibleRow from '@/components/collapsible-table';
+import DetailPemeriksaan from '@/components/detail-pemeriksaan';
 import PaginationTable from '@/components/pagination-table';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { EyeIcon } from 'lucide-react';
-import { useMemo } from 'react';
-interface IndikatorIndexProps {
-    riwayat: {
+import { PemeriksaanTypes, type BreadcrumbItem } from '@/types';
+import { Head, useForm } from '@inertiajs/react';
+import { FormEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
+
+interface RiwayatPemeriksaanProps {
+    pemeriksaan?: {
         current_page: number;
-        data: {
-            id: number;
-            user: string;
-            label: string;
-            attribut: string[];
-        }[];
+        data: PemeriksaanTypes[];
         first_page_url: string;
         from: number;
         last_page: number;
@@ -26,76 +24,290 @@ interface IndikatorIndexProps {
         prev_page_url: string;
         to: number;
         total: number;
-        links: {
+        links: Array<{
             url: string | null;
             label: string;
             active: boolean;
-        }[];
+        }>;
     };
-    breadcrumb?: BreadcrumbItem[];
-    titlePage?: string;
+    breadcrumb?: Array<{ title: string; href: string }>;
+    filter: {
+        q: string;
+        per_page: string;
+        order_by: string;
+        date: string;
+    };
+    statusLabel: string[];
+    can: {
+        add: boolean;
+        edit: boolean;
+        read: boolean;
+        delete: boolean;
+    };
 }
 
-export default function IndikatorIndex({ riwayat, breadcrumb, titlePage }: IndikatorIndexProps) {
+type GetForm = {
+    q?: string;
+    per_page?: string;
+    order_by?: string;
+    date?: string;
+};
+
+export default function RiwayatPemeriksaanView({ pemeriksaan, breadcrumb, filter, statusLabel, can }: RiwayatPemeriksaanProps) {
+    // Memoize breadcrumbs to prevent unnecessary recalculations
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
         [breadcrumb],
     );
 
+    const { get, processing } = useForm<GetForm>();
+
+    // State management
+    const [search, setSearch] = useState(filter?.q ?? '');
+    const [TglPemeriksaan, setTglPemeriksaan] = useState(filter?.date ?? '');
+    const [orderBy, setOrderBy] = useState(filter?.order_by ?? '');
+    const [perPage, setPerPage] = useState(filter?.per_page ?? '10');
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+    // Memoized route parameters to avoid recalculations
+    const routeParams = useMemo(
+        () => ({
+            q: search.trim(),
+            per_page: perPage,
+            order_by: orderBy,
+            date: TglPemeriksaan,
+        }),
+        [search, perPage, orderBy, TglPemeriksaan],
+    );
+
+    // Optimized filter submission using useCallback
+    const submitFilter = useCallback(() => {
+        const cleanedSearch = search.trim();
+        const cleanedDate = TglPemeriksaan.trim();
+        const numericPerPage = parseInt(perPage.toString());
+
+        // Only make request if there are valid changes
+        if (cleanedSearch || cleanedDate || !isNaN(numericPerPage)) {
+            get(route('pemeriksaan.index', routeParams), {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+            });
+        }
+    }, [get, routeParams]);
+
+    // Handle search submission
+    const submitSearch: FormEventHandler = useCallback(
+        (e) => {
+            e.preventDefault();
+            submitFilter();
+        },
+        [submitFilter],
+    );
+
+    // Handle per page submission
+    const submitPerPage: FormEventHandler = useCallback(
+        (e) => {
+            e.preventDefault();
+            submitFilter();
+        },
+        [submitFilter],
+    );
+
+    // Handle date submission
+    const submitTglPemeriksaan = useCallback(() => {
+        submitFilter();
+    }, [submitFilter]);
+
+    // Clear all filters
+    const clearSearch: FormEventHandler = useCallback(
+        (e) => {
+            e.preventDefault();
+            setSearch('');
+            setTglPemeriksaan('');
+            setPerPage('10');
+            setOrderBy('');
+
+            get(route('pemeriksaan.index'), {
+                preserveState: true,
+                preserveScroll: true,
+            });
+        },
+        [get],
+    );
+
+    // Effect for orderBy changes
+    useEffect(() => {
+        const cleanedOrderBy = orderBy.trim();
+        if (cleanedOrderBy) {
+            get(
+                route('pemeriksaan.index', {
+                    order_by: cleanedOrderBy,
+                    per_page: perPage,
+                    q: search,
+                }),
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                },
+            );
+        }
+    }, [orderBy, get, perPage, search]);
+
+    // Memoize table rows to prevent unnecessary re-renders
+    const tableRows = useMemo(() => {
+        if (!pemeriksaan?.data?.length) return null;
+
+        return pemeriksaan.data.map((item, index) => {
+            let read_url = null;
+            read_url = route('pemeriksaan.show', { pemeriksaan: item.id });
+            let delete_url = null;
+            if (can.delete) {
+                delete_url = route('pemeriksaan.destroy', { pemeriksaan: item.id });
+            }
+            return (
+                <CollapsibleRow
+                    key={item.id} // Using item.id as key is better than index
+                    num={index + 1 + (pemeriksaan.current_page - 1) * pemeriksaan.per_page}
+                    title={item.tgl_pemeriksaan}
+                    columnData={[item.balita.nama, item.balita.orangtua.name, `${item.balita.tempat_lahir}/${item.balita.tanggal_lahir}`, item.label]}
+                    delete="delete"
+                    url={delete_url ?? ''}
+                    id={item.id.toString()}
+                    show={read_url ?? ''}
+                >
+                    <DetailPemeriksaan pemeriksaan={item} detail={item.detailpemeriksaan} />
+                </CollapsibleRow>
+            );
+        });
+    }, [pemeriksaan]);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={titlePage ?? 'Indikator'} />
-
-            {/* Data */}
-            <Card>
-                <div className="container mx-auto px-4">
-                    <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <h2 className="text-lg font-bold md:text-xl">Riwayat Klasifikasi Nutrisi Anak</h2>
+            <Head title="Pemeriksaan" />
+            <div className="dark:bg-elevation-1 flex h-full flex-1 flex-col gap-4 rounded-xl p-1 lg:p-4">
+                <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
+                    <div className="flex w-full flex-1 flex-col items-start justify-start gap-4 md:gap-7 lg:flex-row lg:items-center lg:justify-between lg:px-4 lg:py-2">
+                        <div className="flex w-full flex-1 flex-wrap gap-7 md:items-start lg:flex-row lg:px-4 lg:py-2">
+                            <div className="col-span-full flex flex-wrap items-center gap-2 lg:col-span-2">
+                                <label htmlFor="search" className="sr-only">
+                                    Cari
+                                </label>
+                                <Input
+                                    type="search"
+                                    id="search-text"
+                                    value={search}
+                                    className="max-w-max"
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Cari berdasarkan nama atau keterangan"
+                                />
+                                <Input
+                                    type="date"
+                                    id="search-date"
+                                    value={TglPemeriksaan}
+                                    onChange={(e) => setTglPemeriksaan(e.target.value)}
+                                    className="max-w-fit"
+                                    placeholder="Cari berdasarkan tanggal"
+                                />
+                                <Button
+                                    variant="outline"
+                                    type="button"
+                                    onClick={submitSearch}
+                                    className="flex items-center gap-2 text-xs"
+                                    disabled={processing}
+                                >
+                                    Cari
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    type="button"
+                                    onClick={clearSearch}
+                                    className="flex items-center gap-2 border-red-500 text-xs"
+                                    disabled={processing}
+                                >
+                                    Clear
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="col-span-1 lg:px-4 lg:py-2">
+                            <Select value={orderBy} onValueChange={setOrderBy}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Tampilan Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel>Urutkan</SelectLabel>
+                                        <SelectItem value="desc">Terbaru</SelectItem>
+                                        <SelectItem value="asc">Terlama</SelectItem>
+                                    </SelectGroup>
+                                    <SelectGroup>
+                                        <SelectLabel>berdasarkan Nutrisi</SelectLabel>
+                                        {statusLabel.map((item) => (
+                                            <SelectItem key={item} value={item}>
+                                                {item}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
-                    <div className="overflow-x-auto rounded-md border">
-                        <Table className="min-w-full">
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="cursor-pointer">no</TableHead>
-                                    <TableHead className="cursor-pointer">Pengguna</TableHead>
-                                    <TableHead className="cursor-pointer">Jenis Kelamin</TableHead>
-                                    <TableHead className="cursor-pointer">Label (Nutrisi)</TableHead>
-                                    <TableHead className="cursor-pointer">Aksi</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {riwayat.data && riwayat.data.length ? (
-                                    riwayat.data.map((item, index) => (
-                                        <TableRow key={item.id}>
-                                            <TableCell>{index + 1}</TableCell>
-                                            <TableCell>{JSON.parse(item.user).name}</TableCell>
-                                            <TableCell>{item.label}</TableCell>
-                                            <TableCell>
-                                                <div className="flex flex-row items-center gap-2">
-                                                    <Link href={route('admin.riwayat.show', { riwayat: item.id })}>
-                                                        <Button variant={'default'} type="button" className="bg-chart-1">
-                                                            <EyeIcon size={4} />
-                                                        </Button>
-                                                    </Link>
-                                                </div>
-                                            </TableCell>
+                    <div className="overflow-hidden lg:w-full">
+                        <div>
+                            <div className="max-w-[300px] md:max-w-[768px] lg:max-w-full">
+                                <Table className="w-full">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="w-10">No.</TableHead>
+                                            <TableHead>Tanggal Pemeriksaan</TableHead>
+                                            <TableHead>Nama Balita/Anak</TableHead>
+                                            <TableHead>Nama Orang Tua</TableHead>
+                                            <TableHead>Tempat/Tanggal Lahir</TableHead>
+                                            <TableHead>Hasil Pemeriksaan Nutrisi</TableHead>
+                                            <TableHead>Aksi</TableHead>
                                         </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={4} className="py-4 text-center">
-                                            No data found
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between">
-                        <PaginationTable links={riwayat.links} data={riwayat} />
+                                    </TableHeader>
+                                    <TableBody className={processing ? 'opacity-50' : ''}>{tableRows}</TableBody>
+                                </Table>
+                            </div>
+                        </div>
+                        <section className="w-full">
+                            <div className="flex flex-col items-center justify-between gap-7 border-x-2 border-b-2 p-2 md:flex-row">
+                                <div className="flex items-center gap-7 lg:px-4 lg:py-2">
+                                    <div className="flex flex-row gap-2">
+                                        <Select value={perPage} onValueChange={setPerPage}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Jumlah Data" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem value="10">10</SelectItem>
+                                                    <SelectItem value="20">20</SelectItem>
+                                                    <SelectItem value="50">50</SelectItem>
+                                                    <SelectItem value="100">100</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                        <Button
+                                            variant="outline"
+                                            type="button"
+                                            onClick={submitPerPage}
+                                            className="flex items-center gap-2 text-xs"
+                                            disabled={processing}
+                                        >
+                                            Tampilkan
+                                        </Button>
+                                    </div>
+                                    <div className="text-xs text-gray-600">
+                                        halaman {pemeriksaan?.from} ke {pemeriksaan?.to} dari {pemeriksaan?.total} total
+                                    </div>
+                                </div>
+                                <PaginationTable links={pemeriksaan?.links ?? []} data={filter} />
+                            </div>
+                        </section>
                     </div>
                 </div>
-            </Card>
+            </div>
         </AppLayout>
     );
 }

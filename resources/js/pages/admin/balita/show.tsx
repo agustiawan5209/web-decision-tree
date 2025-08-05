@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { SharedData, type BreadcrumbItem } from '@/types';
+import { PemeriksaanTypes, SharedData, type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { Baby, ClipboardList, User2 } from 'lucide-react';
 import { useMemo } from 'react';
@@ -19,12 +19,6 @@ interface Balita {
     alamat: string;
 }
 
-interface Pemeriksaan {
-    detailpemeriksaan: {
-        kriteria_id: string;
-        nilai: string;
-    };
-}
 
 interface DetailPemeriksaan {
     kriteria: {
@@ -40,7 +34,7 @@ interface Attribut {
 export interface PemeriksaanProps {
     orangTua: OrangTua;
     balita: Balita;
-    pemeriksaan: Pemeriksaan[];
+    pemeriksaan: PemeriksaanTypes[];
     detail: DetailPemeriksaan[];
     kriteria: Attribut[];
     breadcrumb: { title: string; href: string }[];
@@ -53,7 +47,7 @@ export default function PemeriksaanShow({ pemeriksaan, balita, orangTua, kriteri
         [breadcrumb],
     );
 
-    const searchById = (id: string, detail: { kriteria_id: string; nilai: string }[]): string => {
+    const searchById = (id: string, detail: { kriteria_id: number; nilai: string }[]): string => {
         if (!detail || !id) return '';
         try {
             const foundElement = detail.find((element) => String(element.kriteria_id).includes(id));
@@ -144,6 +138,9 @@ export default function PemeriksaanShow({ pemeriksaan, balita, orangTua, kriteri
                                                             {item.nama}
                                                         </th>
                                                     ))}
+                                                    <th className="px-4 py-3 text-left text-xs font-medium text-purple-800 dark:text-purple-200">
+                                                        Status Nutrisi
+                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-purple-100 dark:divide-purple-900/30">
@@ -164,6 +161,9 @@ export default function PemeriksaanShow({ pemeriksaan, balita, orangTua, kriteri
                                                                     {searchById(kriterias.id, item.detailpemeriksaan)}
                                                                 </td>
                                                             ))}
+                                                            <td className="px-4 py-3 text-sm whitespace-nowrap text-gray-700 dark:text-gray-300">
+                                                                {item.label}
+                                                            </td>
                                                         </tr>
                                                     ))
                                                 ) : (

@@ -2,124 +2,287 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\User;
 use Inertia\Inertia;
-use App\Models\Label;
+use App\Models\Balita;
 use App\Models\Kriteria;
-use App\Models\JenisTanaman;
-use App\Models\RiwayatKlasifikasi;
-use Illuminate\Support\Facades\App;
-use App\Http\Requests\StoreRiwayatKlasifikasiRequest;
-use App\Http\Requests\UpdateRiwayatKlasifikasiRequest;
+use App\Models\Pemeriksaan;
+use Illuminate\Http\Request;
+use App\Models\DetailPemeriksaan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StorePemeriksaanRequest;
+use App\Http\Requests\UpdatePemeriksaanRequest;
+use App\Models\Label;
 
 class RiwayatKlasifikasiController extends Controller
 {
 
-      private const BASE_BREADCRUMB = [
+    private const BASE_BREADCRUMB = [
         [
             'title' => 'dashboard',
             'href' => '/dashboard',
         ],
         [
-            'title' => 'riwayat-klasifikasi',
-            'href' => '/admin/riwayat-klasifikasi/',
+            'title' => 'data pemeriksaan',
+            'href' => '/pemeriksaan/',
         ],
     ];
+
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-          // Handle the request to display the Decision Tree model index page
-          $data = RiwayatKlasifikasi::orderBy('created_at', 'desc')->paginate(10);
-        //   dd($data);
+        $statusLabel = Label::pluck('nama')->toArray();
+        $pemeriksaanQuery = Pemeriksaan::with([
+            'balita',
+            'balita.orangtua',
+            'detailpemeriksaan',
+            'detailpemeriksaan.kriteria',
+        ]);
+        $pemeriksaanQuery->where('user_id', '!=', Auth::user()->id);
+
+        // Apply filters
+        $this->applyFilters($pemeriksaanQuery, $request);
+
+        $pemeriksaan = $pemeriksaanQuery->paginate($request->input('per_page', 10));
+
         return Inertia::render('admin/riwayat/index', [
-            'riwayat' => $data,
-            "kriteria" => Kriteria::all(),
-            "jenisTanaman" => JenisTanaman::all(),
-            "opsiLabel"=> Label::orderBy('id', 'desc')->get(),
+            'pemeriksaan' => $pemeriksaan,
             'breadcrumb' => self::BASE_BREADCRUMB,
-            'titlePage' => 'DecisionTree',
+            'filter' => $request->only('search', 'order_by', 'date', 'q'),
+            'statusLabel' => $statusLabel,
+            'kriteria' => Kriteria::orderBy('id', 'asc')->get(),
             'can' => [
-                'add' => true,
-                'edit' => true,
-                'show' => true,
-                'delete' => true,
+                'add' => auth()->user()->can('add dataset'),
+                'edit' => auth()->user()->can('edit dataset'),
+                'delete' => auth()->user()->can('delete dataset'),
+                'read' => auth()->user()->can('read dataset'),
             ]
         ]);
+    }
+
+    /**
+     * Apply filters to the query
+     */
+    private function applyFilters($query, Request $request): void
+    {
+        $statusLabel = Label::pluck('nama')->toArray();
+        if ($request->filled('q')) {
+            $query->searchByBalita($request->input('q'));
+        }
+
+        if ($request->filled('date')) {
+            $query->searchByTanggal(Carbon::parse($request->date));
+        }
+
+        if (in_array($request->input('order_by'), ['asc', 'desc'])) {
+            $query->orderBy('created_at', $request->input('order_by'));
+        } elseif (in_array($request->input('order_by'), ['A-Z', 'Z-A'])) {
+            $direction = $request->input('order_by') === 'A-Z' ? 'asc' : 'desc';
+            $query->orderBy('label', $direction);
+        } elseif (in_array($request->input('order_by'), $statusLabel)) {
+            $query->where('label', $request->input('order_by'));
+        }
+
+        $user = Auth::user();
+        if ($user->hasRole('orangtua')) {
+            $query->wherehas('balita', function ($query) use ($user) {
+                $query->where('orang_tua_id', $user->id);
+            });
+        }
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+
+    public function createById(Request $request)
     {
-        //
+        $statusLabel = Label::pluck('nama')->toArray();
+        return Inertia::render('admin/pemeriksaan/create-id', [
+            'kriteria' => Kriteria::orderBy('id')
+                ->whereNotIn('nama', ['status'])
+                ->get(),
+            'orangtua' => User::withoutRole('admin')->get(),
+            'balita' => Balita::orderBy('id')->with(['orangtua'])->get(),
+            'label' => array_map(fn($label) => ['nama' => $label], $statusLabel),
+            'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
+                [
+                    'title' => 'tambah pemeriksaan',
+                    'href' => '/pemeriksaan/create',
+                ],
+            ]),
+        ]);
+    }
+
+
+    public function store(StorePemeriksaanRequest $request)
+    {
+        // Validate the request
+
+        try {
+            $balitaData = $request->except('kriteria', 'tanggal_pemeriksaan');
+
+            $existingBalitaWithNama = Balita::where('nama', '=', $request->nama)->where('orang_tua_id', '=', $request->orang_tua_id)->first();
+            if ($existingBalitaWithNama) {
+                $balita = $existingBalitaWithNama;
+            } else {
+
+                $balita = Balita::create($balitaData);
+            }
+
+            $pemeriksaanData = [
+                'user_id' => Auth::user()->id,
+                'balita_id' => $balita->id,
+                'data_balita' => $balita,
+                'data_pemeriksaan' => $request->input('kriteria'),
+                'tgl_pemeriksaan' => $request->input('tanggal_pemeriksaan'),
+                'label' => $request->input('label'),
+                'rekomendasi' => $request->input('rekomendasi'),
+            ];
+            $pemeriksaan = Pemeriksaan::create($pemeriksaanData);
+
+            $this->createDetailPemeriksaan($pemeriksaan, $request->input('kriteria'), $balita->jenis_kelamin, $request->input('label'));
+
+            return redirect()->route('orangtua.pemeriksaan.index')->with('success', 'Data pemeriksaan berhasil ditambahkan!');
+
+        } catch (\Exception $exception) {
+            $pemeriksaan = Pemeriksaan::latest()->first();
+            if ($pemeriksaan) {
+                $pemeriksaan->delete();
+            }
+            return redirect()
+                ->route('pemeriksaan.create-id')
+                ->with('error', $exception->getMessage());
+        }
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create detail pemeriksaan records
      */
-    public function store(StoreRiwayatKlasifikasiRequest $request)
+    private function createDetailPemeriksaan(Pemeriksaan $pemeriksaan, array $kriteria, string $jenisKelamin, $label): void
     {
-        $klasifikasi = RiwayatKlasifikasi::create([
-            'user'=> json_encode($request->user),
-            'label' => $request->label,
-            'attribut'=> json_encode($request->attribut),
-            'kriteria'=> json_encode($request->kriteria),
-        ]);
-        return response()->json([
-            "success" => true,
-            "data" => $klasifikasi,
-        ]);
+        $detailRecords = array_map(function ($item) use ($pemeriksaan) {
+            return [
+                'pemeriksaan_id' => $pemeriksaan->id,
+                'kriteria_id' => $item['kriteria_id'],
+                'nilai' => $item['nilai'],
+            ];
+        }, $kriteria);
+
+        // Add jenis kelamin kriteriae if exists
+        if ($jenkelKriteria = Kriteria::where('nama', 'like', '%jenis kelamin%')->first()) {
+            $detailRecords[] = [
+                'pemeriksaan_id' => $pemeriksaan->id,
+                'kriteria_id' => $jenkelKriteria->id,
+                'nilai' => $jenisKelamin,
+            ];
+        }
+        if ($statusKriteria = Kriteria::where('nama', 'like', '%status%')->first()) {
+            $detailRecords[] = [
+                'pemeriksaan_id' => $pemeriksaan->id,
+                'kriteria_id' => $statusKriteria->id,
+                'nilai' => $label,
+            ];
+        }
+
+        DetailPemeriksaan::insert($detailRecords);
     }
+
 
     /**
      * Display the specified resource.
      */
-    public function show(RiwayatKlasifikasi $riwayat)
+    public function show(Pemeriksaan $pemeriksaan)
     {
-         return Inertia::render('admin/riwayat/show', [
-            'riwayat' => $riwayat,
-            "kriteria" => Kriteria::all(),
-            "jenisTanaman" => JenisTanaman::all(),
-            "opsiLabel"=> Label::orderBy('id', 'desc')->get(),
-            'breadcrumb' => self::BASE_BREADCRUMB,
-            'titlePage' => 'DecisionTree',
-            'can' => [
-                'add' => true,
-                'edit' => true,
-                'show' => true,
-                'delete' => true,
-            ]
+        $pemeriksaan->load([
+            'balita',
+            'balita.orangtua',
+            'balita.pemeriksaan',
+            'balita.pemeriksaan.detailpemeriksaan',
+            'detailpemeriksaan',
+            'detailpemeriksaan.kriteria',
+        ]);
+
+        return Inertia::render('admin/riwayat/show', [
+            'pemeriksaan' => $pemeriksaan,
+            'balita' => $pemeriksaan->balita,
+            'orangTua' => $pemeriksaan->balita->orangtua,
+            'detail' => $pemeriksaan->detailpemeriksaan,
+            'dataPemeriksaanBalita' => $pemeriksaan->balita->pemeriksaan,
+            'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
+                [
+                    'title' => 'detail pemeriksaan',
+                    'href' => '/pemeriksaan/show',
+                ],
+            ]),
+            'kriteria' => Kriteria::orderBy('id', 'asc')->get(),
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(RiwayatKlasifikasi $riwayatKlasifikasi)
+    public function edit(Pemeriksaan $pemeriksaan)
     {
-        //
+        $statusLabel = Label::pluck('nama')->toArray();
+        return Inertia::render('admin/pemeriksaan/edit', [
+            'kriteria' => Kriteria::orderBy('id')->get(),
+            'label' => array_map(fn($label) => ['nama' => $label], $statusLabel),
+            'pemeriksaan' => $pemeriksaan,
+            'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
+                [
+                    'title' => 'edit pemeriksaan',
+                    'href' => '/pemeriksaan/edit',
+                ],
+            ]),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRiwayatKlasifikasiRequest $request, RiwayatKlasifikasi $riwayatKlasifikasi)
+    public function update(UpdatePemeriksaanRequest $request, Pemeriksaan $pemeriksaan)
     {
+        DB::transaction(function () use ($request, $pemeriksaan) {
+            $pemeriksaan->update([
+                'data_pemeriksaan' => $request->input('kriteria'),
+                'tgl_pemeriksaan' => $request->input('tgl_pemeriksaan'),
+                'label' => $request->input('label'),
+            ]);
 
+            DetailPemeriksaan::where('pemeriksaan_id', $pemeriksaan->id)->delete();
+
+            $detailRecords = array_map(function ($kriteriaId, $nilai) use ($pemeriksaan) {
+                return [
+                    'pemeriksaan_id' => $pemeriksaan->id,
+                    'kriteria_id' => $kriteriaId,
+                    'nilai' => $nilai,
+                ];
+            }, array_keys($request->kriteria), $request->kriteria);
+
+            DetailPemeriksaan::insert($detailRecords);
+        });
+
+        return redirect()
+            ->route('pemeriksaan.index')
+            ->with('success', 'Data pemeriksaan berhasil diupdate!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(RiwayatKlasifikasi $riwayatKlasifikasi)
+    public function destroy(Pemeriksaan $pemeriksaan)
     {
-         $databaseHelper = App::make('databaseHelper');
-        return $databaseHelper(
-            operation: fn() => $riwayatKlasifikasi->delete(),
-            successMessage: 'Kategori Berhasil Di Hapus!',
-            redirectRoute: 'admin.klasifikasi.index'
-        );
+        $pemeriksaan->delete();
+
+
+        return redirect()
+            ->route('pemeriksaan.index')
+            ->with('success', 'Data pemeriksaan berhasil dihapus!');
     }
 }

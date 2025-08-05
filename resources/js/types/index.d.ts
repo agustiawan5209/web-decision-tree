@@ -50,39 +50,66 @@ export interface User {
 }
 
 
-export interface KriteriaTypes{
+export interface KriteriaTypes {
     id: number;
     nama: string;
     deskripsi: string;
 }
-export interface LabelTypes{
+export interface LabelTypes {
     id: number;
     nama: string;
     deskripsi: string;
 }
-export interface JenisTanamanTypes{
+export interface JenisTanamanTypes {
     id: number;
     nama: string;
     deskripsi: string;
 }
 
 
-export interface DatasetTypes{
+export interface DatasetTypes {
     id: number;
-    label:string;
+    label: string;
     data: string[];
     created_at?: string;
     detail: DetailDatasetTypes[];
 }
 
-export interface DetailDatasetTypes{
+export interface DetailDatasetTypes {
     id: number;
     kriteria_id: number;
     dataset_id: number;
     nilai: string;
     kriteria: KriteriaTypes;
 }
+export interface DetailPemeriksaanTypes {
+    id: number;
+    kriteria_id: number;
+    pemeriksaan_id: number;
+    nilai: string;
+    kriteria: KriteriaTypes;
+}
+export interface BalitaTypes{
+    id: number;
+    nama: string;
+    tempat_lahir: string;
+    tanggal_lahir: string;
+    jenis_kelamin: string;
+    orang_tua_id: string;
+    orangtua: User;
+}
 
+export interface PemeriksaanTypes {
+    id: number;
+    balita_id: number;
+    data_balita: string[];
+    balita: BalitaTypes;
+    tgl_pemeriksaan: string;
+    data_pemeriksaan: string;
+    label: string;
+    rekomendasi: string;
+    detailpemeriksaan: DetailPemeriksaanTypes[];
+}
 
 interface PredictionResult {
     prediction: number | number[] | null;

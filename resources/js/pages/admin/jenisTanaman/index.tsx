@@ -177,13 +177,13 @@ export default function JenisTanamanIndex({ jenisTanaman, breadcrumb, titlePage,
             <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>{editId ? `Edit` : `Tambah`} JenisTanaman</DialogTitle>
+                        <DialogTitle>{editId ? `Edit` : `Tambah`} Jenis Sayuran</DialogTitle>
                     </DialogHeader>
                     <form className="space-y-4" onSubmit={submit}>
                         <div className="grid gap-4">
                             <div className="grid gap-2">
                                 <Label htmlFor="nama" className="text-sm font-medium">
-                                    Nama JenisTanaman
+                                    Nama Label
                                 </Label>
                                 <Input
                                     type="text"
@@ -193,13 +193,13 @@ export default function JenisTanamanIndex({ jenisTanaman, breadcrumb, titlePage,
                                     name="nama"
                                     className="input"
                                     disabled={processing}
-                                    placeholder="Masukkan nama jenisTanaman"
+                                    placeholder="Masukkan nama label"
                                 />
                                 <InputError message={errors.nama} className="mt-2" />
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="deskripsi" className="text-sm font-medium">
-                                    Keterangan
+                                    Keterangan Sayuran
                                 </Label>
                                 <textarea
                                     rows={4}
@@ -209,7 +209,7 @@ export default function JenisTanamanIndex({ jenisTanaman, breadcrumb, titlePage,
                                     name="deskripsi"
                                     className="border-input file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                                     disabled={processing}
-                                    placeholder="Masukkan deskripsi jenisTanaman"
+                                    placeholder="Masukkan deskripsi sayuran"
                                 />
                                 <InputError message={errors.deskripsi} className="mt-2" />
                             </div>

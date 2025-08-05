@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('pemeriksaans', function (Blueprint $table) {
             $table->id();
-             $table->foreignId('balita_id')->constrained('balitas')->onDelete('cascade');
+            $table->foreignId('user_id');
+            $table->foreignId('balita_id')->constrained('balitas')->onDelete('cascade');
             $table->json('data_balita')->nullable();
             $table->date('tgl_pemeriksaan');
             $table->json('data_pemeriksaan');
-            $table->text('alasan')->nullable();
+            $table->text('rekomendasi')->nullable();
             $table->string('label', 50)->nullable();
             $table->text('keterangan')->nullable();
             $table->timestamps();

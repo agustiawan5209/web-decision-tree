@@ -11,16 +11,19 @@ class Pemeriksaan extends Model
     use HasFactory;
 
     protected $fillable = [
+        "user_id",
         "balita_id",
         "data_balita",
         "tgl_pemeriksaan",
         "data_pemeriksaan",
         "label",
-        "alasan",
+        "rekomendasi",
     ];
 
     protected $casts = [
-        'data_balita'=> 'json',
+        'data_balita' => 'array',
+        'data_pemeriksaan' => 'array',
+
     ];
 
     public function balita()
@@ -28,7 +31,8 @@ class Pemeriksaan extends Model
         return $this->belongsTo(Balita::class);
     }
 
-    public function detailpemeriksaan(){
+    public function detailpemeriksaan()
+    {
         return $this->hasMany(DetailPemeriksaan::class, 'pemeriksaan_id', 'id');
     }
 
@@ -39,11 +43,11 @@ class Pemeriksaan extends Model
      * @param  string|null  $balita
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSearchByBalita($query, $balita)
+    public function scopeSearchByBalita($query, $search)
     {
-        $query->when($balita ?? null, function ($query, $balita) {
-            $query->whereHas('balita', function ($query) use ($balita) {
-                $query->where('nama', 'LIKE', '%' . $balita . '%');
+        $query->when($search ?? null, function ($query, $search) {
+            $query->whereHas('balita', function ($query) use ($search) {
+                $query->where('nama', 'LIKE', '%' . $search . '%');
             });
         });
     }
@@ -57,13 +61,13 @@ class Pemeriksaan extends Model
     }
 
 
-/**
- * Scope a query to search by examination date.
- *
- * @param  \Illuminate\Database\Eloquent\Builder  $query
- * @param  string|null  $tanggal
- * @return void
- */
+    /**
+     * Scope a query to search by examination date.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string|null  $tanggal
+     * @return void
+     */
 
     public function scopeSearchByTanggal($query, $tanggal)
     {

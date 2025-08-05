@@ -14,15 +14,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StorePemeriksaanRequest;
 use App\Http\Requests\UpdatePemeriksaanRequest;
+use App\Models\Label;
 
 class PemeriksaanController extends Controller
 {
-    private const STATUS_LABELS = [
-        'gizi buruk',
-        'gizi kurang',
-        'gizi baik',
-        'gizi lebih',
-    ];
 
     private const BASE_BREADCRUMB = [
         [
@@ -35,17 +30,20 @@ class PemeriksaanController extends Controller
         ],
     ];
 
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $statusLabel = Label::pluck('nama')->toArray();
         $pemeriksaanQuery = Pemeriksaan::with([
             'balita',
             'balita.orangtua',
             'detailpemeriksaan',
             'detailpemeriksaan.kriteria',
         ]);
+        $pemeriksaanQuery->where('user_id', '=', Auth::user()->id);
 
         // Apply filters
         $this->applyFilters($pemeriksaanQuery, $request);
@@ -56,7 +54,7 @@ class PemeriksaanController extends Controller
             'pemeriksaan' => $pemeriksaan,
             'breadcrumb' => self::BASE_BREADCRUMB,
             'filter' => $request->only('search', 'order_by', 'date', 'q'),
-            'statusLabel' => self::STATUS_LABELS,
+            'statusLabel' => $statusLabel,
             'kriteria' => Kriteria::orderBy('id', 'asc')->get(),
             'can' => [
                 'add' => auth()->user()->can('add dataset'),
@@ -72,6 +70,7 @@ class PemeriksaanController extends Controller
      */
     private function applyFilters($query, Request $request): void
     {
+        $statusLabel = Label::pluck('nama')->toArray();
         if ($request->filled('q')) {
             $query->searchByBalita($request->input('q'));
         }
@@ -85,7 +84,7 @@ class PemeriksaanController extends Controller
         } elseif (in_array($request->input('order_by'), ['A-Z', 'Z-A'])) {
             $direction = $request->input('order_by') === 'A-Z' ? 'asc' : 'desc';
             $query->orderBy('label', $direction);
-        } elseif (in_array($request->input('order_by'), self::STATUS_LABELS)) {
+        } elseif (in_array($request->input('order_by'), $statusLabel)) {
             $query->where('label', $request->input('order_by'));
         }
 
@@ -103,13 +102,14 @@ class PemeriksaanController extends Controller
 
     public function createById(Request $request)
     {
+        $statusLabel = Label::pluck('nama')->toArray();
         return Inertia::render('admin/pemeriksaan/create-id', [
             'kriteria' => Kriteria::orderBy('id')
                 ->whereNotIn('nama', ['status'])
                 ->get(),
             'orangtua' => User::withoutRole('admin')->get(),
             'balita' => Balita::orderBy('id')->with(['orangtua'])->get(),
-            'label' => array_map(fn($label) => ['nama' => $label], self::STATUS_LABELS),
+            'label' => array_map(fn($label) => ['nama' => $label], $statusLabel),
             'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
                     'title' => 'tambah pemeriksaan',
@@ -122,7 +122,6 @@ class PemeriksaanController extends Controller
 
     public function store(StorePemeriksaanRequest $request)
     {
-        // dd($request->all());
         // Validate the request
 
         try {
@@ -137,24 +136,25 @@ class PemeriksaanController extends Controller
             }
 
             $pemeriksaanData = [
+                'user_id' => Auth::user()->id,
                 'balita_id' => $balita->id,
-                'data_balita' => json_encode($balita),
-                'data_pemeriksaan' => json_encode($request->input('kriteria')),
+                'data_balita' => $balita,
+                'data_pemeriksaan' => $request->input('kriteria'),
                 'tgl_pemeriksaan' => $request->input('tanggal_pemeriksaan'),
                 'label' => $request->input('label'),
-                'alasan' => $request->input('alasan'),
+                'rekomendasi' => $request->input('rekomendasi'),
             ];
             $pemeriksaan = Pemeriksaan::create($pemeriksaanData);
 
             $this->createDetailPemeriksaan($pemeriksaan, $request->input('kriteria'), $balita->jenis_kelamin, $request->input('label'));
 
-            if (auth()->user()->hasRole('orangtua')) {
+            if (auth()->user()->hasRole('user')) {
                 return redirect()->route('orangtua.pemeriksaan.index')->with('success', 'Data pemeriksaan berhasil ditambahkan!');
             }
 
-             return redirect()
-                    ->route('pemeriksaan.index', ['pemeriksaan' => $pemeriksaan->id])
-                    ->with('success', 'Data pemeriksaan berhasil ditambahkan!');
+            return redirect()
+                ->route('pemeriksaan.index', ['pemeriksaan' => $pemeriksaan->id])
+                ->with('success', 'Data pemeriksaan berhasil ditambahkan!');
         } catch (\Exception $exception) {
             $pemeriksaan = Pemeriksaan::latest()->first();
             if ($pemeriksaan) {
@@ -234,9 +234,10 @@ class PemeriksaanController extends Controller
      */
     public function edit(Pemeriksaan $pemeriksaan)
     {
+        $statusLabel = Label::pluck('nama')->toArray();
         return Inertia::render('admin/pemeriksaan/edit', [
             'kriteria' => Kriteria::orderBy('id')->get(),
-            'label' => array_map(fn($label) => ['nama' => $label], self::STATUS_LABELS),
+            'label' => array_map(fn($label) => ['nama' => $label], $statusLabel),
             'pemeriksaan' => $pemeriksaan,
             'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
@@ -254,7 +255,7 @@ class PemeriksaanController extends Controller
     {
         DB::transaction(function () use ($request, $pemeriksaan) {
             $pemeriksaan->update([
-                'data_pemeriksaan' => $request->input('data_pemeriksaan'),
+                'data_pemeriksaan' => $request->input('kriteria'),
                 'tgl_pemeriksaan' => $request->input('tgl_pemeriksaan'),
                 'label' => $request->input('label'),
             ]);

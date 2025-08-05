@@ -76,6 +76,7 @@ const ClassifyPemeriksaan = ({
     const [model] = useState(new DecisionTreeModel());
     const [openDialog, setOpenDialog] = useState(false);
     const [prediction, setPrediction] = useState<PredictionResult | null>(null);
+    const [isError, setIsError] = useState(false);
     const today = new Date();
     const day = today.toISOString().split('T')[0];
 
@@ -136,9 +137,10 @@ const ClassifyPemeriksaan = ({
                 setToast({
                     title: 'Error',
                     show: true,
-                    message: `${(error as Error).message}, Lakukan training sebelum masuk klasifikasi`,
+                    message: `${(error as Error).message}, Lakukan training pada halaman decision Tree sebelum masuk Pemeriksaan Nutrisi Anak`,
                     type: 'error',
                 });
+                setIsError(true);
             } finally {
                 setLoading(false);
             }
@@ -251,7 +253,7 @@ const ClassifyPemeriksaan = ({
                 onOpenChange={() => setToast((prev) => ({ ...prev, show: false }))}
                 title={toast.title}
                 description={toast.message}
-                duration={5000}
+                duration={10000}
                 variant={toast.type}
             />
 
@@ -326,7 +328,7 @@ const ClassifyPemeriksaan = ({
                                             }}
                                         >
                                             <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select gender" />
+                                                <SelectValue placeholder="Select Jenis Kelamin" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {['Laki-laki', 'Perempuan'].map((gender, idx) => (
@@ -354,7 +356,7 @@ const ClassifyPemeriksaan = ({
                         <div className="flex flex-wrap gap-3 pt-4">
                             <Button
                                 type="submit"
-                                disabled={loading || !model}
+                                disabled={loading || !model || isError}
                                 className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600"
                             >
                                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}

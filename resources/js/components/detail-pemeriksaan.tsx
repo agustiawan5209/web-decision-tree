@@ -1,3 +1,5 @@
+import { PemeriksaanTypes } from "@/types";
+
 interface DetailPemeriksaanProps {
     detail: {
         kriteria: {
@@ -5,13 +7,7 @@ interface DetailPemeriksaanProps {
         };
         nilai: number | string;
     }[];
-    pemeriksaan: {
-        id: string;
-        tgl_pemeriksaan: string;
-        label: string;
-        detailpemeriksaan: any;
-        alasan: string;
-    };
+    pemeriksaan: PemeriksaanTypes;
 }
 
 function DetailPemeriksaan({ detail, pemeriksaan }: DetailPemeriksaanProps) {
@@ -32,9 +28,9 @@ function DetailPemeriksaan({ detail, pemeriksaan }: DetailPemeriksaanProps) {
                     ))}
 
                 <div className="grid grid-cols-3 gap-4 px-4 py-3">
-                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Alasan</div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">rekomendasi sayuran</div>
                     <div className="col-span-2 text-sm text-gray-900 dark:text-gray-100">
-                        <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: pemeriksaan.alasan }} />
+                        <div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: pemeriksaan.rekomendasi }} />
                     </div>
                 </div>
             </div>
