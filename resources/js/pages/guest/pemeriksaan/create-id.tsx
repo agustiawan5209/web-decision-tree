@@ -154,7 +154,7 @@ export default function PemeriksaanGuestCreate({ breadcrumb, balita, kriteria, o
                                                 <p className="font-medium text-gray-900 dark:text-white">{auth.user.alamat}</p>
                                             </div>
                                             <div className="space-y-1 md:col-span-1">
-                                                <p className="text-sm text-gray-500 dark:text-gray-400">No. HP</p>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">No. HP/Whatsapp</p>
                                                 <p className="font-medium text-gray-900 dark:text-white">{auth.user.nohp}</p>
                                             </div>
                                         </div>

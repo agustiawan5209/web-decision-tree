@@ -229,6 +229,10 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">Alamat</p>
                                                 <p className="font-medium text-gray-900 dark:text-white">{selectedOrangtua.alamat}</p>
                                             </div>
+                                            <div className="space-y-1 md:col-span-1">
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">No. Hp/Whatsapp</p>
+                                                <p className="font-medium text-gray-900 dark:text-white">{selectedOrangtua.nohp}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
