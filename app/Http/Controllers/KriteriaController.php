@@ -7,6 +7,8 @@ use App\Models\Kriteria;
 use Illuminate\Support\Facades\App;
 use App\Http\Requests\StoreKriteriaRequest;
 use App\Http\Requests\UpdateKriteriaRequest;
+use App\Models\Dataset;
+use App\Models\DetailDataset;
 use Illuminate\Http\Request;
 
 class KriteriaController extends Controller
@@ -29,10 +31,10 @@ class KriteriaController extends Controller
         return Inertia::render("admin/kriteria/index", [
             'kriteria' => Kriteria::all(),
             'breadcrumb' => self::BASE_BREADCRUMB,
-            'titlePage'=> 'Kriteria',
+            'titlePage' => 'Kriteria',
         ]);
     }
- private function applyFilters($query, Request $request): void
+    private function applyFilters($query, Request $request): void
     {
         if ($request->filled('q')) {
             $query->searchByName($request->input('q'));
@@ -74,13 +76,28 @@ class KriteriaController extends Controller
     {
         $databaseHelper = App::make('databaseHelper');
         return $databaseHelper(
-            operation: fn() => Kriteria::create([
-                'nama' => $request->nama,
-                'deskripsi' => $request->deskripsi,
-            ]),
+            operation: fn() => $this->addStore($request),
             successMessage: 'Kategori Berhasil Ditambahkan!',
             redirectRoute: 'admin.kriteria.index'
         );
+    }
+
+    public function addStore($request)
+    {
+        $kriteria = Kriteria::create([
+            'nama' => $request->nama,
+            'deskripsi' => $request->deskripsi,
+        ]);
+
+        $dataset = Dataset::all();
+
+        foreach ($dataset as $val) {
+            DetailDataset::create([
+                'kriteria_id' => $kriteria->id,
+                'dataset_id' => $val->id,
+                'nilai' => 0,
+            ]);
+        }
     }
 
 
@@ -124,8 +141,8 @@ class KriteriaController extends Controller
         $databaseHelper = App::make('databaseHelper');
         return $databaseHelper(
             operation: fn() => $kriteria->update([
-                'nama'=> $request->nama,
-                'deskripsi'=> $request->deskripsi,
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
             ]),
             successMessage: 'Kategori Berhasil Di Update!',
             redirectRoute: 'admin.kriteria.index'

@@ -44,6 +44,7 @@ export default function EditDatasetView({ breadcrumb, kriteria, titlePage, datas
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+
         const key = name.split('.')[1];
         setData((prevData) => ({
             ...prevData,
@@ -58,7 +59,32 @@ export default function EditDatasetView({ breadcrumb, kriteria, titlePage, datas
             }),
         }));
     };
-
+    const handleSelectChange = (name: string, value: string) => {
+        if (name && value !== undefined && data && data.attribut) {
+            if (name === 'label') {
+                setData((prevData) => ({
+                    ...prevData,
+                    [name]: value,
+                }));
+            } else {
+                setData((prevData) => ({
+                    ...prevData,
+                    attribut: prevData.attribut.map((item, index) => {
+                        if (index === Number(name)) {
+                            return {
+                                ...item,
+                                nilai: value,
+                            };
+                        } else {
+                            return item;
+                        }
+                    }),
+                }));
+            }
+        } else {
+            console.error('Invalid data: name, value, or attribut may be undefined');
+        }
+    };
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // Use put instead of post for update
@@ -70,27 +96,6 @@ export default function EditDatasetView({ breadcrumb, kriteria, titlePage, datas
                 // Optional: Add success message or redirect
             },
         });
-    };
-
-    const handleSelectChange = (name: string, value: string) => {
-        if (name && value !== undefined && data && data.attribut) {
-            if (name === 'label') {
-                setData((prevData) => ({
-                    ...prevData,
-                    [name]: value,
-                }));
-            } else {
-                setData((prevData) => ({
-                    ...prevData,
-                    attribut: {
-                        ...prevData.attribut,
-                        [name]: value,
-                    },
-                }));
-            }
-        } else {
-            console.error('Invalid data: name, value, or attribut may be undefined');
-        }
     };
 
     return (
