@@ -51,8 +51,8 @@ export default function DecisionTreeView({ dataTraining, breadcrumb, titlePage, 
                         <div className="mt-6">
 
             <div className="mb-10 text-center">
-                <h1 className="mb-2 text-4xl font-bold text-gray-800">Nutrisi Klasifikasi</h1>
-                <p className="mx-auto max-w-2xl text-gray-600">Klasifikasi Jenis Sayuran Berdasarkan Nutrisi untuk Anak</p>
+                <h1 className="mb-2 text-4xl font-bold text-gray-800">Nutrisi Rekomendasi</h1>
+                <p className="mx-auto max-w-2xl text-gray-600">Rekomendasi Jenis Sayuran Berdasarkan Nutrisi untuk Anak</p>
             </div>
 
                             <FormClassifier kriteria={kriteria} canEvaluate={true} />

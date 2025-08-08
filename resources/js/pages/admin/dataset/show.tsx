@@ -57,7 +57,7 @@ export default function HarvestDetailPage({ dataset, breadcrumb, titlePage }: Ha
                                         />
                                     </svg>
                                 </div>
-                                <h3 className="text-xl font-semibold text-gray-800">Klasifikasi</h3>
+                                <h3 className="text-xl font-semibold text-gray-800">Rekomendasi</h3>
                             </div>
                             <div className="space-y-4">
 

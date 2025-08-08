@@ -24,7 +24,7 @@ export default function KlasifikasiView({ titlePage, kriteria, jenisTanaman, ops
                                     </Button>
                                 </Link>
                                 <div className="mb-6">
-                                    <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Klasifikasi Nutrisi</h2>
+                                    <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Rekomendasi Nutrisi</h2>
                                     <p className="mt-1 text-gray-500 dark:text-gray-300">Masukkan kriteria untuk mendapatkan klasifikasi nutrisi</p>
                                 </div>
                                 <FormClassifier kriteria={kriteria}  />

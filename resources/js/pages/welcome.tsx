@@ -9,7 +9,7 @@ export default function LandingPage() {
     const features = [
         {
             icon: <Brain className="h-8 w-8 text-green-600" />,
-            title: 'AI-Powered Klasifikasi',
+            title: 'AI-Powered Rekomendasi',
             description: 'Algoritma Decision Tree yang canggih menganalisis data nutrisi untuk memberikan rekomendasi yang akurat dan optimal.',
         },
         {
@@ -48,7 +48,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-2xl md:text-4xl font-bold mb-4">
-              Manfaat Sistem Klasifikasi
+              Manfaat Sistem Rekomendasi
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Temukan berbagai manfaat dari sistem klasifikasi nutrisi sayuran
@@ -115,7 +115,7 @@ export default function LandingPage() {
 // Benefits data
 const benefits = [
   {
-    title: "Klasifikasi Akurat",
+    title: "Rekomendasi Akurat",
     description:
       "Menggunakan algoritma Decision Tree untuk mengklasifikasikan sayuran berdasarkan nilai nutrisi dengan akurasi tinggi.",
     icon: <Leaf className="h-6 w-6 text-primary" />,

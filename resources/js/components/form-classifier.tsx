@@ -262,7 +262,7 @@ const FormClassifier = ({
                                 className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600"
                             >
                                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                                Mulai Klasifikasi
+                                Mulai Rekomendasi
                             </Button>
                         </div>
                     </form>
@@ -284,7 +284,7 @@ const FormClassifier = ({
                                     }`}
                                 />
                                 <div className="ml-4">
-                                    <h3 className="text-lg font-semibold">Hasil Klasifikasi</h3>
+                                    <h3 className="text-lg font-semibold">Hasil Rekomendasi</h3>
                                     <div className="mt-1 text-2xl font-bold">{prediction.label}</div>
                                 </div>
                             </div>
@@ -294,7 +294,7 @@ const FormClassifier = ({
                             <div className="flex items-center">
                                 <div className="h-5 w-5 flex-shrink-0 rounded-full bg-gray-500" />
                                 <div className="ml-4">
-                                    <h3 className="text-lg font-semibold">Hasil Klasifikasi</h3>
+                                    <h3 className="text-lg font-semibold">Hasil Rekomendasi</h3>
                                     <div className="mt-1 text-2xl font-bold">-</div>
                                 </div>
                             </div>

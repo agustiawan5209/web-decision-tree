@@ -22,7 +22,7 @@ const mainNavItems: NavItem[] = [
         { title: 'Jenis Sayuran', icon: LeafyGreen , href: route('admin.jenisTanaman.index'), },
         { title: 'Training Nutrisi', icon: FolderClockIcon , href: route('admin.dataset.index'),  },
         { title: 'Decision Tree', icon: GalleryHorizontal , href: route('DecisionTree.index'), },
-        { title: 'Riwayat Klasifikasi', icon: FolderClockIcon , href: route('admin.riwayat.index'), },
+        { title: 'Riwayat Rekomendasi', icon: FolderClockIcon , href: route('admin.riwayat.index'), },
 ];
 
 const rightNavItems: NavItem[] = [

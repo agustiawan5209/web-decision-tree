@@ -165,7 +165,7 @@ export default function PemeriksaanGuestCreate({ breadcrumb, balita, kriteria, o
                                 {kriteria && (
                                     <div className="mt-4">
                                         <div className="mb-4">
-                                            <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Klasifikasi Pemeriksaan</h3>
+                                            <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Rekomendasi Pemeriksaan</h3>
                                             <p className="text-sm text-gray-500 dark:text-gray-400">Isi form berikut untuk melakukan klasifikasi</p>
                                         </div>
                                         <ClassifyPemeriksaan

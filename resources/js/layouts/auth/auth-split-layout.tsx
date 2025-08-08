@@ -43,7 +43,7 @@ export default function AuthSplitLayout({ children, title, description }: PropsW
                     >
                         <motion.div className="flex-1" variants={itemVariants}>
                             <h1 className="mb-6 text-center text-xl font-bold text-primary md:text-3xl">
-                                Klasifikasi Jenis Sayuran Berdasarkan Nutrisi untuk Anak
+                                Rekomendasi Jenis Sayuran Berdasarkan Nutrisi untuk Anak
                             </h1>
                             <p className="mb-8 text-justify text-base text-muted-foreground">
                                 Sistem cerdas menggunakan Algoritma Decision Tree untuk membantu orang tua dan guru mengklasifikasikan sayuran

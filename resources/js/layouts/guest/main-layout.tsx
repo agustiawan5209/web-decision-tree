@@ -57,8 +57,8 @@ export default function MainLayout({ children }: PropsWithChildren) {
     ];
     const AuthNavItems = [
         { name: 'Home', path: route('guest.dashboard'), icon: <Home className="h-4 w-4" /> },
-        { name: 'Mulai Klasifikasi', path: route('guest.klasifikasi.create-id'), icon: <FormInput className="h-4 w-4" /> },
-        { name: 'Riwayat Klasifikasi', path: route('guest.klasifikasi.index'), icon: <TimerIcon className="h-4 w-4" /> },
+        { name: 'Mulai Rekomendasi', path: route('guest.klasifikasi.create-id'), icon: <FormInput className="h-4 w-4" /> },
+        { name: 'Riwayat Rekomendasi', path: route('guest.klasifikasi.index'), icon: <TimerIcon className="h-4 w-4" /> },
     ];
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
