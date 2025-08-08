@@ -4,32 +4,14 @@ import PaginationTable from '@/components/pagination-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import UserAuthLayout from '@/layouts/guest/user-auth-layout';
 import { PemeriksaanTypes, type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 
 interface PemeriksaanProps {
-    pemeriksaan?: {
-        current_page: number;
-        data: PemeriksaanTypes[];
-        first_page_url: string;
-        from: number;
-        last_page: number;
-        last_page_url: string;
-        next_page_url?: string;
-        path: string;
-        per_page: number;
-        prev_page_url: string;
-        to: number;
-        total: number;
-        links: Array<{
-            url: string | null;
-            label: string;
-            active: boolean;
-        }>;
-    };
+    pemeriksaan?: PemeriksaanTypes[];
     breadcrumb?: Array<{ title: string; href: string }>;
     filter: {
         q: string;
@@ -156,9 +138,11 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
 
     // Memoize table rows to prevent unnecessary re-renders
     const tableRows = useMemo(() => {
-        if (!pemeriksaan?.data?.length) return null;
+        if (!pemeriksaan?.length) return (<TableRow>
+            <TableCell colSpan={7} className='text-center p-4 bg-gray-300 text-lg'>Data Kosong</TableCell>
+        </TableRow>);
 
-        return pemeriksaan.data.map((item, index) => {
+        return pemeriksaan.map((item, index) => {
             let read_url = null;
             read_url = route('guest.klasifikasi.show', { pemeriksaan: item.id });
             let delete_url = null;
@@ -168,7 +152,7 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
             return (
                 <CollapsibleRow
                     key={item.id} // Using item.id as key is better than index
-                    num={index + 1 + (pemeriksaan.current_page - 1) * pemeriksaan.per_page}
+                    num={index + 1 }
                     title={item.tgl_pemeriksaan}
                     columnData={[item.balita.nama, item.balita.orangtua.name, `${item.balita.tempat_lahir}/${item.balita.tanggal_lahir}`, item.label]}
                     delete="delete"
@@ -268,13 +252,6 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                                 </Table>
                             </div>
                         </div>
-                        {pemeriksaan?.links && (
-                            <section className="w-full">
-                                <div className="flex flex-col items-center justify-between gap-7 border-x-2 border-b-2 p-2 md:flex-row">
-                                    <PaginationTable links={pemeriksaan?.links ?? []} data={filter} />
-                                </div>
-                            </section>
-                        )}
                     </div>
                 </div>
             </div>

@@ -49,7 +49,7 @@ class KlasifikasiController extends Controller
         // Apply filters
         $this->applyFilters($pemeriksaanQuery, $request);
 
-        $pemeriksaan = $pemeriksaanQuery->paginate($request->input('per_page', 30));
+        $pemeriksaan = $pemeriksaanQuery->get();
 
         return Inertia::render('guest/pemeriksaan/index', [
             'pemeriksaan' => $pemeriksaan,

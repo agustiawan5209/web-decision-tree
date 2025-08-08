@@ -32,6 +32,7 @@ export default function Register() {
         e.preventDefault();
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
+            onError:(err)=> console.log(err),
         });
     };
 
