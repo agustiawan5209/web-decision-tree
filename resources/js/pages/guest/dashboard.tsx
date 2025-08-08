@@ -9,16 +9,17 @@ interface GuestDashboardProps {
     meanKriteriaValue: string[];
     distributionLabel: string[];
     label: LabelTypes[];
+     training: number;
+    kriteria: number;
 }
 
-export default function GuestDashboard({ distributionLabel, label }: GuestDashboardProps) {
+export default function GuestDashboard({ distributionLabel, label , training,kriteria}: GuestDashboardProps) {
     return (
         <UserAuthLayout>
             <Head title="Dashboard" />
             <div className="mx-auto max-w-7xl">
                 <header className="mb-8">
-                    <h1 className="text-3xl font-semibold text-foreground">Jenis Sayuran</h1>
-                    <p className="mt-1 text-muted-foreground">Monitor and maintain optimal growing conditions</p>
+                    <p className="mt-1 text-muted-foreground">Dashboard Klasifikasi Jenis Sayuran Berdasarkan Nutrisi Anak</p>
                 </header>
 
                 {/* Metric Cards */}
@@ -35,6 +36,8 @@ export default function GuestDashboard({ distributionLabel, label }: GuestDashbo
                                     trend="up"
                                 />
                             ))}
+                            <KPICard title={`Total Dataset`} value={training} unit={'data'} status="normal" trend="up" />
+                            <KPICard title={`Total Kriteria`} value={kriteria} unit={'data'} status="normal" trend="up" />
                         </div>
                     </div>
                 </section>

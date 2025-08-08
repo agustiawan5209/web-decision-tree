@@ -95,9 +95,9 @@ export default function EditDatasetView({ breadcrumb, kriteria, titlePage, datas
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={titlePage ?? 'Edit Data Dataset Tanaman'} />
+            <Head title={titlePage ?? 'Edit Data Dataset Nutrisi'} />
             <div className="mx-auto max-w-7xl rounded-xl border border-gray-100 bg-white p-6 shadow">
-                <h1 className="mb-6 text-center text-xl font-semibold text-primary">Edit Data Dataset Tanaman</h1>
+                <h1 className="mb-6 text-center text-xl font-semibold text-primary">Edit Data Dataset Nutrisi</h1>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Informasi Dasar */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -135,7 +135,7 @@ export default function EditDatasetView({ breadcrumb, kriteria, titlePage, datas
                                                 <SelectValue placeholder="Select " />
                                             </SelectTrigger>
                                             <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
-                                                {['laki-laki', 'perempuan'].map((gejala, idx) => (
+                                                {['Laki-laki', 'Perempuan'].map((gejala, idx) => (
                                                     <SelectItem key={idx} value={gejala} className="px-4 py-2 hover:bg-gray-50">
                                                         {gejala}
                                                     </SelectItem>

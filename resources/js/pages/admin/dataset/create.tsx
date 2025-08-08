@@ -132,7 +132,7 @@ export default function FormDatasetView({ breadcrumb, kriteria, titlePage, opsiL
                                                 <SelectValue placeholder="Select " />
                                             </SelectTrigger>
                                             <SelectContent className="rounded-lg border border-gray-200 shadow-lg">
-                                                {['laki-laki', 'perempuan'].map((gejala, idx) => (
+                                                {['Laki-laki', 'Perempuan'].map((gejala, idx) => (
                                                     <SelectItem key={idx} value={gejala} className="px-4 py-2 hover:bg-gray-50">
                                                         {gejala}
                                                     </SelectItem>

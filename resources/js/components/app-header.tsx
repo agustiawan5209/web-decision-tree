@@ -20,7 +20,7 @@ const mainNavItems: NavItem[] = [
         { title: 'Kriteria', icon: BarChart2Icon , href: route('admin.kriteria.index'),  },
         { title: 'Label', icon: BarChart2Icon , href: route('admin.label.index'),  },
         { title: 'Jenis Sayuran', icon: LeafyGreen , href: route('admin.jenisTanaman.index'), },
-        { title: 'Training Tanaman', icon: FolderClockIcon , href: route('admin.dataset.index'),  },
+        { title: 'Training Nutrisi', icon: FolderClockIcon , href: route('admin.dataset.index'),  },
         { title: 'Decision Tree', icon: GalleryHorizontal , href: route('DecisionTree.index'), },
         { title: 'Riwayat Klasifikasi', icon: FolderClockIcon , href: route('admin.riwayat.index'), },
 ];

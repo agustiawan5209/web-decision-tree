@@ -227,7 +227,7 @@ const FormClassifier = ({
                                                 <SelectValue placeholder="Select Jenis Kelamin" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {['laki-laki', 'perempuan'].map((gender, idx) => (
+                                                {['Laki-laki', 'Perempuan'].map((gender, idx) => (
                                                     <SelectItem key={idx} value={gender}>
                                                         {gender}
                                                     </SelectItem>

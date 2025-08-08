@@ -21,10 +21,10 @@ class DashboardController extends Controller
         $training = collect($data['training']);
         $kriteria = $data['kriteria'];
         $distributionLabel = $this->setDistribusiLabel($training, $label);
-        $meanKriteriaValue = $this->meanKriteriaValue($distributionLabel, "Sangat Baik", $kriteria);
         return Inertia::render("dashboard", [
             "distributionLabel" => $distributionLabel,
-            "meanKriteriaValue" => $meanKriteriaValue,
+            "training" => count($training),
+            "kriteria" => count($kriteria),
             "label" => Label::orderBy('id', 'desc')->get(),
         ]);
     }
@@ -76,25 +76,4 @@ class DashboardController extends Controller
         }
     }
 
-    private function meanKriteriaValue($training, $label, $kriteria = [])
-    {
-        $gejala = ["daun menguning" => 1, "pertumbuhan lambat" => 2, "ujung daun mengering" => 3, "daun sehat" => 4, "batang rapuh" => 5, "daun menggulung" => 6];
-        try {
-            $result = [];
-            $kriterias = collect($kriteria)->diff([ 'label'])->values();
-
-            foreach ($kriterias as $item) {
-                if ($item === 'gejala') {
-                    $result[$item] = array_keys(array_filter($gejala, function ($value) use ($training, $label, $item) {
-                        return $value === collect($training[$label])->avg($item);
-                    }))[0];
-                } else {
-                    $result[$item] = collect($training[$label])->avg($item);
-                }
-            }
-            return $result;
-        } catch (\Exception $e) {
-            return [];
-        }
-    }
 }

@@ -54,17 +54,6 @@ export default function MainLayout({ children }: PropsWithChildren) {
 
     const navItems = [
         { name: 'Home', path: '/', icon: <Home className="h-4 w-4" /> },
-        {
-            name: 'Klasifikasi',
-            path: '/classification',
-            icon: <BarChart2 className="h-4 w-4" />,
-        },
-        {
-            name: 'Data Sayur',
-            path: '/vegetable-data',
-            icon: <Leaf className="h-4 w-4" />,
-        },
-        { name: 'Tentang', path: '/about', icon: <Info className="h-4 w-4" /> },
     ];
     const AuthNavItems = [
         { name: 'Home', path: route('guest.dashboard'), icon: <Home className="h-4 w-4" /> },
