@@ -41,6 +41,8 @@ export default function EditDatasetView({ breadcrumb, kriteria, titlePage, datas
             };
         }),
     });
+    console.log(dataset?.detail);
+
     console.log(
         kriteria.map((kriteriaItem) => {
             // Find the existing attribute value if editing
