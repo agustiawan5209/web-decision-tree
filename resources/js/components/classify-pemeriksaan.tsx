@@ -359,7 +359,7 @@ const ClassifyPemeriksaan = ({
                                 className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600"
                             >
                                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                                Mulai Klasifikasi
+                                Mulai Pemeriksaan Nutrisi
                             </Button>
                         </div>
                     </form>
@@ -372,7 +372,7 @@ const ClassifyPemeriksaan = ({
                                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
                                     <LeafyGreen className={`h-4 w-4 ${prediction?.label == 'Baik' ? 'text-green-500' : 'text-red-500'}`} />
                                 </div>
-                                <span className="text-lg font-medium">Hasil Klasifikasi</span>
+                                <span className="text-lg font-medium">Hasil Pemeriksaan Nutrisi</span>
                             </div>
                         </DialogTitle>
 
