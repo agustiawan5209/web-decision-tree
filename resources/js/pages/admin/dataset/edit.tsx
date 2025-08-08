@@ -34,26 +34,13 @@ export default function EditDatasetView({ breadcrumb, kriteria, titlePage, datas
         label: dataset?.label || '',
         attribut: kriteria.map((kriteriaItem) => {
             // Find the existing attribute value if editing
-            const existingAttribut = dataset?.detail.find((attr) => attr.kriteria_id === kriteriaItem.id);
+            const existingAttribut = dataset?.detail.find((attr) => Number(attr.kriteria_id) === Number(kriteriaItem.id));
             return {
-                kriteria_id: kriteriaItem.id,
+                kriteria_id: Number(kriteriaItem.id),
                 nilai: existingAttribut?.nilai || null,
             };
         }),
     });
-    console.log(dataset?.detail);
-
-    console.log(
-        kriteria.map((kriteriaItem) => {
-            // Find the existing attribute value if editing
-            const existingAttribut = dataset?.detail.find((attr) => attr.kriteria_id === kriteriaItem.id);
-            return {
-                kriteria_id: kriteriaItem.id,
-                nilai: existingAttribut?.nilai || null,
-            };
-        }),
-    );
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
