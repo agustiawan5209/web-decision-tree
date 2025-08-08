@@ -41,23 +41,38 @@ export default function EditDatasetView({ breadcrumb, kriteria, titlePage, datas
             };
         }),
     });
+    console.log(
+        kriteria.map((kriteriaItem) => {
+            // Find the existing attribute value if editing
+            const existingAttribut = dataset?.detail.find((attr) => attr.kriteria_id === kriteriaItem.id);
+            return {
+                kriteria_id: kriteriaItem.id,
+                nilai: existingAttribut?.nilai || null,
+            };
+        }),
+    );
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
         const key = name.split('.')[1];
-        setData((prevData) => ({
-            ...prevData,
-            attribut: prevData.attribut.map((item, index) => {
-                if (index === Number(key)) {
-                    return {
-                        ...item,
-                        nilai: value,
-                    };
-                }
-                return item;
-            }),
-        }));
+
+        const numValue = Number(value);
+        if (!isNaN(numValue)) {
+            setData((prevData) => ({
+                ...prevData,
+                attribut: prevData.attribut.map((item, index) => {
+                    if (index === Number(key)) {
+                        return {
+                            ...item,
+                            nilai: value,
+                        };
+                    }
+                    return item;
+                }),
+            }));
+            return;
+        }
     };
     const handleSelectChange = (name: string, value: string) => {
         if (name && value !== undefined && data && data.attribut) {

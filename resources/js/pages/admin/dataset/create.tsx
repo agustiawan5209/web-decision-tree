@@ -40,18 +40,22 @@ export default function FormDatasetView({ breadcrumb, kriteria, titlePage, opsiL
         const { name, value } = e.target;
 
         const key = name.split('.')[1];
-        setData((prevData) => ({
-            ...prevData,
-            attribut: prevData.attribut.map((item, index) => {
-                if (index === Number(key)) {
-                    return {
-                        ...item,
-                        nilai: value,
-                    };
-                }
-                return item;
-            }),
-        }));
+        const numValue = Number(value);
+        if (!isNaN(numValue)) {
+            setData((prevData) => ({
+                ...prevData,
+                attribut: prevData.attribut.map((item, index) => {
+                    if (index === Number(key)) {
+                        return {
+                            ...item,
+                            nilai: value,
+                        };
+                    }
+                    return item;
+                }),
+            }));
+            return;
+        }
     };
     const handleSelectChange = (name: string, value: string) => {
         if (name && value !== undefined && data && data.attribut) {
@@ -97,7 +101,6 @@ export default function FormDatasetView({ breadcrumb, kriteria, titlePage, opsiL
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Informasi Dasar */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-
                         <div>
                             <Label className="text-xs text-gray-600">Label</Label>
                             <Select value={data.label} required onValueChange={(value) => handleSelectChange('label', value)}>
