@@ -38,18 +38,13 @@ class Pemeriksaan extends Model
         return $this->hasMany(DetailPemeriksaan::class, 'pemeriksaan_id', 'id');
     }
 
-    /**
-     * Scope a query to search by balita.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string|null  $balita
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
+
     public function scopeSearchByBalita($query, $search)
     {
         $query->when($search ?? null, function ($query, $search) {
             $query->whereHas('balita', function ($query) use ($search) {
-                $query->where('nama', 'LIKE', '%' . $search . '%');
+                $query->where('nama', 'like', '%' . $search . '%')
+                    ->orWhere('nik', 'like', '%' . $search . '%');
             });
         });
     }

@@ -156,7 +156,7 @@ export default function BalitaIndex({ balita, breadcrumb, filter,can }: BalitaPr
                                     id="search"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Cari berdasarkan nama atau keterangan"
+                                    placeholder="Cari berdasarkan nama/NIK"
                                 />
                                 <Button variant="secondary" type="button" onClick={submitSearch} className="flex items-center gap-2 text-xs">
                                     Cari

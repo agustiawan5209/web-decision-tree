@@ -206,7 +206,7 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                                     value={search}
                                     className="max-w-max"
                                     onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Cari berdasarkan nama atau keterangan"
+                                    placeholder="Cari berdasarkan nama/NIK"
                                 />
                                 <Input
                                     type="date"

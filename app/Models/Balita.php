@@ -51,7 +51,8 @@ class Balita extends Model
     public function scopeSearchByNama($query, $name): void
     {
         $query->when($name, function ($query, $name) {
-            $query->where('nama', 'like', '%' . $name . '%');
+            $query->where('nama', 'like', '%' . $name . '%')
+                ->orWhere('nik', 'like', '%' . $name . '%');
         });
     }
 
