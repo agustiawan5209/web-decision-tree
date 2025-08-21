@@ -1,23 +1,9 @@
 import AppLayout from '@/layouts/app-layout';
-import { PemeriksaanTypes, SharedData, type BreadcrumbItem } from '@/types';
+import { BalitaTypes, PemeriksaanTypes, SharedData, User, type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { Baby, ClipboardList, User2 } from 'lucide-react';
 import { useMemo } from 'react';
 
-interface OrangTua {
-    name: string;
-    email: string;
-}
-
-interface Balita {
-    id: string;
-    nama: string;
-    tempat_lahir: string;
-    tanggal_lahir: string;
-    usia: string;
-    jenis_kelamin: string;
-    alamat: string;
-}
 
 
 interface DetailPemeriksaan {
@@ -32,8 +18,8 @@ interface Attribut {
 }
 
 export interface PemeriksaanProps {
-    orangTua: OrangTua;
-    balita: Balita;
+    orangTua: User;
+    balita: BalitaTypes;
     pemeriksaan: PemeriksaanTypes[];
     detail: DetailPemeriksaan[];
     kriteria: Attribut[];
@@ -92,7 +78,7 @@ export default function PemeriksaanShow({ pemeriksaan, balita, orangTua, kriteri
                                     <div className="space-y-2">
                                         <DataRow label="Nama Orang Tua" value={orangTua.name} />
                                         <DataRow label="Email" value={orangTua.email} />
-                                        <DataRow label="Alamat" value={balita.alamat} />
+                                        <DataRow label="Alamat" value={orangTua.alamat ?? ''} />
                                     </div>
                                 </div>
 
@@ -103,6 +89,7 @@ export default function PemeriksaanShow({ pemeriksaan, balita, orangTua, kriteri
                                         Data Balita
                                     </h3>
                                     <div className="space-y-2">
+                                        <DataRow label="NIK" value={balita.nik} />
                                         <DataRow label="Nama Balita/Anak" value={balita.nama} />
                                         <DataRow label="Tempat Lahir" value={balita.tempat_lahir} />
                                         <DataRow label="Tanggal Lahir" value={balita.tanggal_lahir} />

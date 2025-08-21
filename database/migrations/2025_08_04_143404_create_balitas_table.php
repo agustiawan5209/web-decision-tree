@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('balitas', function (Blueprint $table) {
             $table->id();
+            $table->string('nik')->unique();
             $table->string('nama');
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');

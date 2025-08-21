@@ -19,6 +19,7 @@ export interface BalitaCreaterops {
 }
 type CreateForm = {
     orang_tua_id: string;
+    nik: string;
     nama: string;
     tempat_lahir: string;
     tanggal_lahir: string;
@@ -34,6 +35,7 @@ export default function BalitaCreate({ breadcrumb, orangtua }: BalitaCreaterops)
 
     const { data, setData, get, post, processing, progress, errors, reset } = useForm<Required<CreateForm>>({
         orang_tua_id: '',
+        nik: '',
         nama: '',
         tempat_lahir: '',
         tanggal_lahir: '',
@@ -121,7 +123,7 @@ export default function BalitaCreate({ breadcrumb, orangtua }: BalitaCreaterops)
                             <div className="grid gap-6">
                                 <div className="grid gap-2">
                                     <Label htmlFor="nama">Pilih Berdasarkan Nama Orang Tua</Label>
-                                    <Select defaultValue="0" value={idOrangTua} onValueChange={(value) => setIdOrangTua(value)}>
+                                    <Select defaultValue="0" required value={idOrangTua} onValueChange={(value) => setIdOrangTua(value)}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Pilih Orang Tua" />
                                         </SelectTrigger>
@@ -136,6 +138,7 @@ export default function BalitaCreate({ breadcrumb, orangtua }: BalitaCreaterops)
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
+                                     <InputError message={errors.orang_tua_id} className="mt-2" />
                                 </div>
                                 {listOrangtua && (
                                     <div className="block space-y-4 p-2">
@@ -157,6 +160,22 @@ export default function BalitaCreate({ breadcrumb, orangtua }: BalitaCreaterops)
                                         </div>
                                     </div>
                                 )}
+                                <div className="grid gap-2">
+                                    <Label htmlFor="nama">NIK (Nomor Induk Kependudukan)</Label>
+                                    <Input
+                                        id="nik"
+                                        type="text"
+                                        required
+                                        autoFocus
+                                        tabIndex={1}
+                                        autoComplete="nik"
+                                        value={data.nik}
+                                        onChange={(e) => setData('nik', e.target.value)}
+                                        disabled={processing}
+                                        placeholder="Nomor Induk Kependudukan"
+                                    />
+                                    <InputError message={errors.nik} className="mt-2" />
+                                </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="nama">Nama</Label>
                                     <Input

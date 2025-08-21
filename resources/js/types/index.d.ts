@@ -91,6 +91,7 @@ export interface DetailPemeriksaanTypes {
 }
 export interface BalitaTypes{
     id: number;
+    nik: string;
     nama: string;
     tempat_lahir: string;
     tanggal_lahir: string;

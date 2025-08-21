@@ -4,7 +4,7 @@ import { Input, InputRadio } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { BalitaTypes, type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useEffect, useMemo, useState } from 'react';
@@ -16,18 +16,11 @@ export interface BalitaCreaterops {
         email: string;
         password: string;
     }[];
-    balita: {
-        id: string;
-        orang_tua_id: string;
-        nama: string;
-        tempat_lahir: string;
-        tanggal_lahir: string;
-        jenis_kelamin: string;
-        alamat: string;
-    };
+    balita: BalitaTypes;
 }
 type CreateForm = {
     orang_tua_id: string;
+    nik: string;
     nama: string;
     tempat_lahir: string;
     tanggal_lahir: string;
@@ -43,6 +36,7 @@ export default function BalitaEdit({ breadcrumb, orangtua, balita }: BalitaCreat
 
     const { data, setData, put, processing, progress, errors, reset } = useForm<Required<CreateForm>>({
         orang_tua_id: balita.orang_tua_id,
+        nik: balita.nik,
         nama: balita.nama,
         tempat_lahir: balita.tempat_lahir,
         tanggal_lahir: balita.tanggal_lahir,
@@ -167,6 +161,22 @@ export default function BalitaEdit({ breadcrumb, orangtua, balita }: BalitaCreat
                                         </div>
                                     </div>
                                 )}
+                                <div className="grid gap-2">
+                                    <Label htmlFor="nama">NIK (Nomor Induk Kependudukan)</Label>
+                                    <Input
+                                        id="nik"
+                                        type="text"
+                                        required
+                                        autoFocus
+                                        tabIndex={1}
+                                        autoComplete="nik"
+                                        value={data.nik}
+                                        onChange={(e) => setData('nik', e.target.value)}
+                                        disabled={processing}
+                                        placeholder="Nomor Induk Kependudukan"
+                                    />
+                                    <InputError message={errors.nik} className="mt-2" />
+                                </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="nama">Nama</Label>
                                     <Input

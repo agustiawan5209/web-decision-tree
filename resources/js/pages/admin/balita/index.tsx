@@ -201,6 +201,7 @@ export default function BalitaIndex({ balita, breadcrumb, filter,can }: BalitaPr
                                 <TableRow>
                                     <TableHead className="w-10">No.</TableHead>
                                     <TableHead>Orang Tua</TableHead>
+                                    <TableHead>NIK</TableHead>
                                     <TableHead>Nama</TableHead>
                                     <TableHead>Tempat/Tanggal Lahir</TableHead>
                                     <TableHead>Jenis Kelamin</TableHead>
@@ -213,6 +214,7 @@ export default function BalitaIndex({ balita, breadcrumb, filter,can }: BalitaPr
                                         <TableRow key={index}>
                                             <TableCell>{index + 1 + (balita?.current_page - 1) * balita?.per_page}</TableCell>
                                             <TableCell> {item.orangtua.name} </TableCell>
+                                            <TableCell> {item.nik} </TableCell>
                                             <TableCell> {item.nama} </TableCell>
                                             <TableCell>
                                                 {' '}

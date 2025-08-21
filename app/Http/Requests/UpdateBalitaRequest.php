@@ -22,6 +22,8 @@ class UpdateBalitaRequest extends FormRequest
     public function rules(): array
     {
         return [
+            "orang_tua_id"=> "required|integer|exists:users,id",
+            "nik"=> "required|string|max:16|unique:balitas,nik,". $this->balita->id,
             "nama"=> "required|string|max:100",
             "tempat_lahir"=> "required|string|max:100",
             "tanggal_lahir"=> "required|date",
