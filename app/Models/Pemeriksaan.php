@@ -13,6 +13,8 @@ class Pemeriksaan extends Model
     protected $fillable = [
         "user_id",
         "balita_id",
+        "rme",
+        "nik",
         "data_balita",
         "tgl_pemeriksaan",
         "data_pemeriksaan",

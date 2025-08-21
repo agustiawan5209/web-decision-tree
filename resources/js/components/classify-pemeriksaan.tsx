@@ -6,14 +6,17 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Toast } from '@/components/ui/toast';
 import DecisionTreeModel from '@/services/decision-tree-model';
-import { KriteriaTypes, LabelTypes } from '@/types';
+import { KriteriaTypes, LabelTypes, SharedData } from '@/types';
 import { LeafyGreen, Loader2, LoaderCircle } from 'lucide-react';
 import React, { FormEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 import InputError from './input-error';
 import { Button } from './ui/button';
+import { usePage } from '@inertiajs/react';
 
 type Dataset = {
     orang_tua_id: string;
+    rme: string;
+    nik: string;
     nama: string;
     tempat_lahir: string;
     tanggal_lahir: string;
@@ -21,12 +24,12 @@ type Dataset = {
     alamat: string;
     tanggal_pemeriksaan: string;
     kriteria:
-        | {
-              nilai: string | null;
-              kriteria_id: string;
-              name: string;
-          }[]
-        | undefined;
+    | {
+        nilai: string | null;
+        kriteria_id: string;
+        name: string;
+    }[]
+    | undefined;
     label: string;
     alasan: string;
     rekomendasi: string;
@@ -70,6 +73,7 @@ const ClassifyPemeriksaan = ({
     setFeature?: (feature: any) => void;
     submit: () => FormEventHandler;
 }) => {
+    const {auth} = usePage<SharedData>().props
     // State management
     const [loading, setLoading] = useState(false);
     const [trainingData, setTrainingData] = useState<TrainingData | null>(null);
@@ -91,6 +95,21 @@ const ClassifyPemeriksaan = ({
         message: '',
         type: 'success',
     });
+    const handleTanggalLahirChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        const umurIndex = kriteria.findIndex((k) => k.nama.toLowerCase().includes("umur"));
+        setData((prev) => {
+            const usiaBulan = hitungUsiaBulan(value);
+            return {
+                ...prev,
+                tanggal_lahir: value, // Mengupdate tanggal_lahir, bukan tempat_lahir
+                kriteria: prev.kriteria?.map((item, i) =>
+                    i === umurIndex ? { ...item, nilai: usiaBulan.toString() } : item
+                ),
+            };
+        });
+
+    }
 
     // Input handlers
     const handleChange = useCallback(
@@ -101,18 +120,51 @@ const ClassifyPemeriksaan = ({
 
             if (field === 'kriteria') {
                 if (value === '' || /^-?\d*\.?\d*$/.test(value)) {
-                    setData((prev) => ({
-                        ...prev,
-                        kriteria: prev.kriteria?.map((item, i) => (i === index ? { ...item, nilai: value } : item)),
-                    }));
+                    setData((prev) => {
+                        // Update nilai yang diubah
+                        const updatedKriteria = prev.kriteria?.map((item, i) =>
+                            i === index ? { ...item, nilai: value } : item
+                        );
+
+                        // Cari index untuk perhitungan IMT
+                        const BBindex = kriteria.findIndex((k) => k.nama.includes("BB"));
+                        const TBindex = kriteria.findIndex((k) => k.nama.includes("TB"));
+                        const IMTindex = kriteria.findIndex((k) => k.nama.toLowerCase().includes("imt"));
+
+                        // Jika yang diubah adalah BB atau TB, hitung IMT
+                        if ((index === BBindex || index === TBindex) && IMTindex !== -1) {
+                            const nilaiBB = index === BBindex ?
+                                Number(value) :
+                                Number(updatedKriteria?.[BBindex]?.nilai ?? 0);
+
+                            const nilaiTB = index === TBindex ?
+                                Number(value) :
+                                Number(updatedKriteria?.[TBindex]?.nilai ?? 0);
+
+                            // Hitung IMT hanya jika kedua nilai valid
+                            if (nilaiBB > 0 && nilaiTB > 0) {
+                                return {
+                                    ...prev,
+                                    kriteria: updatedKriteria?.map((item, i) =>
+                                        i === IMTindex ? { ...item, nilai: hitungIMT(nilaiBB, nilaiTB) } : item
+                                    ),
+                                };
+                            }
+                        }
+
+                        return {
+                            ...prev,
+                            kriteria: updatedKriteria,
+                        };
+                    });
                 }
             } else {
                 setData((prev) => ({ ...prev, [name]: value }));
             }
         },
-        [setData],
+        [kriteria, setData],
     );
-
+    // select handlers
     const handleSelectChange = useCallback(
         (name: string, value: string) => {
             const index = Number(name);
@@ -121,6 +173,7 @@ const ClassifyPemeriksaan = ({
                 ...prev,
                 kriteria: prev.kriteria?.map((item, i) => (i === index ? { ...item, nilai: value } : item)),
             }));
+
         },
         [setData],
     );
@@ -152,9 +205,22 @@ const ClassifyPemeriksaan = ({
     const handlePredict = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+
         try {
             const feature = data.kriteria?.map((item: any) => {
+                console.log(item);
                 const nilai = item.nilai;
+
+                // Cek jika nilai null atau undefined
+                if (nilai === null || nilai === undefined || nilai === '' || data.rme === '') {
+                    setToast({
+                        title: 'Error',
+                        show: true,
+                        message: `Nilai No.RME, jenis kelamin, usia,  BB, TB, IMT Tidak Boleh Kosong `,
+                        type: 'error',
+                    });
+                }
+
                 const lowerItem = String(nilai).toLowerCase();
 
                 if (lowerItem === 'laki-laki') {
@@ -168,26 +234,35 @@ const ClassifyPemeriksaan = ({
                 }
             });
 
-            const result = await model.predict([feature ?? []]); // Contoh fitur
-            if (result.error) {
+            if (data.nik === '' || (data.rme === '' && auth.role == 'admin') || data.nama === '' || data.orang_tua_id === '' || data.tempat_lahir === '') {
                 setToast({
-                    title: 'Hasil Prediksi',
+                    title: 'Error',
                     show: true,
-                    message: result.error as string,
-                    type: 'success',
+                    message: `NIK, RME, Nama, Orang Tua, Tempat Lahir Tidak Boleh Kosong `,
+                    type: 'error',
                 });
             } else {
-                setPrediction(result);
-                if (setFeature) {
-                    setFeature(data.kriteria);
-                }
-                if (result.label !== undefined && result.label !== null) {
-                    setData({ ...data, label: result.label.toString() ?? 'tidak dikenali' });
-                    setData({ ...data, rekomendasi: result.rekomendasi?.toString() ?? 'tidak dikenali' });
-                    if (setResult) {
-                        setResult(result);
+                const result = await model.predict([feature ?? []]);
+                if (result.error) {
+                    setToast({
+                        title: 'Hasil Prediksi',
+                        show: true,
+                        message: result.error as string,
+                        type: 'success',
+                    });
+                } else {
+                    setPrediction(result);
+                    if (setFeature) {
+                        setFeature(data.kriteria);
                     }
-                    handleOpenDialog();
+                    if (result.label !== undefined && result.label !== null) {
+                        setData({ ...data, label: result.label.toString() ?? 'tidak dikenali' });
+                        setData({ ...data, rekomendasi: result.rekomendasi?.toString() ?? 'tidak dikenali' });
+                        if (setResult) {
+                            setResult(result);
+                        }
+                        handleOpenDialog();
+                    }
                 }
             }
         } catch (error) {
@@ -232,6 +307,23 @@ const ClassifyPemeriksaan = ({
 
         return `${tahun} tahun, ${bulan} bulan, ${hari} hari`;
     }
+    function hitungUsiaBulan(tanggalLahir: string) {
+        const birthDate = new Date(tanggalLahir);
+        const today = new Date();
+        let tahun = today.getFullYear() - birthDate.getFullYear();
+        let bulan = today.getMonth() - birthDate.getMonth();
+        let hari = today.getDate() - birthDate.getDate();
+
+        // total bulan = selisih tahun * 12 + selisih bulan
+        let totalBulan = tahun * 12 + bulan;
+
+        // kalau tanggal hari ini < tanggal lahir, berarti belum genap 1 bulan
+        if (hari < 0) {
+            totalBulan -= 1;
+        }
+
+        return totalBulan.toString();
+    }
     const predictionColor = useMemo(() => {
         if (!prediction) return '';
         switch (prediction.label) {
@@ -245,6 +337,15 @@ const ClassifyPemeriksaan = ({
                 return 'bg-blue-100 border-blue-300 text-blue-800';
         }
     }, [prediction]);
+
+    const hitungIMT = (berat: number, tinggi: number) => {
+        // tinggi dalam meter
+        const tb = tinggi / 100
+        const imt = berat / (tb * tb);
+        return imt.toFixed(3);
+    }
+
+
     return (
         <div className="mx-auto max-w-7xl px-4 py-8">
             <Toast
@@ -260,6 +361,22 @@ const ClassifyPemeriksaan = ({
                 <div className="p-6 ring-1 md:p-8">
                     <form onSubmit={(e) => handlePredict(e)} className="space-y-6">
                         <div className="mt-4 grid grid-cols-2 gap-3">
+                            <div className="grid gap-2">
+                                <Label htmlFor="nik">NIK</Label>
+                                <Input
+                                    id="nik"
+                                    type="text"
+                                    required
+                                    autoFocus
+                                    tabIndex={1}
+                                    autoComplete="nik"
+                                    value={data.nik}
+                                    onChange={(e) => setData({ ...data, nik: e.target.value })}
+                                    disabled={processing}
+                                    placeholder="Masukkan Nik Balita"
+                                />
+                                <InputError message={errors.nik} className="mt-2" />
+                            </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="nama">Nama Balita/Anak</Label>
                                 <Input
@@ -303,7 +420,7 @@ const ClassifyPemeriksaan = ({
                                         tabIndex={2}
                                         autoComplete="tanggal_lahir"
                                         value={data.tanggal_lahir}
-                                        onChange={(e) => setData({ ...data, tanggal_lahir: e.target.value })}
+                                        onChange={(e) => handleTanggalLahirChange(e)}
                                         disabled={processing}
                                         placeholder="tanggal lahir......."
                                     />
@@ -312,44 +429,54 @@ const ClassifyPemeriksaan = ({
                             </div>
                         </div>
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            {kriteria.map((item, index) => (
-                                <div key={index} className="space-y-2">
-                                    <Label className="text-sm font-medium text-gray-700">
-                                        {item.nama.charAt(0).toUpperCase() + item.nama.slice(1)}
-                                    </Label>
-                                    {item.nama.toLowerCase() === 'jenis kelamin' ? (
-                                        <Select
-                                            value={data.kriteria?.[index].nilai || ''}
-                                            required
-                                            onValueChange={(value) => {
-                                                setData({ ...data, jenis_kelamin: value });
-                                                handleSelectChange(index.toString(), value);
-                                            }}
-                                        >
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select Jenis Kelamin" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {['Laki-laki', 'Perempuan'].map((gender, idx) => (
-                                                    <SelectItem key={idx} value={gender}>
-                                                        {gender}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    ) : (
-                                        <Input
-                                            type="text"
-                                            name={`kriteria.${index}`}
-                                            value={data.kriteria?.[index].nilai || ''}
-                                            onChange={handleChange}
-                                            placeholder={`Enter ${item.nama}`}
-                                            disabled={processing}
-                                            required
-                                        />
-                                    )}
-                                </div>
-                            ))}
+                            {kriteria.map((item, index) => {
+                                const value = data.kriteria?.[index]?.nilai ?? "";
+
+                                return (
+                                    <div key={index} className="space-y-2">
+                                        <Label className="text-sm font-medium text-gray-700">
+                                            {item.nama.charAt(0).toUpperCase() + item.nama.slice(1)}
+                                        </Label>
+                                        {item.nama.toLowerCase() === "jenis kelamin" ? (
+                                            <Select
+                                                value={data.kriteria?.[index]?.nilai || ''}
+                                                required={true}
+                                                onValueChange={(val) => {
+                                                    setData((prev) => ({
+                                                        ...prev,
+                                                        jenis_kelamin: val,
+                                                        kriteria: prev.kriteria?.map((item, i) =>
+                                                            i === index ? { ...item, nilai: val } : item
+                                                        )
+                                                    }));
+                                                }}
+                                            >
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Jenis Kelamin" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {["Laki-laki", "Perempuan"].map((gender, idx) => (
+                                                        <SelectItem key={idx} value={gender}>
+                                                            {gender}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        ) : (
+                                            <Input
+                                                type="text"
+                                                name={`kriteria.${index}`}
+                                                value={value}
+                                                onChange={handleChange}
+                                                placeholder={`Enter ${item.nama}`}
+                                                disabled={processing}
+                                                readOnly={item.nama.toLowerCase().includes("imt") || item.nama.toLowerCase().includes("umur")}
+                                                required
+                                            />
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
 
                         <div className="flex flex-wrap gap-3 pt-4">
@@ -396,15 +523,14 @@ const ClassifyPemeriksaan = ({
                                 <div className="space-y-1">
                                     <p className={'text-sm font-medium text-muted-foreground ' + predictionColor}>Status Nutrisi</p>
                                     <p
-                                        className={`h-auto w-max flex-shrink-0 rounded-full px-2 ${
-                                            prediction?.label === 'Buruk'
-                                                ? 'bg-red-500'
-                                                : prediction?.label === 'Cukup'
-                                                  ? 'bg-yellow-500'
-                                                  : prediction?.label === 'Baik'
+                                        className={`h-auto w-max flex-shrink-0 rounded-full px-2 ${prediction?.label === 'Buruk'
+                                            ? 'bg-red-500'
+                                            : prediction?.label === 'Cukup'
+                                                ? 'bg-yellow-500'
+                                                : prediction?.label === 'Baik'
                                                     ? 'bg-green-500'
                                                     : 'bg-blue-500'
-                                        }`}
+                                            }`}
                                     >
                                         {prediction?.label}
                                     </p>

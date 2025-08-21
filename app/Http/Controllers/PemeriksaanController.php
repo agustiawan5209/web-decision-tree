@@ -127,7 +127,7 @@ class PemeriksaanController extends Controller
         try {
             $balitaData = $request->except('kriteria', 'tanggal_pemeriksaan');
 
-            $existingBalitaWithNama = Balita::where('nama', '=', $request->nama)->where('orang_tua_id', '=', $request->orang_tua_id)->first();
+            $existingBalitaWithNama = Balita::where('nik', '=', $request->nik)->where('orang_tua_id', '=', $request->orang_tua_id)->first();
             if ($existingBalitaWithNama) {
                 $balita = $existingBalitaWithNama;
             } else {
@@ -136,6 +136,8 @@ class PemeriksaanController extends Controller
             }
 
             $pemeriksaanData = [
+                'nik' => $request->input('nik'),
+                'rme' => $request->input('rme'),
                 'user_id' => Auth::user()->id,
                 'balita_id' => $balita->id,
                 'data_balita' => $balita,

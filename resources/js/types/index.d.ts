@@ -103,6 +103,8 @@ export interface BalitaTypes{
 export interface PemeriksaanTypes {
     id: number;
     balita_id: number;
+    rme: string;
+    nik: string;
     data_balita: string[];
     balita: BalitaTypes;
     tgl_pemeriksaan: string;

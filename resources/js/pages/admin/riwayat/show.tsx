@@ -1,18 +1,9 @@
 import AppLayout from '@/layouts/app-layout';
-import { DetailPemeriksaanTypes, PemeriksaanTypes, SharedData, User, type BreadcrumbItem } from '@/types';
+import { BalitaTypes, DetailPemeriksaanTypes, PemeriksaanTypes, SharedData, User, type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { Baby, ClipboardList, User2, Utensils } from 'lucide-react';
 import { useMemo } from 'react';
 
-interface Balita {
-    id: string;
-    nama: string;
-    tempat_lahir: string;
-    tanggal_lahir: string;
-    usia: string;
-    jenis_kelamin: string;
-    alamat: string;
-}
 
 interface PolaMakan {
     id: string;
@@ -25,7 +16,7 @@ interface Attribut {
 }
 export interface RiwayatShowProps {
     orangTua: User;
-    balita: Balita;
+    balita: BalitaTypes;
     pemeriksaan: PemeriksaanTypes;
     detail: DetailPemeriksaanTypes[];
     polamakan: PolaMakan;
@@ -106,7 +97,7 @@ export default function RiwayatShowView({
                                         {[
                                             { label: 'Nama Orang Tua', value: orangTua.name },
                                             { label: 'Email', value: orangTua.email },
-                                            { label: 'Alamat', value: balita.alamat },
+                                            { label: 'Alamat', value: orangTua.alamat },
                                         ].map((item) => (
                                             <div key={item.label} className="grid grid-cols-3 gap-4">
                                                 <span className="col-span-1 text-sm font-medium text-gray-500 dark:text-gray-400">{item.label}</span>
@@ -124,6 +115,7 @@ export default function RiwayatShowView({
                                     </h3>
                                     <div className="space-y-3">
                                         {[
+                                            { label: 'NIK', value: balita.nik },
                                             { label: 'Nama', value: balita.nama },
                                             { label: 'Tempat Lahir', value: balita.tempat_lahir },
                                             { label: 'Tanggal Lahir', value: balita.tanggal_lahir },

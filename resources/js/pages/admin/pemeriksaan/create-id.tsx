@@ -37,7 +37,9 @@ export interface PemeriksaanCreateProps {
 }
 
 type CreateForm = {
+    rme: string;
     orang_tua_id: string;
+    nik: string;
     nama: string;
     tempat_lahir: string;
     tanggal_lahir: string;
@@ -45,12 +47,12 @@ type CreateForm = {
     alamat: string;
     tanggal_pemeriksaan: string;
     kriteria:
-        | {
-              nilai: string | null;
-              kriteria_id: string;
-              name: string;
-          }[]
-        | undefined;
+    | {
+        nilai: string | null;
+        kriteria_id: string;
+        name: string;
+    }[]
+    | undefined;
     label: string;
     alasan: string;
     rekomendasi: string;
@@ -80,12 +82,14 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
     const today = new Date();
     const day = today.toISOString().split('T')[0];
     const { data, setData, get, post, processing, errors } = useForm<CreateForm>({
+        rme: '20111',
         orang_tua_id: '',
-        nama: '',
-        tempat_lahir: '',
+        nik: '201920293029',
+        nama: 'Rahmat',
+        tempat_lahir: 'makassar',
         tanggal_lahir: '',
-        jenis_kelamin: '',
-        alamat: '',
+        jenis_kelamin: 'Laki-Laki',
+        alamat: 'Makassar',
         tanggal_pemeriksaan: day,
         kriteria: kriteria.map((attr) => ({ nilai: null, kriteria_id: attr.id.toString(), name: attr.nama })),
         label: '',
@@ -167,6 +171,7 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
         }
     }, [prediction]);
 
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create" />
@@ -183,6 +188,22 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
                     <Card>
                         <CardContent>
                             <div className="grid gap-6">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="rme">No. RME (Rekam Medis Elekronik) </Label>
+                                    <Input
+                                        id="rme"
+                                        type="text"
+                                        required
+                                        autoFocus
+                                        tabIndex={1}
+                                        autoComplete="rme"
+                                        value={data.rme}
+                                        onChange={(e) => setData({ ...data, rme: e.target.value })}
+                                        disabled={processing}
+                                        placeholder="Masukkan Nomor Rekam Medis Elektronik"
+                                    />
+                                    <InputError message={errors.rme} className="mt-2" />
+                                </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="orang_tua">Nama Orang Tua</Label>
                                     <div className="relative w-full p-2">

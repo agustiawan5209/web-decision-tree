@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('pemeriksaans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
+            $table->string('rme')->unique();
+            $table->string('nik',50)->index();
             $table->foreignId('balita_id')->constrained('balitas')->onDelete('cascade');
             $table->json('data_balita')->nullable();
             $table->date('tgl_pemeriksaan');

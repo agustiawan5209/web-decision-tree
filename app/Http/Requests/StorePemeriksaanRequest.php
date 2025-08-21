@@ -23,6 +23,8 @@ class StorePemeriksaanRequest extends FormRequest
     {
         return [
             "orang_tua_id"=> "required|integer|exists:users,id",
+            "rme"=> "nullable|string|max:50|unique:pemeriksaans,rme",
+            "nik"=> "required|string|max:50",
             "nama"=> "required|string|max:100",
             "tempat_lahir"=> "required|string|max:100",
             "tanggal_lahir"=> "required|date",
