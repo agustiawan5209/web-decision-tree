@@ -13,6 +13,7 @@ use App\Http\Controllers\JenisTanamanController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\RiwayatKlasifikasiController;
 use App\Http\Controllers\API\DatatDecisionTreeController;
+use App\Http\Controllers\GejalaController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -86,6 +87,17 @@ Route::middleware(['auth', 'verified', 'role:admin|super_admin'])->group(functio
                 Route::get('/{label}/edit', 'edit')->name('edit');
                 Route::put('/{label}', 'update')->name('update');
                 Route::delete('/{label}', 'destroy')->name('destroy');
+            });
+        });
+        // Routes for gejala
+        Route::group(['prefix' => 'gejala', 'as' => 'gejala.'], function () {
+            Route::controller(GejalaController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
+                Route::get('/{gejala}/edit', 'edit')->name('edit');
+                Route::put('/{gejala}', 'update')->name('update');
+                Route::delete('/{gejala}', 'destroy')->name('destroy');
             });
         });
 

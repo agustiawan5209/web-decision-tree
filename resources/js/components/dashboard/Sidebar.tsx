@@ -56,6 +56,7 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse, handleSidebar
 
     if (auth.role == 'super_admin') {
         navItems.push({ name: 'Label', icon: <BarChart2Icon size={20} />, href: route('admin.label.index'), active: 'label' });
+        navItems.push({ name: 'Gejala', icon: <BarChart2Icon size={20} />, href: route('admin.gejala.index'), active: 'gejala' });
         navItems.push({ name: 'Jenis Sayuran', icon: <LeafyGreen size={20} />, href: route('admin.jenisTanaman.index'), active: 'jenis-tanaman' });
     }
 
