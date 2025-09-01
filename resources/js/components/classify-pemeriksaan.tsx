@@ -6,12 +6,15 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Toast } from '@/components/ui/toast';
 import DecisionTreeModel from '@/services/decision-tree-model';
-import { KriteriaTypes, LabelTypes, SharedData } from '@/types';
+import { DatasetSayuranTypes, GejalaTypes, KriteriaTypes, LabelTypes, SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
+import axios from 'axios';
 import { LeafyGreen, Loader2, LoaderCircle } from 'lucide-react';
 import React, { FormEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
+import ReactSelect from 'react-select';
+import makeAnimated from 'react-select/animated';
 import InputError from './input-error';
 import { Button } from './ui/button';
-import { usePage } from '@inertiajs/react';
 
 type Dataset = {
     orang_tua_id: string;
@@ -24,12 +27,12 @@ type Dataset = {
     alamat: string;
     tanggal_pemeriksaan: string;
     kriteria:
-    | {
-        nilai: string | null;
-        kriteria_id: string;
-        name: string;
-    }[]
-    | undefined;
+        | {
+              nilai: string | null;
+              kriteria_id: string;
+              name: string;
+          }[]
+        | undefined;
     label: string;
     alasan: string;
     rekomendasi: string;
@@ -73,7 +76,7 @@ const ClassifyPemeriksaan = ({
     setFeature?: (feature: any) => void;
     submit: () => FormEventHandler;
 }) => {
-    const {auth} = usePage<SharedData>().props
+    const { auth } = usePage<SharedData>().props;
     // State management
     const [loading, setLoading] = useState(false);
     const [trainingData, setTrainingData] = useState<TrainingData | null>(null);
@@ -82,8 +85,8 @@ const ClassifyPemeriksaan = ({
     const [prediction, setPrediction] = useState<PredictionResult | null>(null);
     const [isError, setIsError] = useState(false);
     const today = new Date();
-    const day = today.toISOString().split('T')[0];
-
+    const [optGejala, setOptGejala] = useState<{ value: string; label: string }[]>([]);
+    const [optDatasetSayuran, setOptDatasetSayuran] = useState<DatasetSayuranTypes[]>([]);
     const [toast, setToast] = useState<{
         title: string;
         show: boolean;
@@ -97,19 +100,16 @@ const ClassifyPemeriksaan = ({
     });
     const handleTanggalLahirChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
-        const umurIndex = kriteria.findIndex((k) => k.nama.toLowerCase().includes("umur"));
+        const umurIndex = kriteria.findIndex((k) => k.nama.toLowerCase().includes('umur'));
         setData((prev) => {
             const usiaBulan = hitungUsiaBulan(value);
             return {
                 ...prev,
                 tanggal_lahir: value, // Mengupdate tanggal_lahir, bukan tempat_lahir
-                kriteria: prev.kriteria?.map((item, i) =>
-                    i === umurIndex ? { ...item, nilai: usiaBulan.toString() } : item
-                ),
+                kriteria: prev.kriteria?.map((item, i) => (i === umurIndex ? { ...item, nilai: usiaBulan.toString() } : item)),
             };
         });
-
-    }
+    };
 
     // Input handlers
     const handleChange = useCallback(
@@ -117,36 +117,29 @@ const ClassifyPemeriksaan = ({
             const { name, value } = e.target;
             const [field, indexStr] = name.split('.');
             const index = Number(indexStr);
-
             if (field === 'kriteria') {
                 if (value === '' || /^-?\d*\.?\d*$/.test(value)) {
                     setData((prev) => {
                         // Update nilai yang diubah
-                        const updatedKriteria = prev.kriteria?.map((item, i) =>
-                            i === index ? { ...item, nilai: value } : item
-                        );
+                        const updatedKriteria = prev.kriteria?.map((item, i) => (i === index ? { ...item, nilai: value } : item));
 
                         // Cari index untuk perhitungan IMT
-                        const BBindex = kriteria.findIndex((k) => k.nama.includes("BB"));
-                        const TBindex = kriteria.findIndex((k) => k.nama.includes("TB"));
-                        const IMTindex = kriteria.findIndex((k) => k.nama.toLowerCase().includes("imt"));
+                        const BBindex = kriteria.findIndex((k) => k.nama.includes('BB'));
+                        const TBindex = kriteria.findIndex((k) => k.nama.includes('TB'));
+                        const IMTindex = kriteria.findIndex((k) => k.nama.toLowerCase().includes('imt'));
 
                         // Jika yang diubah adalah BB atau TB, hitung IMT
                         if ((index === BBindex || index === TBindex) && IMTindex !== -1) {
-                            const nilaiBB = index === BBindex ?
-                                Number(value) :
-                                Number(updatedKriteria?.[BBindex]?.nilai ?? 0);
+                            const nilaiBB = index === BBindex ? Number(value) : Number(updatedKriteria?.[BBindex]?.nilai ?? 0);
 
-                            const nilaiTB = index === TBindex ?
-                                Number(value) :
-                                Number(updatedKriteria?.[TBindex]?.nilai ?? 0);
+                            const nilaiTB = index === TBindex ? Number(value) : Number(updatedKriteria?.[TBindex]?.nilai ?? 0);
 
                             // Hitung IMT hanya jika kedua nilai valid
                             if (nilaiBB > 0 && nilaiTB > 0) {
                                 return {
                                     ...prev,
                                     kriteria: updatedKriteria?.map((item, i) =>
-                                        i === IMTindex ? { ...item, nilai: hitungIMT(nilaiBB, nilaiTB) } : item
+                                        i === IMTindex ? { ...item, nilai: hitungIMT(nilaiBB, nilaiTB) } : item,
                                     ),
                                 };
                             }
@@ -164,19 +157,24 @@ const ClassifyPemeriksaan = ({
         },
         [kriteria, setData],
     );
-    // select handlers
-    const handleSelectChange = useCallback(
-        (name: string, value: string) => {
-            const index = Number(name);
 
-            setData((prev) => ({
-                ...prev,
-                kriteria: prev.kriteria?.map((item, i) => (i === index ? { ...item, nilai: value } : item)),
-            }));
-
-        },
-        [setData],
-    );
+    const fetchGejala = async () => {
+        try {
+            const response = await axios.get(route('api.get.gejala'));
+            if (response.status !== 200) throw new Error('Failed to fetch gejala');
+            const data: GejalaTypes[] = await response.data;
+            setOptGejala(data.map((item) => ({ value: item.nama, label: item.nama })));
+        } catch (error) {
+            console.error(error);
+            setToast({
+                title: 'Error',
+                show: true,
+                message: (error as Error).message,
+                type: 'error',
+            });
+            return null;
+        }
+    };
 
     // Load data saat komponen mount
     useEffect(() => {
@@ -198,7 +196,7 @@ const ClassifyPemeriksaan = ({
                 setLoading(false);
             }
         };
-
+        fetchGejala();
         loadData();
     }, []);
 
@@ -208,7 +206,6 @@ const ClassifyPemeriksaan = ({
 
         try {
             const feature = data.kriteria?.map((item: any) => {
-                console.log(item);
                 const nilai = item.nilai;
 
                 // Cek jika nilai null atau undefined
@@ -234,7 +231,13 @@ const ClassifyPemeriksaan = ({
                 }
             });
 
-            if (data.nik === '' || (data.rme === '' && auth.role == 'admin') || data.nama === '' || data.orang_tua_id === '' || data.tempat_lahir === '') {
+            if (
+                data.nik === '' ||
+                (data.rme === '' && auth.role == 'admin') ||
+                data.nama === '' ||
+                data.orang_tua_id === '' ||
+                data.tempat_lahir === ''
+            ) {
                 setToast({
                     title: 'Error',
                     show: true,
@@ -243,6 +246,7 @@ const ClassifyPemeriksaan = ({
                 });
             } else {
                 const result = await model.predict([feature ?? []]);
+
                 if (result.error) {
                     setToast({
                         title: 'Hasil Prediksi',
@@ -340,12 +344,45 @@ const ClassifyPemeriksaan = ({
 
     const hitungIMT = (berat: number, tinggi: number) => {
         // tinggi dalam meter
-        const tb = tinggi / 100
+        const tb = tinggi / 100;
         const imt = berat / (tb * tb);
         return imt.toFixed(3);
-    }
+    };
 
+    // Gejala
+    const [inputGejala, setInputGejala] = useState<string[]>([]);
 
+    // Get selected values for react-select
+    const selectedValues = useMemo(() => optGejala.filter((option) => inputGejala.includes(option.value)), [optGejala, inputGejala]);
+
+    const animatedComponents = makeAnimated();
+
+    // Handle select change
+    const handleGejalaChange = (selectedOptions: any) => {
+        const selectedValues = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
+        setInputGejala(selectedValues);
+    };
+    useEffect(() => {
+        const gejala = inputGejala.join(', ');
+        const fetchDatasetSayuran = async (label: string | string[], gejala: string) => {
+            try {
+                const response = await axios.get(route('api.get.dataset.sayuran', { status: label, gejala: gejala }));
+                if (response.status !== 200) throw new Error('Failed to fetch dataset');
+                const data: DatasetSayuranTypes[] = await response.data;
+                setOptDatasetSayuran(data);
+            } catch (error) {
+                console.error(error);
+                setToast({
+                    title: 'Error',
+                    show: true,
+                    message: (error as Error).message,
+                    type: 'error',
+                });
+                return null;
+            }
+        };
+        fetchDatasetSayuran(prediction?.label ?? '', gejala);
+    }, [inputGejala]);
     return (
         <div className="mx-auto max-w-7xl px-4 py-8">
             <Toast
@@ -430,14 +467,14 @@ const ClassifyPemeriksaan = ({
                         </div>
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                             {kriteria.map((item, index) => {
-                                const value = data.kriteria?.[index]?.nilai ?? "";
+                                const value = data.kriteria?.[index]?.nilai ?? '';
 
                                 return (
                                     <div key={index} className="space-y-2">
                                         <Label className="text-sm font-medium text-gray-700">
                                             {item.nama.charAt(0).toUpperCase() + item.nama.slice(1)}
                                         </Label>
-                                        {item.nama.toLowerCase() === "jenis kelamin" ? (
+                                        {item.nama.toLowerCase() === 'jenis kelamin' ? (
                                             <Select
                                                 value={data.kriteria?.[index]?.nilai || ''}
                                                 required={true}
@@ -445,9 +482,7 @@ const ClassifyPemeriksaan = ({
                                                     setData((prev) => ({
                                                         ...prev,
                                                         jenis_kelamin: val,
-                                                        kriteria: prev.kriteria?.map((item, i) =>
-                                                            i === index ? { ...item, nilai: val } : item
-                                                        )
+                                                        kriteria: prev.kriteria?.map((item, i) => (i === index ? { ...item, nilai: val } : item)),
                                                     }));
                                                 }}
                                             >
@@ -455,7 +490,7 @@ const ClassifyPemeriksaan = ({
                                                     <SelectValue placeholder="Select Jenis Kelamin" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    {["Laki-laki", "Perempuan"].map((gender, idx) => (
+                                                    {['Laki-laki', 'Perempuan'].map((gender, idx) => (
                                                         <SelectItem key={idx} value={gender}>
                                                             {gender}
                                                         </SelectItem>
@@ -470,7 +505,7 @@ const ClassifyPemeriksaan = ({
                                                 onChange={handleChange}
                                                 placeholder={`Enter ${item.nama}`}
                                                 disabled={processing}
-                                                readOnly={item.nama.toLowerCase().includes("imt") || item.nama.toLowerCase().includes("umur")}
+                                                readOnly={item.nama.toLowerCase().includes('imt') || item.nama.toLowerCase().includes('umur')}
                                                 required
                                             />
                                         )}
@@ -491,67 +526,81 @@ const ClassifyPemeriksaan = ({
                         </div>
                     </form>
                 </div>
-                <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-                    <DialogTrigger />
-                    <DialogContent className="max-w-md">
-                        <DialogTitle>
-                            <div className="flex items-center gap-3 text-foreground">
-                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
-                                    <LeafyGreen className={`h-4 w-4 ${prediction?.label == 'Baik' ? 'text-green-500' : 'text-red-500'}`} />
-                                </div>
-                                <span className="text-lg font-medium">Hasil Pemeriksaan Nutrisi</span>
+            </div>
+            <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                <DialogTrigger />
+                <DialogContent className="max-w-xl">
+                    <DialogTitle>
+                        <div className="flex items-center gap-3 text-foreground">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
+                                <LeafyGreen className={`h-4 w-4 ${prediction?.label == 'Baik' ? 'text-green-500' : 'text-red-500'}`} />
                             </div>
-                        </DialogTitle>
+                            <span className="text-lg font-medium">Hasil Pemeriksaan Nutrisi</span>
+                        </div>
+                    </DialogTitle>
 
-                        <div className="mt-4 space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <p className="text-sm font-medium text-muted-foreground">Nama Anak</p>
-                                    <p className="text-sm font-medium">{data.nama}</p>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <p className="text-sm font-medium text-muted-foreground">Tanggal Lahir</p>
-                                    <p className="text-sm font-medium">{data.tanggal_lahir}</p>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <p className="text-sm font-medium text-muted-foreground">Usia</p>
-                                    <p className="text-sm font-medium">{hitungUsia(data.tanggal_lahir)}</p>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <p className={'text-sm font-medium text-muted-foreground ' + predictionColor}>Status Nutrisi</p>
-                                    <p
-                                        className={`h-auto w-max flex-shrink-0 rounded-full px-2 ${prediction?.label === 'Buruk'
-                                            ? 'bg-red-500'
-                                            : prediction?.label === 'Cukup'
-                                                ? 'bg-yellow-500'
-                                                : prediction?.label === 'Baik'
-                                                    ? 'bg-green-500'
-                                                    : 'bg-blue-500'
-                                            }`}
-                                    >
-                                        {prediction?.label}
-                                    </p>
-                                </div>
+                    <div className="mt-4 space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium text-muted-foreground">Nama Anak</p>
+                                <p className="text-sm font-medium">{data.nama}</p>
                             </div>
 
                             <div className="space-y-1">
-                                <p className="text-sm font-medium text-muted-foreground">Jenis Sayuran</p>
-                                <p className="text-sm font-medium">{prediction?.rekomendasi}</p>
+                                <p className="text-sm font-medium text-muted-foreground">Tanggal Lahir</p>
+                                <p className="text-sm font-medium">{data.tanggal_lahir}</p>
+                            </div>
+
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium text-muted-foreground">Usia</p>
+                                <p className="text-sm font-medium">{hitungUsia(data.tanggal_lahir)}</p>
+                            </div>
+
+                            <div className="space-y-1">
+                                <p className={'text-sm font-medium text-muted-foreground ' + predictionColor}>Status Nutrisi</p>
+                                <p
+                                    className={`h-auto w-max flex-shrink-0 rounded-full px-2 ${
+                                        prediction?.label === 'Buruk'
+                                            ? 'bg-red-500'
+                                            : prediction?.label === 'Cukup'
+                                              ? 'bg-yellow-500'
+                                              : prediction?.label === 'Baik'
+                                                ? 'bg-green-500'
+                                                : 'bg-blue-500'
+                                    }`}
+                                >
+                                    {prediction?.label}
+                                </p>
                             </div>
                         </div>
 
-                        <DialogFooter className="mt-6">
-                            <Button type="button" variant="default" size="sm" className="w-full" disabled={processing} onClick={submit}>
-                                {processing ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : null}
-                                Simpan
-                            </Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
-            </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="gejala">Gejala</Label>
+                            <ReactSelect
+                                id="gejala"
+                                name="gejala"
+                                value={selectedValues}
+                                onChange={handleGejalaChange}
+                                closeMenuOnSelect={false}
+                                components={animatedComponents}
+                                isMulti
+                                options={optGejala}
+                                className="react-select-container"
+                                classNamePrefix="react-select"
+                                tabIndex={4}
+                                placeholder="Pilih gejala..."
+                            />
+                        </div>
+                    </div>
+
+                    <DialogFooter className="mt-6">
+                        <Button type="button" variant="default" size="sm" className="w-full" disabled={processing} onClick={submit}>
+                            {processing ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : null}
+                            Simpan
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

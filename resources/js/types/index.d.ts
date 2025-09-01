@@ -60,6 +60,10 @@ export interface LabelTypes {
     nama: string;
     deskripsi: string;
 }
+export interface GejalaTypes {
+    id: number;
+    nama: string;
+}
 export interface JenisTanamanTypes {
     id: number;
     nama: string;

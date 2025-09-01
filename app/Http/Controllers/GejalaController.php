@@ -22,6 +22,10 @@ class GejalaController extends Controller
             'href' => '/admin/gejala/',
         ],
     ];
+
+    public function getGejala(){
+        return response()->json(Gejala::all(), 200);
+    }
     /**
      * Display a listing of the resource.
      */

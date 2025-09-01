@@ -184,3 +184,4 @@ Route::get('/api/decision-tree/get-data', [DatatDecisionTreeController::class, '
 // Get Jenis Sayuran Berdasarkan nama gizi
 Route::get('/api/get-sayuran', [JenisTanamanController::class, 'getSayuran'])->name('api.get.sayuran');
 Route::get('/api/get-dataset-sayuran/{status}/{gejala}', [DatasetSayuranController::class, 'getDataByStatus'])->name('api.get.dataset.sayuran');
+Route::get('/api/get-gejala', [GejalaController::class, 'getGejala'])->name('api.get.gejala');
