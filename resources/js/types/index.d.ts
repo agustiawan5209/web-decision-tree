@@ -89,7 +89,7 @@ export interface DetailPemeriksaanTypes {
     nilai: string;
     kriteria: KriteriaTypes;
 }
-export interface BalitaTypes{
+export interface BalitaTypes {
     id: number;
     nik: string;
     nama: string;
@@ -119,4 +119,14 @@ interface PredictionResult {
     label: string | string[] | null;
     rekomendasi: string | null;
     error: string | null;
+}
+
+interface DatasetSayuranTypes {
+    id: number;
+    nama_sayuran: string;
+    deskripsi: string;
+    manfaat: string;
+    nutrisi: string;
+    status: string;
+    gejala: string;
 }

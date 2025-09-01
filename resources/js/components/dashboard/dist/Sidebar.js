@@ -35,6 +35,12 @@ var Sidebar = function (_a) {
     if (auth.role == 'super_admin') {
         navItems.push({ name: 'Label', icon: React.createElement(lucide_react_1.BarChart2Icon, { size: 20 }), href: route('admin.label.index'), active: 'label' });
         navItems.push({ name: 'Gejala', icon: React.createElement(lucide_react_1.BarChart2Icon, { size: 20 }), href: route('admin.gejala.index'), active: 'gejala' });
+        navItems.push({
+            name: 'Dataset Sayuran',
+            icon: React.createElement(lucide_react_1.BarChart2Icon, { size: 20 }),
+            href: route('admin.datasetSayuran.index'),
+            active: 'dataset-sayuran'
+        });
         navItems.push({ name: 'Jenis Sayuran', icon: React.createElement(lucide_react_1.LeafyGreen, { size: 20 }), href: route('admin.jenisTanaman.index'), active: 'jenis-tanaman' });
     }
     var isMobile = use_mobile_1.useIsMobile();

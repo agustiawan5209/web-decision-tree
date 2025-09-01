@@ -13,6 +13,7 @@ use App\Http\Controllers\JenisTanamanController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\RiwayatKlasifikasiController;
 use App\Http\Controllers\API\DatatDecisionTreeController;
+use App\Http\Controllers\DatasetSayuranController;
 use App\Http\Controllers\GejalaController;
 
 Route::get('/', function () {
@@ -100,6 +101,17 @@ Route::middleware(['auth', 'verified', 'role:admin|super_admin'])->group(functio
                 Route::delete('/{gejala}', 'destroy')->name('destroy');
             });
         });
+        // Routes for datasetSayuran
+        Route::group(['prefix' => 'dataset-sayuran', 'as' => 'datasetSayuran.'], function () {
+            Route::controller(DatasetSayuranController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
+                Route::get('/{datasetSayuran}/edit', 'edit')->name('edit');
+                Route::put('/{datasetSayuran}', 'update')->name('update');
+                Route::delete('/{datasetSayuran}', 'destroy')->name('destroy');
+            });
+        });
 
 
         // Routes for Kriteria
@@ -171,3 +183,4 @@ Route::get('/api/decision-tree/get-data', [DatatDecisionTreeController::class, '
 
 // Get Jenis Sayuran Berdasarkan nama gizi
 Route::get('/api/get-sayuran', [JenisTanamanController::class, 'getSayuran'])->name('api.get.sayuran');
+Route::get('/api/get-dataset-sayuran/{status}/{gejala}', [DatasetSayuranController::class, 'getDataByStatus'])->name('api.get.dataset.sayuran');
