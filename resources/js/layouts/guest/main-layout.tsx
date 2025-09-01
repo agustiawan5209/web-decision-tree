@@ -15,7 +15,7 @@ import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { SharedData } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { BarChart2, ChevronsUpDown, FormInput, Home, Info, Leaf, LogOut, Menu, Settings, Sprout, TimerIcon, X } from 'lucide-react';
+import { ChevronsUpDown, FormInput, Home, LogOut, Menu, Settings, Sprout, TimerIcon, X } from 'lucide-react';
 import { PropsWithChildren, useEffect, useState } from 'react';
 export default function MainLayout({ children }: PropsWithChildren) {
     const page = usePage<SharedData>();
@@ -52,13 +52,11 @@ export default function MainLayout({ children }: PropsWithChildren) {
     }, [flash]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const navItems = [
-        { name: 'Home', path: '/', icon: <Home className="h-4 w-4" /> },
-    ];
+    const navItems = [{ name: 'Home', path: '/', icon: <Home className="h-4 w-4" /> }];
     const AuthNavItems = [
         { name: 'Home', path: route('guest.dashboard'), icon: <Home className="h-4 w-4" /> },
-        { name: 'Mulai Rekomendasi', path: route('guest.klasifikasi.create-id'), icon: <FormInput className="h-4 w-4" /> },
-        { name: 'Riwayat Rekomendasi', path: route('guest.klasifikasi.index'), icon: <TimerIcon className="h-4 w-4" /> },
+        { name: 'Mulai Pemeriksaan', path: route('guest.klasifikasi.create-id'), icon: <FormInput className="h-4 w-4" /> },
+        { name: 'Riwayat Pemeriksaan', path: route('guest.klasifikasi.index'), icon: <TimerIcon className="h-4 w-4" /> },
     ];
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);

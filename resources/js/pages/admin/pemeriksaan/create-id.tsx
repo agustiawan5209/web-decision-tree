@@ -47,15 +47,16 @@ type CreateForm = {
     alamat: string;
     tanggal_pemeriksaan: string;
     kriteria:
-    | {
-        nilai: string | null;
-        kriteria_id: string;
-        name: string;
-    }[]
-    | undefined;
+        | {
+              nilai: string | null;
+              kriteria_id: string;
+              name: string;
+          }[]
+        | undefined;
     label: string;
     alasan: string;
-    rekomendasi: string;
+    rekomendasi: string[];
+    gejala: string;
     usia_balita: string;
     detail: string[];
 };
@@ -82,19 +83,20 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
     const today = new Date();
     const day = today.toISOString().split('T')[0];
     const { data, setData, get, post, processing, errors } = useForm<CreateForm>({
-        rme: '20111',
+        rme: '',
         orang_tua_id: '',
-        nik: '201920293029',
-        nama: 'Rahmat',
-        tempat_lahir: 'makassar',
+        nik: '',
+        nama: '',
+        tempat_lahir: '',
         tanggal_lahir: '',
-        jenis_kelamin: 'Laki-Laki',
-        alamat: 'Makassar',
+        jenis_kelamin: '',
+        alamat: '',
         tanggal_pemeriksaan: day,
         kriteria: kriteria.map((attr) => ({ nilai: null, kriteria_id: attr.id.toString(), name: attr.nama })),
         label: '',
         alasan: '',
-        rekomendasi: '',
+        rekomendasi: [],
+        gejala: '',
         usia_balita: '',
         detail: [],
     });
@@ -106,13 +108,13 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
         }
         post(route('pemeriksaan.store'), {
             onError: (errors) => {
-                console.log(errors)
+                console.log(errors);
                 setToast({
                     title: 'Error',
                     show: true,
                     message: JSON.stringify(errors),
                     type: 'error',
-                })
+                });
             },
         });
     };
@@ -170,7 +172,6 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
             setData('label', prediction.label.toString());
         }
     }, [prediction]);
-
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

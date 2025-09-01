@@ -1,6 +1,5 @@
 import CollapsibleRow from '@/components/collapsible-table';
 import DetailPemeriksaan from '@/components/detail-pemeriksaan';
-import PaginationTable from '@/components/pagination-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -138,9 +137,14 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
 
     // Memoize table rows to prevent unnecessary re-renders
     const tableRows = useMemo(() => {
-        if (!pemeriksaan?.length) return (<TableRow>
-            <TableCell colSpan={7} className='text-center p-4 bg-gray-300 text-lg'>Data Kosong</TableCell>
-        </TableRow>);
+        if (!pemeriksaan?.length)
+            return (
+                <TableRow>
+                    <TableCell colSpan={7} className="bg-gray-300 p-4 text-center text-lg">
+                        Data Kosong
+                    </TableCell>
+                </TableRow>
+            );
 
         return pemeriksaan.map((item, index) => {
             let read_url = null;
@@ -152,7 +156,7 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
             return (
                 <CollapsibleRow
                     key={item.id} // Using item.id as key is better than index
-                    num={index + 1 }
+                    num={index + 1}
                     title={item.tgl_pemeriksaan}
                     columnData={[item.balita.nama, item.balita.orangtua.name, `${item.balita.tempat_lahir}/${item.balita.tanggal_lahir}`, item.label]}
                     delete="delete"
@@ -181,7 +185,6 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                                 </Link>
                             )}
                             <div className="col-span-full flex flex-wrap items-center gap-2 lg:col-span-2">
-
                                 <Input
                                     type="date"
                                     id="search-date"

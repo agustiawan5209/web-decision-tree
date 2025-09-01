@@ -50,7 +50,8 @@ type CreateForm = {
         | undefined;
     label: string;
     alasan: string;
-    rekomendasi: string;
+    rekomendasi: string[];
+    gejala: string;
     usia_balita: string;
     detail: string[];
 };
@@ -87,7 +88,8 @@ export default function PemeriksaanGuestCreate({ breadcrumb, balita, kriteria, o
         kriteria: kriteria.map((attr) => ({ nilai: null, kriteria_id: attr.id.toString(), name: attr.nama })),
         label: '',
         alasan: '',
-        rekomendasi: '',
+        rekomendasi: [],
+        gejala: '',
         usia_balita: '',
         detail: [],
     });

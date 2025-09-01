@@ -19,12 +19,14 @@ class Pemeriksaan extends Model
         "tgl_pemeriksaan",
         "data_pemeriksaan",
         "label",
+        "gejala",
         "rekomendasi",
     ];
 
     protected $casts = [
         'data_balita' => 'array',
         'data_pemeriksaan' => 'array',
+        'rekomendasi' => 'array',
 
     ];
 
@@ -44,7 +46,8 @@ class Pemeriksaan extends Model
         $query->when($search ?? null, function ($query, $search) {
             $query->whereHas('balita', function ($query) use ($search) {
                 $query->where('nama', 'like', '%' . $search . '%')
-                    ->orWhere('nik', 'like', '%' . $search . '%');
+                    ->orWhere('nik', 'like', '%' . $search . '%')
+                    ->orWhere('rme', 'like', '%' . $search . '%');
             });
         });
     }

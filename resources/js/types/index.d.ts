@@ -104,19 +104,6 @@ export interface BalitaTypes {
     orangtua: User;
 }
 
-export interface PemeriksaanTypes {
-    id: number;
-    balita_id: number;
-    rme: string;
-    nik: string;
-    data_balita: string[];
-    balita: BalitaTypes;
-    tgl_pemeriksaan: string;
-    data_pemeriksaan: string;
-    label: string;
-    rekomendasi: string;
-    detailpemeriksaan: DetailPemeriksaanTypes[];
-}
 
 interface PredictionResult {
     prediction: number | number[] | null;
@@ -133,4 +120,19 @@ interface DatasetSayuranTypes {
     nutrisi: string;
     status: string;
     gejala: string;
+}
+
+export interface PemeriksaanTypes {
+    id: number;
+    balita_id: number;
+    rme: string;
+    nik: string;
+    data_balita: string[];
+    balita: BalitaTypes;
+    tgl_pemeriksaan: string;
+    data_pemeriksaan: string;
+    gejala: string;
+    label: string;
+    rekomendasi: DatasetSayuranTypes[];
+    detailpemeriksaan: DetailPemeriksaanTypes[];
 }

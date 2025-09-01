@@ -14,6 +14,7 @@ import React, { FormEventHandler, useCallback, useEffect, useMemo, useState } fr
 import ReactSelect from 'react-select';
 import makeAnimated from 'react-select/animated';
 import InputError from './input-error';
+import TableDatasetSayuran from './table-dataset-sayuran';
 import { Button } from './ui/button';
 
 type Dataset = {
@@ -35,7 +36,8 @@ type Dataset = {
         | undefined;
     label: string;
     alasan: string;
-    rekomendasi: string;
+    rekomendasi: string[];
+    gejala: string;
     usia_balita: string;
     detail: string[];
 };
@@ -261,7 +263,7 @@ const ClassifyPemeriksaan = ({
                     }
                     if (result.label !== undefined && result.label !== null) {
                         setData({ ...data, label: result.label.toString() ?? 'tidak dikenali' });
-                        setData({ ...data, rekomendasi: result.rekomendasi?.toString() ?? 'tidak dikenali' });
+
                         if (setResult) {
                             setResult(result);
                         }
@@ -364,24 +366,27 @@ const ClassifyPemeriksaan = ({
     };
     useEffect(() => {
         const gejala = inputGejala.join(', ');
-        const fetchDatasetSayuran = async (label: string | string[], gejala: string) => {
-            try {
-                const response = await axios.get(route('api.get.dataset.sayuran', { status: label, gejala: gejala }));
-                if (response.status !== 200) throw new Error('Failed to fetch dataset');
-                const data: DatasetSayuranTypes[] = await response.data;
-                setOptDatasetSayuran(data);
-            } catch (error) {
-                console.error(error);
-                setToast({
-                    title: 'Error',
-                    show: true,
-                    message: (error as Error).message,
-                    type: 'error',
-                });
-                return null;
-            }
-        };
-        fetchDatasetSayuran(prediction?.label ?? '', gejala);
+        if (inputGejala.length > 0) {
+            const fetchDatasetSayuran = async (label: string | string[], gejala: string) => {
+                try {
+                    const response = await axios.get(route('api.get.dataset.sayuran', { status: label, gejala: gejala }));
+                    if (response.status !== 200) throw new Error('Failed to fetch dataset');
+                    const responsData: DatasetSayuranTypes[] = await response.data;
+                    setOptDatasetSayuran(responsData);
+                    setData({ ...data, rekomendasi: responsData, gejala: gejala });
+                } catch (error) {
+                    console.error(error);
+                    setToast({
+                        title: 'Error Gejala',
+                        show: true,
+                        message: (error as Error).message,
+                        type: 'error',
+                    });
+                    return null;
+                }
+            };
+            fetchDatasetSayuran(prediction?.label ?? '', gejala);
+        }
     }, [inputGejala]);
     return (
         <div className="mx-auto max-w-7xl px-4 py-8">
@@ -529,7 +534,7 @@ const ClassifyPemeriksaan = ({
             </div>
             <Dialog open={openDialog} onOpenChange={setOpenDialog}>
                 <DialogTrigger />
-                <DialogContent className="max-w-xl">
+                <DialogContent className="h-screen max-w-7xl overflow-y-auto">
                     <DialogTitle>
                         <div className="flex items-center gap-3 text-foreground">
                             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
@@ -591,6 +596,9 @@ const ClassifyPemeriksaan = ({
                                 placeholder="Pilih gejala..."
                             />
                         </div>
+                    </div>
+                    <div className="max-w-auto p-2">
+                        <TableDatasetSayuran data={optDatasetSayuran} />
                     </div>
 
                     <DialogFooter className="mt-6">

@@ -11,11 +11,12 @@ import {
     ChevronLeft,
     ChevronRight,
     Clock8,
+    FolderArchiveIcon,
     FolderClockIcon,
     GalleryHorizontal,
     Home,
-    LeafyGreen,
     LucideBaby,
+    Scissors,
     UserCog,
     Users2,
     X,
@@ -52,18 +53,20 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse, handleSidebar
         { name: 'Decision Tree', icon: <GalleryHorizontal size={20} />, href: route('DecisionTree.index'), active: 'decision-tree' },
         { name: 'Pemeriksaan', icon: <Clock8 size={20} />, href: route('pemeriksaan.index'), active: 'pemeriksaan' },
         { name: 'Riwayat Pemeriksaan Pengguna', icon: <FolderClockIcon size={20} />, href: route('admin.riwayat.index'), active: 'riwayat-forest' },
+        {
+            name: 'Dataset Sayuran',
+            icon: <FolderArchiveIcon size={20} />,
+            href: route('admin.datasetSayuran.index'),
+            active: 'dataset-sayuran',
+        },
+        { name: 'Gejala', icon: <Scissors size={20} />, href: route('admin.gejala.index'), active: 'gejala' },
     ];
 
     if (auth.role == 'super_admin') {
-        navItems.push({ name: 'Label', icon: <BarChart2Icon size={20} />, href: route('admin.label.index'), active: 'label' });
-        navItems.push({ name: 'Gejala', icon: <BarChart2Icon size={20} />, href: route('admin.gejala.index'), active: 'gejala' });
-        navItems.push({
-            name: 'Dataset Sayuran',
-            icon: <BarChart2Icon size={20} />,
-            href: route('admin.datasetSayuran.index'),
-            active: 'dataset-sayuran',
-        });
-        navItems.push({ name: 'Jenis Sayuran', icon: <LeafyGreen size={20} />, href: route('admin.jenisTanaman.index'), active: 'jenis-tanaman' });
+        navItems.push(
+            { name: 'Label', icon: <BarChart2Icon size={20} />, href: route('admin.label.index'), active: 'label' },
+            // { name: 'Jenis Sayuran', icon: <LeafyGreen size={20} />, href: route('admin.jenisTanaman.index'), active: 'jenis-tanaman' },
+        );
     }
 
     const isMobile = useIsMobile();
