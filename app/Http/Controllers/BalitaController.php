@@ -25,7 +25,7 @@ class BalitaController extends Controller
 
     public function getByNik($user_id, $nik)
     {
-        $balita = Balita::where('orang_tua_id', $user_id)->where('nik', '=', $nik)->with('orangtua')->first();
+        $balita = Balita::where('nik', '=', $nik)->with('orangtua')->first();
 
         if ($balita) {
             return response()->json($balita, 200);
