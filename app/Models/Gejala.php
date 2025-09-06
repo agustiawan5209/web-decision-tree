@@ -12,5 +12,6 @@ class Gejala extends Model
 
     protected $fillable = [
         'nama',
+        'deskripsi'
     ];
 }

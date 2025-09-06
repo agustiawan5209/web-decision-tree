@@ -22,7 +22,7 @@ class UpdateGejalaRequest extends FormRequest
     public function rules(): array
     {
         return [
-             'nama' => 'required|string|max:255|unique:gejalas,nama',
+            'nama' => 'required|string|max:255|unique:gejalas,nama,' . $this->gejala->id,
         ];
     }
 }

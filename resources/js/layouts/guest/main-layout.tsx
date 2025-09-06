@@ -326,75 +326,8 @@ export default function MainLayout({ children }: PropsWithChildren) {
             {/* Footer */}
             <footer className="bg-gray-900 px-4 py-12 text-white">
                 <div className="container mx-auto">
-                    <div className="grid gap-8 md:grid-cols-2">
-                        <div className="mb-4 flex items-center space-x-2">
-                            <Sprout className="h-8 w-8 text-green-400" />
-                            <span className="text-xl font-bold">HydroAI</span>
-                        </div>
-                        <p className="text-gray-400">Sistem pendukung keputusan berbasis AI untuk nutrisi tanaman hidroponik yang optimal.</p>
-                        {/* <div>
-                            <h3 className="mb-4 font-semibold">Produk</h3>
-                            <ul className="space-y-2 text-gray-400">
-                                <li>
-                                    <a href="#" className="transition-colors hover:text-white">
-                                        Dashboard
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="transition-colors hover:text-white">
-                                        Analytics
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="transition-colors hover:text-white">
-                                        Mobile App
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="mb-4 font-semibold">Dukungan</h3>
-                            <ul className="space-y-2 text-gray-400">
-                                <li>
-                                    <a href="#" className="transition-colors hover:text-white">
-                                        Dokumentasi
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="transition-colors hover:text-white">
-                                        Tutorial
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="transition-colors hover:text-white">
-                                        Kontak
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="mb-4 font-semibold">Perusahaan</h3>
-                            <ul className="space-y-2 text-gray-400">
-                                <li>
-                                    <a href="#" className="transition-colors hover:text-white">
-                                        Tentang Kami
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="transition-colors hover:text-white">
-                                        Karir
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="transition-colors hover:text-white">
-                                        Blog
-                                    </a>
-                                </li>
-                            </ul>
-                        </div> */}
-                    </div>
                     <div className="mt-8 border-t border-gray-800 pt-8 text-center text-gray-400">
-                        <p>&copy; 2024 HydroAI. Semua hak dilindungi undang-undang.</p>
+                        <p>&copy; 2024 NutriVege. Semua hak dilindungi undang-undang.</p>
                     </div>
                 </div>
             </footer>

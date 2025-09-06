@@ -20,7 +20,7 @@ export default function TableDatasetSayuran({ data }: { data: DatasetSayuranType
                     <TableHead>Nama Sayuran</TableHead>
                     <TableHead>Nutrisi</TableHead>
                     <TableHead>Manfaat</TableHead>
-                    <TableHead>Status Nutrisi</TableHead>
+                    <TableHead>Status IMT</TableHead>
                     <TableHead>Gejala</TableHead>
                 </TableRow>
             </TableHeader>

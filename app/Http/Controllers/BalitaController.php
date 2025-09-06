@@ -22,6 +22,20 @@ class BalitaController extends Controller
             'href' => '/balita/',
         ],
     ];
+
+    public function getByNik($user_id, $nik)
+    {
+        $balita = Balita::where('orang_tua_id', $user_id)->where('nik', '=', $nik)->with('orangtua')->first();
+
+        if ($balita) {
+            return response()->json($balita, 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Balita not found'
+            ], 404);
+        }
+    }
     /**
      * Display a listing of the resource.
      */
@@ -37,16 +51,15 @@ class BalitaController extends Controller
             $orderBy = $request->input('order_by');
             if (in_array($orderBy, ['asc', 'desc'])) {
                 $query->orderBy('created_at', $orderBy);
-            } else if(in_array($orderBy, ['A-Z', 'Z-A'])) {
-                if($orderBy == 'A-Z') {
+            } else if (in_array($orderBy, ['A-Z', 'Z-A'])) {
+                if ($orderBy == 'A-Z') {
                     $query->orderBy('name', 'asc');
-                }else {
+                } else {
                     $query->orderBy('name', 'desc');
                 }
-            }else if(in_array($orderBy, ['Laki-laki','Perempuan'])){
+            } else if (in_array($orderBy, ['Laki-laki', 'Perempuan'])) {
                 $query->searchByJenkel($orderBy);
-            }
-            else {
+            } else {
                 // Handle invalid order_by value
                 return redirect()->back()->withErrors(['order_by' => 'Invalid order_by value']);
             }
@@ -77,15 +90,15 @@ class BalitaController extends Controller
      */
     public function create()
     {
-    return Inertia::render('admin/balita/create', [
-        'orangtua' => User::withoutRole(['admin','super_admin'])->get(),
-        'breadcrumb'=> array_merge(self::BASE_BREADCRUMB,[
-            [
-                'title'=> 'tambah data',
-                'href'=> '/balita/create',
-            ],
-        ])
-    ]);
+        return Inertia::render('admin/balita/create', [
+            'orangtua' => User::withoutRole(['admin', 'super_admin'])->get(),
+            'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
+                [
+                    'title' => 'tambah data',
+                    'href' => '/balita/create',
+                ],
+            ])
+        ]);
     }
 
     /**
@@ -94,7 +107,7 @@ class BalitaController extends Controller
     public function store(StoreBalitaRequest $request)
     {
         $balita = Balita::create($request->all());
-        return redirect()->route('balita.index')->with('success','Balita berhasil ditambahkan!!');
+        return redirect()->route('balita.index')->with('success', 'Balita berhasil ditambahkan!!');
     }
 
     /**
@@ -104,14 +117,14 @@ class BalitaController extends Controller
     {
         $balita->load(['orangtua', 'pemeriksaan', 'pemeriksaan.detailpemeriksaan']);
         return Inertia::render('admin/balita/show', [
-            'balita'=> $balita,
-            'pemeriksaan'=> $balita->pemeriksaan,
-            'orangTua'=> $balita->orangtua,
-            'kriteria'=> Kriteria::orderBy('id', 'asc')->get(),
-            'breadcrumb'=> array_merge(self::BASE_BREADCRUMB,[
+            'balita' => $balita,
+            'pemeriksaan' => $balita->pemeriksaan,
+            'orangTua' => $balita->orangtua,
+            'kriteria' => Kriteria::orderBy('id', 'asc')->get(),
+            'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
-                    'title'=> 'detail data',
-                    'href'=> '/balita/show',
+                    'title' => 'detail data',
+                    'href' => '/balita/show',
                 ],
             ])
         ]);
@@ -124,12 +137,12 @@ class BalitaController extends Controller
     {
         $balita->load(['orangtua']);
         return Inertia::render('admin/balita/edit', [
-            'balita'=> $balita,
+            'balita' => $balita,
             'orangtua' => User::withoutRole('admin')->get(),
-            'breadcrumb'=> array_merge(self::BASE_BREADCRUMB,[
+            'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
-                    'title'=> 'edit data',
-                    'href'=> '/balita/edit',
+                    'title' => 'edit data',
+                    'href' => '/balita/edit',
                 ],
             ])
         ]);
@@ -141,7 +154,7 @@ class BalitaController extends Controller
     public function update(UpdateBalitaRequest $request, Balita $balita)
     {
         $balita->update($request->all());
-        return redirect()->route('balita.index')->with('success','Balita berhasil diupdate!!');
+        return redirect()->route('balita.index')->with('success', 'Balita berhasil diupdate!!');
     }
 
     /**
@@ -150,6 +163,6 @@ class BalitaController extends Controller
     public function destroy(Balita $balita)
     {
         $balita->delete();
-        return redirect()->route('balita.index')->with('success','Balita berhasil dihapus!!');
+        return redirect()->route('balita.index')->with('success', 'Balita berhasil dihapus!!');
     }
 }

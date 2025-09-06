@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, KriteriaTypes } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
@@ -121,6 +122,7 @@ export default function GejalaIndex({ gejala, breadcrumb, titlePage, can }: Geja
                                 <TableRow>
                                     <TableHead className="cursor-pointer">no</TableHead>
                                     <TableHead className="cursor-pointer">Nama</TableHead>
+                                    <TableHead className="cursor-pointer">Keterangan</TableHead>
                                     {(can?.delete || can?.edit) && <TableHead className="cursor-pointer">Aksi</TableHead>}
                                 </TableRow>
                             </TableHeader>
@@ -130,6 +132,7 @@ export default function GejalaIndex({ gejala, breadcrumb, titlePage, can }: Geja
                                         <TableRow key={item.id}>
                                             <TableCell>{index + 1}</TableCell>
                                             <TableCell>{item.nama}</TableCell>
+                                            <TableCell>{item.deskripsi}</TableCell>
                                             {(can?.edit || can?.delete) && (
                                                 <TableCell>
                                                     <div className="flex flex-row items-center gap-2">
@@ -194,6 +197,21 @@ export default function GejalaIndex({ gejala, breadcrumb, titlePage, can }: Geja
                                     placeholder="Masukkan nama gejala"
                                 />
                                 <InputError message={errors.nama} className="mt-2" />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="deskripsi" className="text-sm font-medium">
+                                    Keterangan
+                                </Label>
+                                <Textarea
+                                    value={data.deskripsi}
+                                    onChange={(e) => setData('deskripsi', e.target.value)}
+                                    id="deskripsi"
+                                    name="deskripsi"
+                                    className="input"
+                                    disabled={processing}
+                                    placeholder="Masukkan deskripsi gejala"
+                                />
+                                <InputError message={errors.deskripsi} className="mt-2" />
                             </div>
                         </div>
                         <DialogFooter>

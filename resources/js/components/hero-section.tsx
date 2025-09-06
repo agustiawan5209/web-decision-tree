@@ -1,8 +1,10 @@
-import { Link } from '@inertiajs/react';
+import { SharedData } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import { ArrowRight, BarChart3 } from 'lucide-react';
 import { Button } from './ui/button';
 export default function HeroSection() {
+    const { auth } = usePage<SharedData>().props;
     // Animation variants
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -33,18 +35,20 @@ export default function HeroSection() {
                         Sistem cerdas menggunakan Algoritma Decision Tree untuk membantu orang tua dan guru mengklasifikasikan sayuran berdasarkan
                         nilai nutrisi untuk anak-anak.
                     </p>
-                    <div className="flex flex-col gap-4 sm:flex-row">
-                        <Button size="lg" asChild>
-                            <Link href={route('login')}>
-                                Mulai Rekomendasi <ArrowRight className="ml-2 h-4 w-4" />
-                            </Link>
-                        </Button>
-                        <Button size="lg" variant="outline" asChild>
-                            <Link href="/login" className="text-primary">
-                                Lihat Dashboard <BarChart3 className="ml-2 h-4 w-4" />
-                            </Link>
-                        </Button>
-                    </div>
+                    {!auth.user && (
+                        <div className="flex flex-col gap-4 sm:flex-row">
+                            <Button size="lg" asChild>
+                                <Link href={route('login')}>
+                                    Mulai Rekomendasi <ArrowRight className="ml-2 h-4 w-4" />
+                                </Link>
+                            </Button>
+                            <Button size="lg" variant="outline" asChild>
+                                <Link href="/login" className="text-primary">
+                                    Lihat Dashboard <BarChart3 className="ml-2 h-4 w-4" />
+                                </Link>
+                            </Button>
+                        </div>
+                    )}
                 </motion.div>
 
                 <motion.div className="flex flex-1 justify-center" variants={itemVariants}>

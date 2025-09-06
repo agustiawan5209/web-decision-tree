@@ -63,6 +63,7 @@ export interface LabelTypes {
 export interface GejalaTypes {
     id: number;
     nama: string;
+    deskripsi: string;
 }
 export interface JenisTanamanTypes {
     id: number;

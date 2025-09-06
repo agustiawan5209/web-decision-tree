@@ -185,3 +185,7 @@ Route::get('/api/decision-tree/get-data', [DatatDecisionTreeController::class, '
 Route::get('/api/get-sayuran', [JenisTanamanController::class, 'getSayuran'])->name('api.get.sayuran');
 Route::get('/api/get-dataset-sayuran/{status}/{gejala}', [DatasetSayuranController::class, 'getDataByStatus'])->name('api.get.dataset.sayuran');
 Route::get('/api/get-gejala', [GejalaController::class, 'getGejala'])->name('api.get.gejala');
+
+
+// get balita by nik
+Route::get('/api/get-balita-by-nik/{user_id}/{nik}', [BalitaController::class, 'getByNik'])->name('api.get.balita-by-nik');

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Toast } from '@/components/ui/toast';
 import DecisionTreeModel from '@/services/decision-tree-model';
-import { DatasetSayuranTypes, GejalaTypes, KriteriaTypes, LabelTypes, SharedData } from '@/types';
+import { BalitaTypes, DatasetSayuranTypes, GejalaTypes, KriteriaTypes, LabelTypes, SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { LeafyGreen, Loader2, LoaderCircle } from 'lucide-react';
@@ -89,6 +89,9 @@ const ClassifyPemeriksaan = ({
     const today = new Date();
     const [optGejala, setOptGejala] = useState<{ value: string; label: string }[]>([]);
     const [optDatasetSayuran, setOptDatasetSayuran] = useState<DatasetSayuranTypes[]>([]);
+    const [listGejala, setListGejala] = useState<GejalaTypes[]>([]);
+
+    const [nikBalita, setNikBalita] = useState('');
     const [toast, setToast] = useState<{
         title: string;
         show: boolean;
@@ -165,6 +168,7 @@ const ClassifyPemeriksaan = ({
             const response = await axios.get(route('api.get.gejala'));
             if (response.status !== 200) throw new Error('Failed to fetch gejala');
             const data: GejalaTypes[] = await response.data;
+            setListGejala(data);
             setOptGejala(data.map((item) => ({ value: item.nama, label: item.nama })));
         } catch (error) {
             console.error(error);
@@ -175,6 +179,75 @@ const ClassifyPemeriksaan = ({
                 type: 'error',
             });
             return null;
+        }
+    };
+    const fetchDatasetSayuran = async (label: string | string[], gejala: string) => {
+        try {
+            const response = await axios.get(route('api.get.dataset.sayuran', { status: label, gejala: gejala }));
+            if (response.status !== 200) throw new Error('Failed to fetch dataset');
+            const responsData: DatasetSayuranTypes[] = await response.data;
+            setOptDatasetSayuran(responsData);
+            setData({ ...data, rekomendasi: responsData, gejala: gejala });
+        } catch (error) {
+            console.error(error);
+            setToast({
+                title: 'Error Gejala',
+                show: true,
+                message: (error as Error).message,
+                type: 'error',
+            });
+            return null;
+        }
+    };
+
+    const fetchBalitaByNik = async (nik: string) => {
+        try {
+            const response = await axios.get(route('api.get.balita-by-nik', { user_id: auth.user.id, nik: nik }));
+            if (response.status !== 200) throw new Error('Failed to fetch balita');
+            const data: BalitaTypes = await response.data;
+            if (data) {
+                console.log(data);
+
+                const tanggalLahir = data.tanggal_lahir || '';
+                setData((prev) => ({
+                    ...prev,
+                    orang_tua_id: data.orang_tua_id || '',
+                    nik: data.nik,
+                    nama: data.nama || '',
+                    tempat_lahir: data.tempat_lahir || '',
+                    tanggal_lahir: tanggalLahir,
+                    jenis_kelamin: data.jenis_kelamin,
+                    kriteria: prev.kriteria?.map((item) =>
+                        item.name.toLowerCase().includes('umur')
+                            ? { ...item, nilai: tanggalLahir ? hitungUsiaBulan(tanggalLahir).toString() : '' }
+                            : item.name.toLowerCase().includes('jenis kelamin')
+                              ? { ...item, nilai: data.jenis_kelamin || '' }
+                              : item,
+                    ),
+                }));
+            } else {
+                setToast({
+                    title: 'Peringatan',
+                    show: true,
+                    message: `Data balita dengan NIK ${nik} tidak ditemukan. Silakan lengkapi data balita secara manual.`,
+                    type: 'error',
+                });
+            }
+        } catch (error) {
+            setToast({
+                title: 'Peringatan',
+                show: true,
+                message: `Data balita dengan NIK ${nik} tidak ditemukan. Silakan lengkapi data balita secara manual.`,
+                type: 'error',
+            });
+            return null;
+        }
+    };
+
+    const findNik = () => {
+        if (nikBalita.length >= 1) {
+            setData((prev) => ({ ...prev, nik: nikBalita })); // update nik in data state
+            fetchBalitaByNik(nikBalita);
         }
     };
 
@@ -266,6 +339,8 @@ const ClassifyPemeriksaan = ({
 
                         if (setResult) {
                             setResult(result);
+                            const gejala = inputGejala.join(', ');
+                            fetchDatasetSayuran(result.label ?? '', gejala);
                         }
                         handleOpenDialog();
                     }
@@ -364,30 +439,7 @@ const ClassifyPemeriksaan = ({
         const selectedValues = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
         setInputGejala(selectedValues);
     };
-    useEffect(() => {
-        const gejala = inputGejala.join(', ');
-        if (inputGejala.length > 0) {
-            const fetchDatasetSayuran = async (label: string | string[], gejala: string) => {
-                try {
-                    const response = await axios.get(route('api.get.dataset.sayuran', { status: label, gejala: gejala }));
-                    if (response.status !== 200) throw new Error('Failed to fetch dataset');
-                    const responsData: DatasetSayuranTypes[] = await response.data;
-                    setOptDatasetSayuran(responsData);
-                    setData({ ...data, rekomendasi: responsData, gejala: gejala });
-                } catch (error) {
-                    console.error(error);
-                    setToast({
-                        title: 'Error Gejala',
-                        show: true,
-                        message: (error as Error).message,
-                        type: 'error',
-                    });
-                    return null;
-                }
-            };
-            fetchDatasetSayuran(prediction?.label ?? '', gejala);
-        }
-    }, [inputGejala]);
+
     return (
         <div className="mx-auto max-w-7xl px-4 py-8">
             <Toast
@@ -399,24 +451,29 @@ const ClassifyPemeriksaan = ({
                 variant={toast.type}
             />
 
-            <div className="grid grid-cols-1 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+            <div className="grid grid-cols-1 rounded-xl border border-gray-100 bg-white shadow-sm">
                 <div className="p-6 ring-1 md:p-8">
                     <form onSubmit={(e) => handlePredict(e)} className="space-y-6">
                         <div className="mt-4 grid grid-cols-2 gap-3">
-                            <div className="grid gap-2">
+                            <div className="grid flex-1 gap-2">
                                 <Label htmlFor="nik">NIK</Label>
-                                <Input
-                                    id="nik"
-                                    type="text"
-                                    required
-                                    autoFocus
-                                    tabIndex={1}
-                                    autoComplete="nik"
-                                    value={data.nik}
-                                    onChange={(e) => setData({ ...data, nik: e.target.value })}
-                                    disabled={processing}
-                                    placeholder="Masukkan Nik Balita"
-                                />
+                                <div className="flex">
+                                    <Input
+                                        id="nik"
+                                        type="text"
+                                        required
+                                        autoFocus
+                                        tabIndex={1}
+                                        autoComplete="nik"
+                                        value={nikBalita}
+                                        onChange={(e) => setNikBalita(e.target.value)}
+                                        disabled={processing}
+                                        placeholder="Masukkan Nik Balita"
+                                    />
+                                    <Button type="button" variant={'default'} onClick={findNik}>
+                                        Cari
+                                    </Button>
+                                </div>
                                 <InputError message={errors.nik} className="mt-2" />
                             </div>
                             <div className="grid gap-2">
@@ -518,15 +575,48 @@ const ClassifyPemeriksaan = ({
                                 );
                             })}
                         </div>
+                        <div className="grid gap-2">
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                                <div className="">
+                                    <Label htmlFor="gejala">Gejala</Label>
+                                    <ReactSelect
+                                        id="gejala"
+                                        name="gejala"
+                                        value={selectedValues}
+                                        onChange={handleGejalaChange}
+                                        closeMenuOnSelect={false}
+                                        components={animatedComponents}
+                                        isMulti
+                                        options={optGejala}
+                                        className="react-select-container"
+                                        classNamePrefix="react-select"
+                                        tabIndex={4}
+                                        placeholder="Pilih gejala..."
+                                    />
+                                </div>
+                                <div className="">
+                                    <ul>
+                                        {listGejala.map((item) => (
+                                            <li key={item.id} className="mb-2">
+                                                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                                                    <h3 className="mb-1 font-semibold">{item.nama}</h3>
+                                                    <p className="text-sm text-gray-600">{item.deskripsi}</p>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
 
-                        <div className="flex flex-wrap gap-3 pt-4">
+                        <div className="flex w-full flex-wrap gap-3 pt-4">
                             <Button
                                 type="submit"
                                 disabled={loading || !model || isError}
-                                className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600"
+                                className="w-full bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600"
                             >
                                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                                Mulai Pemeriksaan Nutrisi
+                                Proses
                             </Button>
                         </div>
                     </form>
@@ -534,13 +624,13 @@ const ClassifyPemeriksaan = ({
             </div>
             <Dialog open={openDialog} onOpenChange={setOpenDialog}>
                 <DialogTrigger />
-                <DialogContent className="h-screen max-w-7xl overflow-y-auto">
+                <DialogContent className="h-auto max-w-7xl overflow-y-auto">
                     <DialogTitle>
                         <div className="flex items-center gap-3 text-foreground">
                             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
                                 <LeafyGreen className={`h-4 w-4 ${prediction?.label == 'Baik' ? 'text-green-500' : 'text-red-500'}`} />
                             </div>
-                            <span className="text-lg font-medium">Hasil Pemeriksaan Nutrisi</span>
+                            <span className="text-lg font-medium">Hasil rekomendasi sayuran</span>
                         </div>
                     </DialogTitle>
 
@@ -562,7 +652,7 @@ const ClassifyPemeriksaan = ({
                             </div>
 
                             <div className="space-y-1">
-                                <p className={'text-sm font-medium text-muted-foreground ' + predictionColor}>Status Nutrisi</p>
+                                <p className={'text-sm font-medium text-muted-foreground ' + predictionColor}>status IMT</p>
                                 <p
                                     className={`h-auto w-max flex-shrink-0 rounded-full px-2 ${
                                         prediction?.label === 'Buruk'
@@ -578,35 +668,12 @@ const ClassifyPemeriksaan = ({
                                 </p>
                             </div>
                         </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="gejala">Gejala</Label>
-                            <ReactSelect
-                                id="gejala"
-                                name="gejala"
-                                value={selectedValues}
-                                onChange={handleGejalaChange}
-                                closeMenuOnSelect={false}
-                                components={animatedComponents}
-                                isMulti
-                                options={optGejala}
-                                className="react-select-container"
-                                classNamePrefix="react-select"
-                                tabIndex={4}
-                                placeholder="Pilih gejala..."
-                            />
-                        </div>
-                    </div>
-                    <div className="max-w-auto p-2">
                         <TableDatasetSayuran data={optDatasetSayuran} />
-                    </div>
-
-                    <DialogFooter className="mt-6">
                         <Button type="button" variant="default" size="sm" className="w-full" disabled={processing} onClick={submit}>
                             {processing ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : null}
                             Simpan
                         </Button>
-                    </DialogFooter>
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>

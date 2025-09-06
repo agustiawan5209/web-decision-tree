@@ -23,7 +23,8 @@ class GejalaController extends Controller
         ],
     ];
 
-    public function getGejala(){
+    public function getGejala()
+    {
         return response()->json(Gejala::all(), 200);
     }
     /**
@@ -34,16 +35,16 @@ class GejalaController extends Controller
         return Inertia::render("admin/gejala/index", [
             'gejala' => Gejala::orderBy('id', 'desc')->get(),
             'breadcrumb' => self::BASE_BREADCRUMB,
-            'titlePage'=> 'Gejala',
-            'can'=> [
-                'add'=> Auth::user()->can('add label'),
-                'edit'=> Auth::user()->can('edit label'),
-                'read'=> Auth::user()->can('read label'),
-                'delete'=> Auth::user()->can('delete label'),
+            'titlePage' => 'Gejala',
+            'can' => [
+                'add' => Auth::user()->can('add label'),
+                'edit' => Auth::user()->can('edit label'),
+                'read' => Auth::user()->can('read label'),
+                'delete' => Auth::user()->can('delete label'),
             ],
         ]);
     }
- private function applyFilters($query, Request $request): void
+    private function applyFilters($query, Request $request): void
     {
         if ($request->filled('q')) {
             $query->searchByName($request->input('q'));
@@ -135,8 +136,8 @@ class GejalaController extends Controller
         $databaseHelper = App::make('databaseHelper');
         return $databaseHelper(
             operation: fn() => $gejala->update([
-                'nama'=> $request->nama,
-                'deskripsi'=> $request->deskripsi,
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
             ]),
             successMessage: 'Gejala Berhasil Di Update!',
             redirectRoute: 'admin.gejala.index'

@@ -158,7 +158,13 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                     key={item.id} // Using item.id as key is better than index
                     num={index + 1}
                     title={item.tgl_pemeriksaan}
-                    columnData={[item.balita.nama, item.balita.orangtua.name, `${item.balita.tempat_lahir}/${item.balita.tanggal_lahir}`, item.label]}
+                    columnData={[
+                        item.balita.nik,
+                        item.balita.nama,
+                        item.balita.orangtua.name,
+                        `${item.balita.tempat_lahir}/${item.balita.tanggal_lahir}`,
+                        item.label,
+                    ]}
                     delete="delete"
                     url={delete_url ?? ''}
                     id={item.id.toString()}
@@ -244,6 +250,7 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                                         <TableRow>
                                             <TableHead className="w-10">No.</TableHead>
                                             <TableHead>Tanggal Pemeriksaan</TableHead>
+                                            <TableHead>NIK</TableHead>
                                             <TableHead>Nama Balita/Anak</TableHead>
                                             <TableHead>Nama Orang Tua</TableHead>
                                             <TableHead>Tempat/Tanggal Lahir</TableHead>
