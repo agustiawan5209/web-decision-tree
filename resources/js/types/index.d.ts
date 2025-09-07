@@ -38,11 +38,15 @@ export interface SharedData {
 
 export interface User {
     id: number;
+    nik: string;
     name: string;
     email: string;
     avatar?: string;
     alamat?: string;
     nohp?: string;
+    jenis_kelamin?: string;
+    tempat_lahir?: string;
+    tgl_lahir?: string;
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;

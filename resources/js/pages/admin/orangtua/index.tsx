@@ -5,14 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { User, type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { EyeIcon, PenBoxIcon } from 'lucide-react';
-import { FormEventHandler, useEffect, useState, useMemo } from 'react';
+import { PenBoxIcon } from 'lucide-react';
+import { FormEventHandler, useEffect, useMemo, useState } from 'react';
 export interface OrangtuaProps {
     orangtua?: {
         current_page: number;
-        data: string[];
+        data: User[];
         first_page_url: string;
         from: number;
         last_page: number;
@@ -44,12 +44,11 @@ type GetForm = {
 };
 
 export default function OrangtuaIndex({ orangtua, breadcrumb, filter }: OrangtuaProps) {
-     // Memoize breadcrumbs to prevent unnecessary recalculations
+    // Memoize breadcrumbs to prevent unnecessary recalculations
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
-        [breadcrumb]
+        [breadcrumb],
     );
-
 
     const { data, setData, get, processing, errors, reset } = useForm<GetForm>({
         // q: '',
@@ -133,11 +132,11 @@ export default function OrangtuaIndex({ orangtua, breadcrumb, filter }: Orangtua
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Orangtua" />
             <div className="dark:bg-elevation-1 flex h-full flex-1 flex-col gap-4 rounded-xl p-1 lg:p-4">
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
+                <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                     <div className="flex w-full flex-1 flex-col items-start justify-end gap-2 px-1 py-1 md:flex-row md:items-center md:justify-between md:gap-7 lg:px-4 lg:py-2">
-                        <div className="flex w-full flex-1 flex-col gap-7 px-1 py-1 lg:px-4 lg:py-2 md:flex-row md:items-center">
+                        <div className="flex w-full flex-1 flex-col gap-7 px-1 py-1 md:flex-row md:items-center lg:px-4 lg:py-2">
                             <Link href={route('admin.orangtua.create')} className="col-span-1 cursor-pointer">
-                                <Button variant="default" className="flex cursor-pointer items-center gap-2 bg-primary ">
+                                <Button variant="default" className="flex cursor-pointer items-center gap-2 bg-primary">
                                     Tambah User
                                 </Button>
                             </Link>
@@ -181,29 +180,37 @@ export default function OrangtuaIndex({ orangtua, breadcrumb, filter }: Orangtua
                             </Select>
                         </div> */}
                     </div>
-                    <div className="lg:w-full overflow-hidden">
-
-                         <Table className="w-full">
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-10">No.</TableHead>
-                                        <TableHead>Nama Orang Tua</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>No. Whatsapp</TableHead>
-                                        <TableHead>Alamat</TableHead>
-                                        <TableHead>Aksi</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody className={processing ? 'opacity-50' : ''}>
-                                    {(orangtua?.data ?? []).length > 0 &&
-                                        orangtua?.data.map((item: any, index: number) => (
-                                            <TableRow key={index}>
-                                                <TableCell>{index + 1 + (orangtua?.current_page - 1) * orangtua?.per_page}</TableCell>
-                                                <TableCell> {item.name} </TableCell>
-                                                <TableCell> {item.email} </TableCell>
-                                                <TableCell> {item.nohp} </TableCell>
-                                                <TableCell> {item.alamat} </TableCell>
-                                               <TableCell>
+                    <div className="overflow-hidden lg:w-full">
+                        <Table className="w-full">
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-10">No.</TableHead>
+                                    <TableHead>NIK</TableHead>
+                                    <TableHead>Nama </TableHead>
+                                    <TableHead>Email</TableHead>
+                                    <TableHead>No. Whatsapp</TableHead>
+                                    <TableHead>Alamat</TableHead>
+                                    <TableHead>Tempat/Tanggal Lahir</TableHead>
+                                    <TableHead>Jenis Kelamin</TableHead>
+                                    <TableHead>Aksi</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody className={processing ? 'opacity-50' : ''}>
+                                {(orangtua?.data ?? []).length > 0 &&
+                                    orangtua?.data.map((item: any, index: number) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{index + 1 + (orangtua?.current_page - 1) * orangtua?.per_page}</TableCell>
+                                            <TableCell> {item.nik} </TableCell>
+                                            <TableCell> {item.name} </TableCell>
+                                            <TableCell> {item.email} </TableCell>
+                                            <TableCell> {item.nohp} </TableCell>
+                                            <TableCell> {item.alamat} </TableCell>
+                                            <TableCell>
+                                                {' '}
+                                                {item.tempat_lahir} / {item.tgl_lahir}{' '}
+                                            </TableCell>
+                                            <TableCell> {item.jenis_kelamin} </TableCell>
+                                            <TableCell>
                                                 <div className="flex flex-row items-center gap-2">
                                                     <DeleteConfirmationForm
                                                         title={`Hapus user ${item.id}`}
@@ -218,37 +225,37 @@ export default function OrangtuaIndex({ orangtua, breadcrumb, filter }: Orangtua
                                                     </Link>
                                                 </div>
                                             </TableCell>
-                                            </TableRow>
-                                        ))}
-                                </TableBody>
-                            </Table>
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-7 border-x-2 border-b-2 p-2">
-                                <div className="flex items-center gap-7 px-1 py-1 lg:px-4 lg:py-2">
-                                    <div className='flex flex-row gap-2'>
-                                        <Select defaultValue="10" value={perPage} onValueChange={(e) => setPerPage(e.toString())}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Jumlah Data" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectItem value="10">10</SelectItem>
-                                                    <SelectItem value="20">20</SelectItem>
-                                                    <SelectItem value="50">50</SelectItem>
-                                                    <SelectItem value="100">100</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                        <Button variant="outline" type="button" onClick={submitPerPage} className="flex items-center gap-2 text-xs">
-                                            Tampilkan
-                                        </Button>
-                                    </div>
-                                    <div className="text-xs text-gray-600">
-                                        {' '}
-                                        halaman {orangtua?.from} ke {orangtua?.to} dari {orangtua?.total} total
-                                    </div>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                        <div className="flex flex-col items-center justify-between gap-7 border-x-2 border-b-2 p-2 md:flex-row">
+                            <div className="flex items-center gap-7 px-1 py-1 lg:px-4 lg:py-2">
+                                <div className="flex flex-row gap-2">
+                                    <Select defaultValue="10" value={perPage} onValueChange={(e) => setPerPage(e.toString())}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Jumlah Data" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value="10">10</SelectItem>
+                                                <SelectItem value="20">20</SelectItem>
+                                                <SelectItem value="50">50</SelectItem>
+                                                <SelectItem value="100">100</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    <Button variant="outline" type="button" onClick={submitPerPage} className="flex items-center gap-2 text-xs">
+                                        Tampilkan
+                                    </Button>
                                 </div>
-                                <PaginationTable links={orangtua?.links ?? []} data={filter} />
+                                <div className="text-xs text-gray-600">
+                                    {' '}
+                                    halaman {orangtua?.from} ke {orangtua?.to} dari {orangtua?.total} total
+                                </div>
                             </div>
+                            <PaginationTable links={orangtua?.links ?? []} data={filter} />
+                        </div>
                     </div>
                 </div>
             </div>

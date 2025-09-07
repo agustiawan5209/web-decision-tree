@@ -55,6 +55,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
     const navItems = [{ name: 'Home', path: '/', icon: <Home className="h-4 w-4" /> }];
     const AuthNavItems = [
         { name: 'Home', path: route('guest.dashboard'), icon: <Home className="h-4 w-4" /> },
+        { name: 'Biodata', path: route('profile.edit'), icon: <Settings className="h-4 w-4" /> },
         { name: 'Mulai Pemeriksaan', path: route('guest.klasifikasi.create-id'), icon: <FormInput className="h-4 w-4" /> },
         { name: 'Riwayat Pemeriksaan', path: route('guest.klasifikasi.index'), icon: <TimerIcon className="h-4 w-4" /> },
     ];
@@ -271,21 +272,6 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                                     <UserInfo user={auth.user} showEmail={true} />
                                                 </div>
                                             </DropdownMenuLabel>
-                                            <DropdownMenuSeparator />
-                                            <DropdownMenuGroup>
-                                                <DropdownMenuItem asChild>
-                                                    <Link
-                                                        className="block w-full"
-                                                        href={route('profile.edit')}
-                                                        as="button"
-                                                        prefetch
-                                                        onClick={cleanup}
-                                                    >
-                                                        <Settings className="mr-2" />
-                                                        Settings
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                            </DropdownMenuGroup>
                                             <DropdownMenuSeparator />
                                             <DropdownMenuItem asChild>
                                                 <Link

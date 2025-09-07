@@ -9,11 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-     public function up(): void
+    public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('alamat')->after('email')->nullable();
-            $table->string('nohp')->after('alamat')->nullable();
+            $table->string('nik')->unique()->nullable();
+            $table->string('nohp')->nullable();
+            $table->string('alamat')->nullable();
+            $table->string('tempat_lahir')->nullable();
+            $table->date('tgl_lahir')->nullable();
+            $table->string('jenis_kelamin')->nullable();
         });
     }
 
