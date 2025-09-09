@@ -1,0 +1,11 @@
+import{K as o,j as a,$ as i}from"./app-BmKeOAo8.js";import{a as n,m as e,B as t}from"./proxy-NDnMJSoV.js";/**
+ * @license lucide-react v0.475.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const c=[["path",{d:"M5 12h14",key:"1ays0h"}],["path",{d:"m12 5 7 7-7 7",key:"xquz4c"}]],d=n("ArrowRight",c);/**
+ * @license lucide-react v0.475.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const m=[["path",{d:"M3 3v16a2 2 0 0 0 2 2h16",key:"c24i48"}],["path",{d:"M18 17V9",key:"2bz60n"}],["path",{d:"M13 17V5",key:"1frdt8"}],["path",{d:"M8 17v-3",key:"17ska0"}]],h=n("ChartColumn",m);function p(){const{auth:r}=o().props,l={hidden:{opacity:0},visible:{opacity:1,transition:{staggerChildren:.3}}},s={hidden:{y:20,opacity:0},visible:{y:0,opacity:1,transition:{duration:.5}}};return a.jsx("div",{className:"container mx-auto max-w-6xl",children:a.jsxs(e.div,{className:"flex flex-col items-center gap-12 md:flex-row",variants:l,initial:"hidden",animate:"visible",children:[a.jsxs(e.div,{className:"flex-1",variants:s,children:[a.jsx("h1",{className:"mb-6 text-3xl font-bold text-primary md:text-5xl",children:"Rekomendasi Jenis Sayuran Berdasarkan Nutrisi untuk Anak"}),a.jsx("p",{className:"mb-8 text-lg text-muted-foreground",children:"Sistem cerdas menggunakan Algoritma Decision Tree untuk membantu orang tua dan guru mengklasifikasikan sayuran berdasarkan nilai nutrisi untuk anak-anak."}),!r.user&&a.jsxs("div",{className:"flex flex-col gap-4 sm:flex-row",children:[a.jsx(t,{size:"lg",asChild:!0,children:a.jsxs(i,{href:route("login"),children:["Mulai Rekomendasi ",a.jsx(d,{className:"ml-2 h-4 w-4"})]})}),a.jsx(t,{size:"lg",variant:"outline",asChild:!0,children:a.jsxs(i,{href:"/login",className:"text-primary",children:["Lihat Dashboard ",a.jsx(h,{className:"ml-2 h-4 w-4"})]})})]})]}),a.jsx(e.div,{className:"flex flex-1 justify-center",variants:s,children:a.jsx("img",{src:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=80",alt:"Vegetables for children",className:"h-auto max-w-full rounded-lg shadow-xl"})})]})})}export{d as A,h as C,p as H};
