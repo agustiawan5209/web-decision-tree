@@ -20,8 +20,6 @@ export default function TableDatasetSayuran({ data }: { data: DatasetSayuranType
                     <TableHead>Nama Sayuran</TableHead>
                     <TableHead>Nutrisi</TableHead>
                     <TableHead>Manfaat</TableHead>
-                    <TableHead>Status IMT</TableHead>
-                    <TableHead>Gejala</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -32,8 +30,6 @@ export default function TableDatasetSayuran({ data }: { data: DatasetSayuranType
                             <TableCell> {item.nama_sayuran} </TableCell>
                             <TableCell className="text-xs"> {item.nutrisi} </TableCell>
                             <TableCell className="text-xs"> {item.manfaat} </TableCell>
-                            <TableCell className="text-xs"> {item.status} </TableCell>
-                            <TableCell className="text-xs"> {item.gejala} </TableCell>
                         </TableRow>
                     ))}
             </TableBody>

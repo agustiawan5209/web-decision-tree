@@ -21,7 +21,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
     const page = usePage<SharedData>();
     const { flash, auth } = page.props;
     const [openToast, setOpenToast] = useState(false);
-
+    console.log(flash);
     const [toastMessage, setToastMessage] = useState({
         title: '',
         description: '',
@@ -55,7 +55,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
     const navItems = [{ name: 'Home', path: '/', icon: <Home className="h-4 w-4" /> }];
     const AuthNavItems = [
         { name: 'Home', path: route('guest.dashboard'), icon: <Home className="h-4 w-4" /> },
-        { name: 'Biodata', path: route('profile.edit'), icon: <Settings className="h-4 w-4" /> },
+        { name: 'Biodata', path: route('guest.biodata.index'), icon: <Settings className="h-4 w-4" /> },
         { name: 'Mulai Pemeriksaan', path: route('guest.klasifikasi.create-id'), icon: <FormInput className="h-4 w-4" /> },
         { name: 'Riwayat Pemeriksaan', path: route('guest.klasifikasi.index'), icon: <TimerIcon className="h-4 w-4" /> },
     ];

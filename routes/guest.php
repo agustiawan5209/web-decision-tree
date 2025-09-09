@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Guest\BalitaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Guest\DashboardController;
 use App\Http\Controllers\Guest\KlasifikasiController;
@@ -28,6 +29,15 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
                 Route::put('/update/{pemeriksaan}', 'update')->name('update');
                 // Delete a pemeriksaan
                 Route::delete('/destroy/{pemeriksaan}', 'destroy')->name('destroy');
+            });
+        });
+
+        Route::group(['prefix' => 'biodata', 'as' => 'biodata.'], function () {
+            Route::controller(BalitaController::class)->group(function () {
+                // Show all pemeriksaans
+                Route::get('/', 'index')->name('index');
+                // Store a pemeriksaan
+                Route::post('/store', 'store')->name('store');
             });
         });
     });
