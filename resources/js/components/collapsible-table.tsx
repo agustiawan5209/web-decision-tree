@@ -1,10 +1,10 @@
 // components/CollapsibleRow.tsx
+import { Link } from '@inertiajs/react';
 import { ChevronDownIcon, EyeIcon, PenBoxIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import { DeleteConfirmationForm } from './delete-confirmation-form';
 import { Button } from './ui/button';
 import { TableCell, TableRow } from './ui/table';
-import { Link } from '@inertiajs/react';
 
 interface CollapsibleRowProps {
     num: string | number;
@@ -42,7 +42,7 @@ const CollapsibleRow: React.FC<CollapsibleRowProps> = ({ num, title, columnData 
                         )}
                         {show && (
                             <Link href={show}>
-                                <Button variant={'default'} type="button" tooltip='detail' className="bg-chart-1">
+                                <Button variant={'default'} type="button" tooltip="detail" className="bg-chart-1">
                                     <EyeIcon size={4} />
                                 </Button>
                             </Link>

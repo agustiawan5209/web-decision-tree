@@ -1,9 +1,9 @@
+import TableDatasetSayuran from '@/components/table-dataset-sayuran';
 import AppLayout from '@/layouts/app-layout';
 import { BalitaTypes, DetailPemeriksaanTypes, PemeriksaanTypes, SharedData, User, type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { Baby, ClipboardList, User2, Utensils } from 'lucide-react';
+import { Baby, ClipboardList, User2 } from 'lucide-react';
 import { useMemo } from 'react';
-
 
 interface PolaMakan {
     id: string;
@@ -151,17 +151,9 @@ export default function RiwayatShowView({
                                             ))}
                                     </div>
                                 </div>
-
-                                <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-900/20">
-                                    <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-emerald-800 dark:text-emerald-200">
-                                        <Utensils className="h-4 w-4" />
-                                        Rekomendasi Jenis Sayuran
-                                    </h3>
-                                    <div
-                                        className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300"
-                                        dangerouslySetInnerHTML={{ __html: pemeriksaan.rekomendasi }}
-                                    />
-                                </div>
+                            </div>
+                            <div className="col-span-full rounded-lg border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-900/20">
+                                <TableDatasetSayuran data={pemeriksaan.rekomendasi} />
                             </div>
                         </div>
                     </div>

@@ -166,13 +166,11 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
             }
         }
     }, [idOrangTua, searchById, setData]);
-
     useEffect(() => {
         if (prediction && prediction.label) {
             setData('label', prediction.label.toString());
         }
     }, [prediction]);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create" />

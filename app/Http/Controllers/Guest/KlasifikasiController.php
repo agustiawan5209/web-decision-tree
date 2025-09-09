@@ -269,7 +269,7 @@ class KlasifikasiController extends Controller
         });
 
         return redirect()
-            ->route('pemeriksaan.index')
+            ->route('guest.klasifikasi.index')
             ->with('success', 'Data pemeriksaan berhasil diupdate!');
     }
 
@@ -282,7 +282,7 @@ class KlasifikasiController extends Controller
 
 
         return redirect()
-            ->route('pemeriksaan.index')
+            ->route('guest.klasifikasi.index')
             ->with('success', 'Data pemeriksaan berhasil dihapus!');
     }
 }

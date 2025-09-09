@@ -177,7 +177,7 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                         `${item.balita.tempat_lahir}/${item.balita.tanggal_lahir}`,
                         item.label,
                     ]}
-                    delete="delete"
+                    delete={delete_url ?? ''}
                     url={delete_url ?? ''}
                     id={item.id.toString()}
                     show={read_url ?? ''}

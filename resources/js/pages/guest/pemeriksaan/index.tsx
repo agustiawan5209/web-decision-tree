@@ -140,7 +140,7 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
         if (!pemeriksaan?.length)
             return (
                 <TableRow>
-                    <TableCell colSpan={7} className="bg-gray-300 p-4 text-center text-lg">
+                    <TableCell colSpan={8} className="bg-gray-300 p-4 text-center text-lg">
                         Data Kosong
                     </TableCell>
                 </TableRow>
@@ -149,10 +149,8 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
         return pemeriksaan.map((item, index) => {
             let read_url = null;
             read_url = route('guest.klasifikasi.show', { pemeriksaan: item.id });
-            let delete_url = null;
-            if (can.delete) {
-                delete_url = route('guest.klasifikasi.destroy', { pemeriksaan: item.id });
-            }
+            let delete_url = route('guest.klasifikasi.destroy', { pemeriksaan: item.id });
+
             return (
                 <CollapsibleRow
                     key={item.id} // Using item.id as key is better than index
@@ -165,7 +163,7 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                         `${item.balita.tempat_lahir}/${item.balita.tanggal_lahir}`,
                         item.label,
                     ]}
-                    delete="delete"
+                    delete={delete_url ?? ''}
                     url={delete_url ?? ''}
                     id={item.id.toString()}
                     show={read_url ?? ''}
