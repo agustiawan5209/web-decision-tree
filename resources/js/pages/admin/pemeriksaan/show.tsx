@@ -139,12 +139,12 @@ export default function PemeriksaanShow({
                                         Data Pemeriksaan
                                     </h3>
                                     <div className="space-y-3">
-                                        <div className="grid grid-cols-3 gap-4">
+                                        {/* <div className="grid grid-cols-3 gap-4">
                                             <span className="col-span-2 text-sm font-medium text-gray-500 dark:text-gray-400">
                                                 Nomor RME (Rekam Medis Elekronik)
                                             </span>
                                             <span className="col-span-1 text-sm text-gray-900 dark:text-gray-100">{pemeriksaan.rme}</span>
-                                        </div>
+                                        </div> */}
                                         {detail
                                             .filter((attr) => !['jenis kelamin'].includes(attr.kriteria.nama.toLowerCase()))
                                             .map((item) => (

@@ -169,14 +169,8 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                 <CollapsibleRow
                     key={item.id} // Using item.id as key is better than index
                     num={index + 1 + (pemeriksaan.current_page - 1) * pemeriksaan.per_page}
-                    title={item.rme}
-                    columnData={[
-                        item.tgl_pemeriksaan,
-                        item.balita.nama,
-                        item.balita.orangtua.name,
-                        `${item.balita.tempat_lahir}/${item.balita.tanggal_lahir}`,
-                        item.label,
-                    ]}
+                    title={item.tgl_pemeriksaan}
+                    columnData={[item.balita.nama, item.balita.orangtua.name, `${item.balita.tempat_lahir}/${item.balita.tanggal_lahir}`, item.label]}
                     delete={delete_url ?? ''}
                     url={delete_url ?? ''}
                     id={item.id.toString()}
@@ -272,7 +266,7 @@ export default function PemeriksaanIndex({ pemeriksaan, breadcrumb, filter, stat
                                     <TableHeader>
                                         <TableRow>
                                             <TableHead className="w-10">No.</TableHead>
-                                            <TableHead>No. RME</TableHead>
+                                            {/* <TableHead>No. RME</TableHead> */}
                                             <TableHead>Tanggal Pemeriksaan</TableHead>
                                             <TableHead>Nama Balita/Anak</TableHead>
                                             <TableHead>Nama Orang Tua</TableHead>

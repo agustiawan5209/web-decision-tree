@@ -187,7 +187,7 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
                     <Card>
                         <CardContent>
                             <div className="grid gap-6">
-                                <div className="grid gap-2">
+                                {/* <div className="grid gap-2">
                                     <Label htmlFor="rme">No. RME (Rekam Medis Elekronik) </Label>
                                     <Input
                                         id="rme"
@@ -202,7 +202,7 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
                                         placeholder="Masukkan Nomor Rekam Medis Elektronik"
                                     />
                                     <InputError message={errors.rme} className="mt-2" />
-                                </div>
+                                </div> */}
                                 <div className="grid gap-2">
                                     <Label htmlFor="orang_tua">Nama Orang Tua</Label>
                                     <div className="relative w-full p-2">

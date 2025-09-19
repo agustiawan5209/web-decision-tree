@@ -284,11 +284,11 @@ const ClassifyPemeriksaan = ({
                 const nilai = item.nilai;
 
                 // Cek jika nilai null atau undefined
-                if (nilai === null || nilai === undefined || nilai === '' || data.rme === '') {
+                if (nilai === null || nilai === undefined || nilai === '') {
                     setToast({
                         title: 'Error',
                         show: true,
-                        message: `Nilai No.RME, jenis kelamin, usia,  BB, TB, IMT Tidak Boleh Kosong `,
+                        message: `Nilai jenis kelamin, usia,  BB, TB, IMT Tidak Boleh Kosong `,
                         type: 'error',
                     });
                 }
@@ -306,17 +306,12 @@ const ClassifyPemeriksaan = ({
                 }
             });
 
-            if (
-                data.nik === '' ||
-                (data.rme === '' && auth.role == 'admin') ||
-                data.nama === '' ||
-                data.orang_tua_id === '' ||
-                data.tempat_lahir === ''
-            ) {
+            if (data.nik === '' || data.nama === '' || data.orang_tua_id === '' || data.tempat_lahir === '') {
+                console.log(data.nik, data.nama);
                 setToast({
                     title: 'Error',
                     show: true,
-                    message: `NIK, RME, Nama, Orang Tua, Tempat Lahir Tidak Boleh Kosong `,
+                    message: `NIK, Nama, Orang Tua, Tempat Lahir Tidak Boleh Kosong `,
                     type: 'error',
                 });
             } else {
@@ -466,7 +461,10 @@ const ClassifyPemeriksaan = ({
                                         tabIndex={1}
                                         autoComplete="nik"
                                         value={nikBalita}
-                                        onChange={(e) => setNikBalita(e.target.value)}
+                                        onChange={(e) => {
+                                            setData((prev) => ({ ...prev, nik: e.target.value }));
+                                            setNikBalita(e.target.value);
+                                        }}
                                         disabled={processing}
                                         placeholder="Masukkan Nik Balita"
                                     />

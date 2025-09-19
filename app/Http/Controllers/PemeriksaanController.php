@@ -137,7 +137,6 @@ class PemeriksaanController extends Controller
 
             $pemeriksaanData = [
                 'nik' => $request->input('nik'),
-                'rme' => $request->input('rme'),
                 'user_id' => Auth::user()->id,
                 'balita_id' => $balita->id,
                 'data_balita' => $balita,

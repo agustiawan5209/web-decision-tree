@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, DatasetTypes, LabelTypes } from '@/types';
+import { BreadcrumbItem, DatasetTypes, KriteriaTypes, LabelTypes } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { EyeIcon, PenBoxIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -29,12 +29,13 @@ interface IndikatorIndexProps {
             active: boolean;
         }[];
     };
+    kriteria: KriteriaTypes[];
     breadcrumb?: BreadcrumbItem[];
     titlePage?: string;
     opsiLabel: LabelTypes[];
 }
 
-export default function IndikatorIndex({ dataset, breadcrumb, titlePage, opsiLabel }: IndikatorIndexProps) {
+export default function IndikatorIndex({ dataset, kriteria, breadcrumb, titlePage, opsiLabel }: IndikatorIndexProps) {
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
         [breadcrumb],
@@ -90,6 +91,11 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage, opsiLab
                                 <TableRow>
                                     <TableHead className="cursor-pointer">no</TableHead>
                                     <TableHead className="cursor-pointer">Label (Nutrisi)</TableHead>
+                                    {kriteria.map((item, index) => (
+                                        <TableHead key={index} className="cursor-pointer">
+                                            {item.nama}
+                                        </TableHead>
+                                    ))}
                                     <TableHead className="cursor-pointer">Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -97,8 +103,11 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage, opsiLab
                                 {dataset.data && dataset.data.length ? (
                                     dataset.data.map((item, index) => (
                                         <TableRow key={item.id}>
-                                             <TableCell>{index + 1 + (dataset?.current_page - 1) * dataset?.per_page}</TableCell>
+                                            <TableCell>{index + 1 + (dataset?.current_page - 1) * dataset?.per_page}</TableCell>
                                             <TableCell>{item.label}</TableCell>
+                                            {item.detail.map((detail, idx) => (
+                                                <TableCell key={idx}>{detail.kriteria ? detail.nilai : ''}</TableCell>
+                                            ))}
                                             <TableCell>
                                                 <div className="flex flex-row items-center gap-2">
                                                     <DeleteConfirmationForm
@@ -133,7 +142,7 @@ export default function IndikatorIndex({ dataset, breadcrumb, titlePage, opsiLab
                     </div>
                     <div className="mt-4 flex items-center justify-between">
                         <p className="text-sm text-gray-700">
-                           jumlah data {dataset.total},  halaman {dataset.current_page} dari {dataset.last_page}
+                            jumlah data {dataset.total}, halaman {dataset.current_page} dari {dataset.last_page}
                         </p>
                         <PaginationTable links={dataset.links} data={{ orderBy: orderBy ?? '' }} />
                     </div>

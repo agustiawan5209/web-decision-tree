@@ -35,10 +35,12 @@ class DatasetController extends Controller
         if ($request->filled('orderBy')) {
             $datasets->where('label', $request->orderBy);
         }
+        $datasets->with(['detail', 'detail.kriteria']);
 
         $datasets = $datasets->paginate(10);
         return Inertia::render("admin/dataset/index", [
             "dataset" => $datasets,
+            "kriteria" => Kriteria::orderBy('id', 'asc')->get(),
             "breadcrumb" => self::BASE_BREADCRUMB,
             "opsiLabel" => Label::orderBy('id', 'desc')->get(),
         ]);

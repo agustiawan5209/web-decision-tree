@@ -17,13 +17,13 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
 ];
-export default function Dashboard({ distributionLabel, label, training,kriteria }: GuestDashboardProps) {
+export default function Dashboard({ distributionLabel, label, training, kriteria }: GuestDashboardProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="mx-auto max-w-7xl">
                 <header className="mb-8">
-                    <p className="mt-1 text-muted-foreground">Dashboard Rekomendasi Jenis Sayuran Berdasarkan Nutrisi Anak</p>
+                    <p className="mt-1 text-muted-foreground">Dashboard Rekomendasi Jenis Sayuran </p>
                 </header>
 
                 {/* Metric Cards */}
@@ -40,22 +40,8 @@ export default function Dashboard({ distributionLabel, label, training,kriteria 
                                     trend="up"
                                 />
                             ))}
-                            <KPICard
-
-                                    title={`Total Dataset`}
-                                    value={training}
-                                    unit={'data'}
-                                    status="normal"
-                                    trend="up"
-                                />
-                            <KPICard
-
-                                    title={`Total Kriteria`}
-                                    value={kriteria}
-                                    unit={'data'}
-                                    status="normal"
-                                    trend="up"
-                                />
+                            <KPICard title={`Total Dataset`} value={training} unit={'data'} status="normal" trend="up" />
+                            <KPICard title={`Total Kriteria`} value={kriteria} unit={'data'} status="normal" trend="up" />
                         </div>
                     </div>
                 </section>

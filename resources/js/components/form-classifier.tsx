@@ -13,7 +13,7 @@ import { Button } from './ui/button';
 
 type Dataset = {
     label: string;
-    attribut: string[];
+    kriteria: string[];
 };
 
 interface PredictionResult {
@@ -55,7 +55,7 @@ const FormClassifier = ({
     // Form handling
     const { data, setData, processing } = useForm<Dataset>({
         label: '',
-        attribut: kriteria.map(() => ''),
+        kriteria: kriteria.map(() => ''),
     });
 
     const [toast, setToast] = useState<{
@@ -74,18 +74,52 @@ const FormClassifier = ({
     const handleChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
             const { name, value } = e.target;
-            const key = name.split('.')[1];
+            const [field, indexStr] = name.split('.');
+            const index = Number(indexStr);
+            if (field === 'kriteria') {
+                if (value === '' || /^-?\d*\.?\d*$/.test(value)) {
+                    setData((prev) => {
+                        // Update nilai yang diubah
+                        const updatedAttribut = prev.kriteria?.map((item, i) => (i === index ? value : item));
 
-            if (value === '' || /^-?\d*\.?\d*$/.test(value)) {
-                setData((prev) => ({
-                    ...prev,
-                    attribut: prev.attribut.map((item, index) => (index === Number(key) ? value : item)),
-                }));
+                        // Cari index untuk perhitungan IMT
+                        const BBindex = kriteria.findIndex((k) => k.nama.toLowerCase().includes('bb'));
+                        const TBindex = kriteria.findIndex((k) => k.nama.toLowerCase().includes('tb'));
+                        const IMTindex = kriteria.findIndex((k) => k.nama.toLowerCase().includes('imt'));
+
+                        // Jika yang diubah adalah BB atau TB, hitung IMT
+                        if ((index === BBindex || index === TBindex) && IMTindex !== -1) {
+                            const nilaiBB = index === BBindex ? Number(value) : Number(updatedAttribut?.[BBindex] ?? 0);
+
+                            const nilaiTB = index === TBindex ? Number(value) : Number(updatedAttribut?.[TBindex] ?? 0);
+
+                            // Hitung IMT hanya jika kedua nilai valid
+                            if (nilaiBB > 0 && nilaiTB > 0) {
+                                return {
+                                    ...prev,
+                                    kriteria: updatedAttribut?.map((item, i) => (i === IMTindex ? hitungIMT(nilaiBB, nilaiTB) : item)),
+                                };
+                            }
+                        }
+
+                        return {
+                            ...prev,
+                            kriteria: updatedAttribut,
+                        };
+                    });
+                }
+            } else {
+                setData((prev) => ({ ...prev, [name]: value }));
             }
         },
-        [setData],
+        [kriteria, setData],
     );
-
+    const hitungIMT = (berat: number, tinggi: number) => {
+        // tinggi dalam meter
+        const tb = tinggi / 100;
+        const imt = berat / (tb * tb);
+        return imt.toFixed(3);
+    };
     const handleSelectChange = useCallback(
         (name: string, value: string) => {
             if (name === 'label') {
@@ -93,7 +127,7 @@ const FormClassifier = ({
             } else {
                 setData((prev) => ({
                     ...prev,
-                    attribut: prev.attribut.map((item, index) => (index === Number(name) ? value : item)),
+                    kriteria: prev.kriteria.map((item, index) => (index === Number(name) ? value : item)),
                 }));
             }
         },
@@ -137,7 +171,7 @@ const FormClassifier = ({
         e.preventDefault();
         setLoading(true);
         try {
-            const feature = data.attribut.map((item: any) => {
+            const feature = data.kriteria.map((item: any) => {
                 const lowerItem = String(item).toLowerCase();
 
                 if (lowerItem === 'laki-laki') {
@@ -155,7 +189,7 @@ const FormClassifier = ({
             console.log(result);
             setPrediction(result);
             if (setFeature) {
-                setFeature(data.attribut);
+                setFeature(data.kriteria);
             }
             if (result.label !== undefined && setResult) {
                 setResult({
@@ -219,7 +253,7 @@ const FormClassifier = ({
                                     </Label>
                                     {item.nama.toLowerCase() === 'jenis kelamin' ? (
                                         <Select
-                                            value={data.attribut[index] || ''}
+                                            value={data.kriteria[index] || ''}
                                             required
                                             onValueChange={(value) => handleSelectChange(index.toString(), value)}
                                         >
@@ -237,8 +271,8 @@ const FormClassifier = ({
                                     ) : (
                                         <Input
                                             type="text"
-                                            name={`attribut.${index}`}
-                                            value={data.attribut[index] || ''}
+                                            name={`kriteria.${index}`}
+                                            value={data.kriteria[index] || ''}
                                             onChange={handleChange}
                                             placeholder={`Enter ${item.nama}`}
                                             disabled={processing}
@@ -284,7 +318,7 @@ const FormClassifier = ({
                                     }`}
                                 />
                                 <div className="ml-4">
-                                    <h3 className="text-lg font-semibold">Hasil Rekomendasi</h3>
+                                    <h3 className="text-lg font-semibold">status gizi anak</h3>
                                     <div className="mt-1 text-2xl font-bold">{prediction.label}</div>
                                 </div>
                             </div>
@@ -294,7 +328,7 @@ const FormClassifier = ({
                             <div className="flex items-center">
                                 <div className="h-5 w-5 flex-shrink-0 rounded-full bg-gray-500" />
                                 <div className="ml-4">
-                                    <h3 className="text-lg font-semibold">Hasil Rekomendasi</h3>
+                                    <h3 className="text-lg font-semibold">status gizi anak</h3>
                                     <div className="mt-1 text-2xl font-bold">-</div>
                                 </div>
                             </div>
