@@ -28,7 +28,7 @@ type jenisTanamanFormData = {
     deskripsi: string;
 };
 
-export default function JenisTanamanIndex({ jenisTanaman, breadcrumb, titlePage,can }: JenisTanamanIndexProps) {
+export default function JenisTanamanIndex({ jenisTanaman, breadcrumb, titlePage, can }: JenisTanamanIndexProps) {
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
         [breadcrumb],
@@ -61,7 +61,7 @@ export default function JenisTanamanIndex({ jenisTanaman, breadcrumb, titlePage,
                 },
             });
         } else {
-            put(route('admin.jenisTanaman.update', {jenisTanaman: editId}), {
+            put(route('admin.jenisTanaman.update', { jenisTanaman: editId }), {
                 preserveState: true,
                 onSuccess: () => {
                     setData({
@@ -104,11 +104,11 @@ export default function JenisTanamanIndex({ jenisTanaman, breadcrumb, titlePage,
 
             {/* Data */}
             <Card>
-                <div className="container mx-auto px-4">
+                <div className="px-2">
                     <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <h2 className="text-lg font-bold md:text-xl">Jenis Sayuran</h2>
                         <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-                          {can?.add && (
+                            {can?.add && (
                                 <Button variant={'default'} type="button" className="cursor-pointer" onClick={() => setIsOpenDialog(true)}>
                                     Tambah Data
                                 </Button>
@@ -132,7 +132,7 @@ export default function JenisTanamanIndex({ jenisTanaman, breadcrumb, titlePage,
                                             <TableCell>{index + 1}</TableCell>
                                             <TableCell>{item.nama}</TableCell>
                                             <TableCell>{item.deskripsi}</TableCell>
-                                                   {(can?.edit || can?.delete) && (
+                                            {(can?.edit || can?.delete) && (
                                                 <TableCell>
                                                     <div className="flex flex-row items-center gap-2">
                                                         {can?.edit && (
@@ -207,7 +207,7 @@ export default function JenisTanamanIndex({ jenisTanaman, breadcrumb, titlePage,
                                     onChange={(e) => setData('deskripsi', e.target.value)}
                                     id="deskripsi"
                                     name="deskripsi"
-                                    className="border-input file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                                    className="flex h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                                     disabled={processing}
                                     placeholder="Masukkan deskripsi sayuran"
                                 />

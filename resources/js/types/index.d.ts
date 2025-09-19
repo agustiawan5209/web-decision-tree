@@ -73,6 +73,15 @@ export interface LabelSayuranTypes {
     frekuensi: string;
     label: LabelTypes;
 }
+export interface KlasifikasiUsiaTypes {
+    id: number;
+    min_usia: number;
+    max_usia: number;
+    sayuran: string;
+    porsi: string;
+    tekstur: string;
+    frekuensi: string;
+}
 
 export interface GejalaTypes {
     id: number;

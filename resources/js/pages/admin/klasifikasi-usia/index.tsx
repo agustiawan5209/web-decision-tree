@@ -5,17 +5,15 @@ import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, KriteriaTypes, LabelSayuranTypes } from '@/types';
+import { BreadcrumbItem, KlasifikasiUsiaTypes, KriteriaTypes } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle, PenBox } from 'lucide-react';
 import { useMemo, useState } from 'react';
 interface LabelIndexProps {
     label: KriteriaTypes[];
-    listLabelSayuran: LabelSayuranTypes[];
-    labelSayuran?: LabelSayuranTypes;
+    listKlasifikasiUsia: KlasifikasiUsiaTypes[];
     breadcrumb?: BreadcrumbItem[];
     titlePage?: string;
     can?: {
@@ -27,14 +25,15 @@ interface LabelIndexProps {
 }
 type labelFormData = {
     id: number | null;
-    label_id: string;
+    min_usia: number | null;
+    max_usia: number | null;
     sayuran: string;
     porsi: string;
     tekstur: string;
     frekuensi: string;
 };
 
-export default function LabelIndex({ label, labelSayuran, listLabelSayuran, breadcrumb, titlePage, can }: LabelIndexProps) {
+export default function LabelIndex({ label, listKlasifikasiUsia, breadcrumb, titlePage, can }: LabelIndexProps) {
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
         [breadcrumb],
@@ -42,7 +41,8 @@ export default function LabelIndex({ label, labelSayuran, listLabelSayuran, brea
 
     const { data, setData, get, post, put, processing, errors, reset } = useForm<labelFormData>({
         id: null,
-        label_id: '',
+        min_usia: null,
+        max_usia: null,
         sayuran: '',
         porsi: '',
         tekstur: '',
@@ -55,12 +55,13 @@ export default function LabelIndex({ label, labelSayuran, listLabelSayuran, brea
         e.preventDefault();
 
         if (editId == null) {
-            post(route('admin.labelSayuran.store'), {
+            post(route('admin.klasifikasiUsia.store'), {
                 preserveState: true,
                 onSuccess: () => {
                     setData({
                         id: null,
-                        label_id: '',
+                        min_usia: null,
+                        max_usia: null,
                         sayuran: '',
                         porsi: '',
                         tekstur: '',
@@ -73,12 +74,13 @@ export default function LabelIndex({ label, labelSayuran, listLabelSayuran, brea
                 },
             });
         } else {
-            put(route('admin.labelSayuran.update', { labelSayuran: editId }), {
+            put(route('admin.klasifikasiUsia.update', { klasifikasiUsia: editId }), {
                 preserveState: true,
                 onSuccess: () => {
                     setData({
                         id: null,
-                        label_id: '',
+                        min_usia: null,
+                        max_usia: null,
                         sayuran: '',
                         porsi: '',
                         tekstur: '',
@@ -98,17 +100,16 @@ export default function LabelIndex({ label, labelSayuran, listLabelSayuran, brea
 
     const handleEdit = (id: number) => {
         if (id) {
-            const labelTemp: LabelSayuranTypes[] = listLabelSayuran.filter((item) => item.id === id, []);
-            setEditId(labelTemp[0].id);
-            if (labelTemp) {
-                setData({
-                    id: labelTemp[0].id,
-                    label_id: labelTemp[0].label_id.toLocaleString(),
-                    sayuran: labelTemp[0].sayuran,
-                    porsi: labelTemp[0].porsi,
-                    tekstur: labelTemp[0].tekstur,
-                    frekuensi: labelTemp[0].frekuensi,
-                });
+            const klasifikasiUsiaTemp: KlasifikasiUsiaTypes[] = listKlasifikasiUsia.filter((item) => item.id === id, []);
+            setEditId(klasifikasiUsiaTemp[0].id);
+            if (klasifikasiUsiaTemp) {
+                setData('id', klasifikasiUsiaTemp[0].id);
+                setData('min_usia', klasifikasiUsiaTemp[0].min_usia);
+                setData('max_usia', klasifikasiUsiaTemp[0].max_usia);
+                setData('sayuran', klasifikasiUsiaTemp[0].sayuran);
+                setData('porsi', klasifikasiUsiaTemp[0].porsi);
+                setData('tekstur', klasifikasiUsiaTemp[0].tekstur);
+                setData('frekuensi', klasifikasiUsiaTemp[0].frekuensi);
             }
             setIsOpenDialog(true);
         }
@@ -129,7 +130,7 @@ export default function LabelIndex({ label, labelSayuran, listLabelSayuran, brea
             <Card>
                 <div className="px-2">
                     <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <h2 className="text-lg font-bold md:text-xl">Label Nutrisi Anak</h2>
+                        <h2 className="text-lg font-bold md:text-xl">Data Klasifikasi Usia Anak</h2>
                         <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
                             {can?.add && (
                                 <Button variant={'default'} type="button" className="cursor-pointer" onClick={() => setIsOpenDialog(true)}>
@@ -143,7 +144,7 @@ export default function LabelIndex({ label, labelSayuran, listLabelSayuran, brea
                             <TableHeader>
                                 <TableRow>
                                     <TableHead className="cursor-pointer">no</TableHead>
-                                    <TableHead className="cursor-pointer">Nama Label</TableHead>
+                                    <TableHead className="cursor-pointer">Usia</TableHead>
                                     <TableHead className="cursor-pointer">sayuran</TableHead>
                                     <TableHead className="cursor-pointer">Porsi</TableHead>
                                     <TableHead className="cursor-pointer">Tekstur</TableHead>
@@ -152,11 +153,11 @@ export default function LabelIndex({ label, labelSayuran, listLabelSayuran, brea
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {listLabelSayuran.length > 0 ? (
-                                    listLabelSayuran.map((item: LabelSayuranTypes, index: number) => (
+                                {listKlasifikasiUsia.length > 0 ? (
+                                    listKlasifikasiUsia.map((item: KlasifikasiUsiaTypes, index: number) => (
                                         <TableRow key={item.id}>
                                             <TableCell>{index + 1}</TableCell>
-                                            <TableCell>{item.label.nama}</TableCell>
+                                            <TableCell>{item.min_usia + '-' + item.max_usia} tahun</TableCell>
                                             <TableCell>{item.sayuran}</TableCell>
                                             <TableCell>{item.porsi}</TableCell>
                                             <TableCell>{item.tekstur}</TableCell>
@@ -181,7 +182,7 @@ export default function LabelIndex({ label, labelSayuran, listLabelSayuran, brea
                                                             <DeleteConfirmationForm
                                                                 title={`Hapus label ${item.id}`}
                                                                 id={item.id}
-                                                                url={route('admin.labelSayuran.destroy', { labelSayuran: item.id })}
+                                                                url={route('admin.klasifikasiUsia.destroy', { klasifikasiUsia: item.id })}
                                                                 setOpenDialog={setisDeleteDialog}
                                                             />
                                                         )}
@@ -206,27 +207,43 @@ export default function LabelIndex({ label, labelSayuran, listLabelSayuran, brea
             <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>{editId ? `Edit` : `Tambah`} Label Sayuran</DialogTitle>
+                        <DialogTitle>{editId ? `Edit` : `Tambah`} Data Klasifikasi Usia</DialogTitle>
                     </DialogHeader>
                     <form className="space-y-4" onSubmit={submit}>
                         <div className="grid gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="sayuran" className="text-sm font-medium">
-                                    Pilih Label
-                                </Label>
-                                <Select value={data.label_id} required={true} onValueChange={(val) => setData('label_id', val)}>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Select Label" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {label.map((gender, idx) => (
-                                            <SelectItem key={idx} value={gender.id.toString()}>
-                                                {gender.nama}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <InputError message={errors.label_id} className="mt-2" />
+                            <div className="flex flex-wrap gap-2">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="min_usia" className="text-sm font-medium">
+                                        Masukkan Min Usia
+                                    </Label>
+                                    <Input
+                                        type="number"
+                                        value={data.min_usia ?? ''}
+                                        onChange={(e) => setData('min_usia', Number(e.target.value))}
+                                        id="min_usia"
+                                        name="min_usia"
+                                        className="input"
+                                        disabled={processing}
+                                        placeholder="Masukkan nama-nama min_usia"
+                                    />
+                                    <InputError message={errors.min_usia} className="mt-2" />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="max_usia" className="text-sm font-medium">
+                                        Masukkan Max usia
+                                    </Label>
+                                    <Input
+                                        type="number"
+                                        value={data.max_usia ?? ''}
+                                        onChange={(e) => setData('max_usia', Number(e.target.value))}
+                                        id="max_usia"
+                                        name="max_usia"
+                                        className="input"
+                                        disabled={processing}
+                                        placeholder="Masukkan nama-nama max_usia"
+                                    />
+                                    <InputError message={errors.max_usia} className="mt-2" />
+                                </div>
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="sayuran" className="text-sm font-medium">

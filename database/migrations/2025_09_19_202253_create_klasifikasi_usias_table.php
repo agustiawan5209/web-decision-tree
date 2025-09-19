@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('label_sayurans', function (Blueprint $table) {
+        Schema::create('klasifikasi_usias', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('label_id')->constrained('labels')->onDelete('cascade');
+            $table->integer('min_usia');
+            $table->integer('max_usia');
             $table->text('sayuran')->nullable();
-            $table->text('porsi')->nullable();
-            $table->text('tekstur')->nullable();
-            $table->text('frekuensi')->nullable();
+            $table->string('porsi')->nullable();
+            $table->string('tekstur')->nullable();
+            $table->string('frekuensi')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('label_sayurans');
+        Schema::dropIfExists('klasifikasi_usias');
     }
 };

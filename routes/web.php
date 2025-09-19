@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\KlasifikasiUsiaController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BalitaController;
@@ -123,6 +124,17 @@ Route::middleware(['auth', 'verified', 'role:admin|super_admin'])->group(functio
                 Route::get('/{datasetSayuran}/edit', 'edit')->name('edit');
                 Route::put('/{datasetSayuran}', 'update')->name('update');
                 Route::delete('/{datasetSayuran}', 'destroy')->name('destroy');
+            });
+        });
+        // Routes for klasifikasiUsia
+        Route::group(['prefix' => 'klasifikasi-usia', 'as' => 'klasifikasiUsia.'], function () {
+            Route::controller(KlasifikasiUsiaController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
+                Route::get('/{klasifikasiUsia}/edit', 'edit')->name('edit');
+                Route::put('/{klasifikasiUsia}', 'update')->name('update');
+                Route::delete('/{klasifikasiUsia}', 'destroy')->name('destroy');
             });
         });
 
