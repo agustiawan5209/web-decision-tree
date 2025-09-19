@@ -2,20 +2,20 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LabelController;
 use App\Http\Controllers\BalitaController;
 use App\Http\Controllers\DatasetController;
-use App\Http\Controllers\KriteriaController;
-use App\Http\Controllers\OrangTuaController;
+use App\Http\Controllers\Admin\LabelController;
 use App\Http\Controllers\PemeriksaanController;
+use App\Http\Controllers\Admin\GejalaController;
 use App\Http\Controllers\DecisionTreeController;
 use App\Http\Controllers\JenisTanamanController;
+use App\Http\Controllers\Admin\KriteriaController;
+use App\Http\Controllers\Admin\OrangTuaController;
+use App\Http\Controllers\DatasetSayuranController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\LabelSayuranController;
 use App\Http\Controllers\RiwayatKlasifikasiController;
 use App\Http\Controllers\API\DatatDecisionTreeController;
-use App\Http\Controllers\DatasetSayuranController;
-use App\Http\Controllers\GejalaController;
-use App\Http\Controllers\LabelSayuranController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');

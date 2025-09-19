@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Inertia\Inertia;
+use App\Models\Dataset;
 use App\Models\Kriteria;
+use Illuminate\Http\Request;
+use App\Models\DetailDataset;
 use Illuminate\Support\Facades\App;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreKriteriaRequest;
 use App\Http\Requests\UpdateKriteriaRequest;
-use App\Models\Dataset;
-use App\Models\DetailDataset;
-use Illuminate\Http\Request;
 
 class KriteriaController extends Controller
 {
