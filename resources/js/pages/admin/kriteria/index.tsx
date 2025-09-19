@@ -28,7 +28,7 @@ export default function KriteriaIndex({ kriteria, breadcrumb, titlePage }: Krite
         [breadcrumb],
     );
 
-    const { data, setData, get, post, put, processing, errors } = useForm<kriteriaFormData>({
+    const { data, setData, get, post, put, processing, errors, reset } = useForm<kriteriaFormData>({
         id: null,
         nama: '',
         deskripsi: '',
@@ -55,7 +55,7 @@ export default function KriteriaIndex({ kriteria, breadcrumb, titlePage }: Krite
                 },
             });
         } else {
-            put(route('admin.kriteria.update', {kriteria: editId}), {
+            put(route('admin.kriteria.update', { kriteria: editId }), {
                 preserveState: true,
                 onSuccess: () => {
                     setData({
@@ -201,7 +201,15 @@ export default function KriteriaIndex({ kriteria, breadcrumb, titlePage }: Krite
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button type="button" variant="secondary" onClick={() => setIsOpenDialog(false)}>
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => {
+                                    reset();
+                                    setEditId(null);
+                                    setIsOpenDialog(false);
+                                }}
+                            >
                                 Batal
                             </Button>
                             <Button type="submit">{processing && <LoaderCircle className="h-4 w-4 animate-spin" />}Simpan</Button>

@@ -64,6 +64,16 @@ export interface LabelTypes {
     nama: string;
     deskripsi: string;
 }
+export interface LabelSayuranTypes {
+    id: number;
+    label_id: number;
+    sayuran: string;
+    porsi: string;
+    tekstur: string;
+    frekuensi: string;
+    label: LabelTypes;
+}
+
 export interface GejalaTypes {
     id: number;
     nama: string;

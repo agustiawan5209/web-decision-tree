@@ -15,6 +15,7 @@ use App\Http\Controllers\RiwayatKlasifikasiController;
 use App\Http\Controllers\API\DatatDecisionTreeController;
 use App\Http\Controllers\DatasetSayuranController;
 use App\Http\Controllers\GejalaController;
+use App\Http\Controllers\LabelSayuranController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -90,6 +91,18 @@ Route::middleware(['auth', 'verified', 'role:admin|super_admin'])->group(functio
                 Route::delete('/{label}', 'destroy')->name('destroy');
             });
         });
+        Route::group(['prefix' => 'label-sayuran', 'as' => 'labelSayuran.'], function () {
+            Route::controller(LabelSayuranController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
+                Route::get('/{labelSayuran}/edit', 'edit')->name('edit');
+                Route::put('/{labelSayuran}', 'update')->name('update');
+                Route::delete('/{labelSayuran}', 'destroy')->name('destroy');
+            });
+        });
+
+
         // Routes for gejala
         Route::group(['prefix' => 'gejala', 'as' => 'gejala.'], function () {
             Route::controller(GejalaController::class)->group(function () {

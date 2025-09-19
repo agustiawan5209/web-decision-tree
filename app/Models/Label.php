@@ -14,4 +14,9 @@ class Label extends Model
         'nama',
         'deskripsi',
     ];
+
+    public function labelsayuran()
+    {
+        return $this->hasMany(LabelSayuran::class, 'label_id', 'id');
+    }
 }

@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('labels', function (Blueprint $table) {
+        Schema::create('label_sayurans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama')->unique();
-            $table->text('deskripsi')->nullable();
+            $table->foreignId('label_id')->constrained('labels')->onDelete('cascade');
+            $table->text('sayuran')->nullable();
+            $table->string('porsi')->nullable();
+            $table->string('tekstur')->nullable();
+            $table->string('frekuensi')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('labels');
+        Schema::dropIfExists('label_sayurans');
     }
 };

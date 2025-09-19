@@ -5,14 +5,17 @@ import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, KriteriaTypes } from '@/types';
+import { BreadcrumbItem, KriteriaTypes, LabelSayuranTypes } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle, PenBox } from 'lucide-react';
 import { useMemo, useState } from 'react';
 interface LabelIndexProps {
     label: KriteriaTypes[];
+    listLabelSayuran: LabelSayuranTypes[];
+    labelSayuran?: LabelSayuranTypes;
     breadcrumb?: BreadcrumbItem[];
     titlePage?: string;
     can?: {
@@ -24,11 +27,14 @@ interface LabelIndexProps {
 }
 type labelFormData = {
     id: number | null;
-    nama: string;
-    deskripsi: string;
+    label_id: string;
+    sayuran: string;
+    porsi: string;
+    tekstur: string;
+    frekuensi: string;
 };
 
-export default function LabelIndex({ label, breadcrumb, titlePage, can }: LabelIndexProps) {
+export default function LabelIndex({ label, labelSayuran, listLabelSayuran, breadcrumb, titlePage, can }: LabelIndexProps) {
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
         [breadcrumb],
@@ -36,8 +42,11 @@ export default function LabelIndex({ label, breadcrumb, titlePage, can }: LabelI
 
     const { data, setData, get, post, put, processing, errors, reset } = useForm<labelFormData>({
         id: null,
-        nama: '',
-        deskripsi: '',
+        label_id: '',
+        sayuran: '',
+        porsi: '',
+        tekstur: '',
+        frekuensi: '',
     });
 
     const [editId, setEditId] = useState<number | null>(null);
@@ -46,13 +55,16 @@ export default function LabelIndex({ label, breadcrumb, titlePage, can }: LabelI
         e.preventDefault();
 
         if (editId == null) {
-            post(route('admin.label.store'), {
+            post(route('admin.labelSayuran.store'), {
                 preserveState: true,
                 onSuccess: () => {
                     setData({
                         id: null,
-                        nama: '',
-                        deskripsi: '',
+                        label_id: '',
+                        sayuran: '',
+                        porsi: '',
+                        tekstur: '',
+                        frekuensi: '',
                     });
                     setIsOpenDialog(false);
                 },
@@ -61,13 +73,16 @@ export default function LabelIndex({ label, breadcrumb, titlePage, can }: LabelI
                 },
             });
         } else {
-            put(route('admin.label.update', { label: editId }), {
+            put(route('admin.labelSayuran.update', { labelSayuran: editId }), {
                 preserveState: true,
                 onSuccess: () => {
                     setData({
                         id: null,
-                        nama: '',
-                        deskripsi: '',
+                        label_id: '',
+                        sayuran: '',
+                        porsi: '',
+                        tekstur: '',
+                        frekuensi: '',
                     });
                     setEditId(null);
                     setIsOpenDialog(false);
@@ -83,13 +98,16 @@ export default function LabelIndex({ label, breadcrumb, titlePage, can }: LabelI
 
     const handleEdit = (id: number) => {
         if (id) {
-            const labelTemp: KriteriaTypes[] = label.filter((item) => item.id === id, []);
+            const labelTemp: LabelSayuranTypes[] = listLabelSayuran.filter((item) => item.id === id, []);
             setEditId(labelTemp[0].id);
             if (labelTemp) {
                 setData({
                     id: labelTemp[0].id,
-                    nama: labelTemp[0].nama,
-                    deskripsi: labelTemp[0].deskripsi,
+                    label_id: labelTemp[0].label_id.toLocaleString(),
+                    sayuran: labelTemp[0].sayuran,
+                    porsi: labelTemp[0].porsi,
+                    tekstur: labelTemp[0].tekstur,
+                    frekuensi: labelTemp[0].frekuensi,
                 });
             }
             setIsOpenDialog(true);
@@ -125,18 +143,24 @@ export default function LabelIndex({ label, breadcrumb, titlePage, can }: LabelI
                             <TableHeader>
                                 <TableRow>
                                     <TableHead className="cursor-pointer">no</TableHead>
-                                    <TableHead className="cursor-pointer">Nama</TableHead>
-                                    <TableHead className="cursor-pointer">deskripsi</TableHead>
+                                    <TableHead className="cursor-pointer">Nama Label</TableHead>
+                                    <TableHead className="cursor-pointer">sayuran</TableHead>
+                                    <TableHead className="cursor-pointer">Porsi</TableHead>
+                                    <TableHead className="cursor-pointer">Tekstur</TableHead>
+                                    <TableHead className="cursor-pointer">Frekuensi</TableHead>
                                     {(can?.delete || can?.edit) && <TableHead className="cursor-pointer">Aksi</TableHead>}
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {label.length > 0 ? (
-                                    label.map((item, index) => (
+                                {listLabelSayuran.length > 0 ? (
+                                    listLabelSayuran.map((item: LabelSayuranTypes, index: number) => (
                                         <TableRow key={item.id}>
                                             <TableCell>{index + 1}</TableCell>
-                                            <TableCell>{item.nama}</TableCell>
-                                            <TableCell>{item.deskripsi}</TableCell>
+                                            <TableCell>{item.label.nama}</TableCell>
+                                            <TableCell>{item.sayuran}</TableCell>
+                                            <TableCell>{item.porsi}</TableCell>
+                                            <TableCell>{item.tekstur}</TableCell>
+                                            <TableCell>{item.frekuensi}</TableCell>
                                             {(can?.edit || can?.delete) && (
                                                 <TableCell>
                                                     <div className="flex flex-row items-center gap-2">
@@ -157,7 +181,7 @@ export default function LabelIndex({ label, breadcrumb, titlePage, can }: LabelI
                                                             <DeleteConfirmationForm
                                                                 title={`Hapus label ${item.id}`}
                                                                 id={item.id}
-                                                                url={route('admin.label.destroy', { label: item.id })}
+                                                                url={route('admin.labelSayuran.destroy', { labelSayuran: item.id })}
                                                                 setOpenDialog={setisDeleteDialog}
                                                             />
                                                         )}
@@ -168,7 +192,7 @@ export default function LabelIndex({ label, breadcrumb, titlePage, can }: LabelI
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={4} className="py-4 text-center">
+                                        <TableCell colSpan={7} className="py-4 text-center">
                                             No data found
                                         </TableCell>
                                     </TableRow>
@@ -182,41 +206,91 @@ export default function LabelIndex({ label, breadcrumb, titlePage, can }: LabelI
             <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>{editId ? `Edit` : `Tambah`} Label</DialogTitle>
+                        <DialogTitle>{editId ? `Edit` : `Tambah`} Label Sayuran</DialogTitle>
                     </DialogHeader>
                     <form className="space-y-4" onSubmit={submit}>
                         <div className="grid gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="nama" className="text-sm font-medium">
-                                    Nama Label
+                                <Label htmlFor="sayuran" className="text-sm font-medium">
+                                    Pilih Label
                                 </Label>
-                                <Input
-                                    type="text"
-                                    value={data.nama}
-                                    onChange={(e) => setData('nama', e.target.value)}
-                                    id="nama"
-                                    name="nama"
-                                    className="input"
-                                    disabled={processing}
-                                    placeholder="Masukkan nama label"
-                                />
-                                <InputError message={errors.nama} className="mt-2" />
+                                <Select value={data.label_id} required={true} onValueChange={(val) => setData('label_id', val)}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select Label" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {label.map((gender, idx) => (
+                                            <SelectItem key={idx} value={gender.id.toString()}>
+                                                {gender.nama}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <InputError message={errors.sayuran} className="mt-2" />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="deskripsi" className="text-sm font-medium">
-                                    Keterangan
+                                <Label htmlFor="sayuran" className="text-sm font-medium">
+                                    Nama Sayuran
                                 </Label>
                                 <Input
                                     type="text"
-                                    value={data.deskripsi}
-                                    onChange={(e) => setData('deskripsi', e.target.value)}
-                                    id="deskripsi"
-                                    name="deskripsi"
+                                    value={data.sayuran}
+                                    onChange={(e) => setData('sayuran', e.target.value)}
+                                    id="sayuran"
+                                    name="sayuran"
                                     className="input"
                                     disabled={processing}
-                                    placeholder="Masukkan deskripsi label"
+                                    placeholder="Masukkan nama-nama sayuran"
                                 />
-                                <InputError message={errors.deskripsi} className="mt-2" />
+                                <InputError message={errors.sayuran} className="mt-2" />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="porsi" className="text-sm font-medium">
+                                    Jumlah Porsi Makanan
+                                </Label>
+                                <Input
+                                    type="text"
+                                    value={data.porsi}
+                                    onChange={(e) => setData('porsi', e.target.value)}
+                                    id="porsi"
+                                    name="porsi"
+                                    className="input"
+                                    disabled={processing}
+                                    placeholder="Masukkan porsi"
+                                />
+                                <InputError message={errors.porsi} className="mt-2" />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="tekstur" className="text-sm font-medium">
+                                    Tekstur Makanan
+                                </Label>
+                                <Input
+                                    type="text"
+                                    value={data.tekstur}
+                                    onChange={(e) => setData('tekstur', e.target.value)}
+                                    id="tekstur"
+                                    name="tekstur"
+                                    className="input"
+                                    disabled={processing}
+                                    placeholder="Masukkan tekstur"
+                                />
+                                <InputError message={errors.tekstur} className="mt-2" />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="frekuensi" className="text-sm font-medium">
+                                    Frekuensi Per Hari
+                                </Label>
+                                <Input
+                                    type="text"
+                                    value={data.frekuensi}
+                                    onChange={(e) => setData('frekuensi', e.target.value)}
+                                    id="frekuensi"
+                                    name="frekuensi"
+                                    className="input"
+                                    disabled={processing}
+                                    placeholder="Masukkan frekuensi"
+                                />
+                                <InputError message={errors.frekuensi} className="mt-2" />
                             </div>
                         </div>
                         <DialogFooter>

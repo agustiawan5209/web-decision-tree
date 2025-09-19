@@ -36,13 +36,13 @@ class OrangTuaController extends Controller
             $orderBy = $request->input('order_by');
             if (in_array($orderBy, ['asc', 'desc'])) {
                 $query->orderBy('created_at', $orderBy);
-            } else if(in_array($orderBy, ['A-Z', 'Z-A'])) {
-                if($orderBy == 'A-Z') {
+            } else if (in_array($orderBy, ['A-Z', 'Z-A'])) {
+                if ($orderBy == 'A-Z') {
                     $query->orderBy('name', 'asc');
-                }else {
+                } else {
                     $query->orderBy('name', 'desc');
                 }
-            }else {
+            } else {
                 // Handle invalid order_by value
                 return redirect()->back()->withErrors(['order_by' => 'Invalid order_by value']);
             }
@@ -68,10 +68,10 @@ class OrangTuaController extends Controller
     public function create()
     {
         return Inertia::render('admin/orangtua/create', [
-            'breadcrumb'=> array_merge(self::BASE_BREADCRUMB,[
+            'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
-                    'title'=> 'tambah data',
-                    'href'=> '/admin/orangtua/create',
+                    'title' => 'tambah data',
+                    'href' => '/admin/orangtua/create',
                 ],
             ])
         ]);
@@ -84,17 +84,21 @@ class OrangTuaController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required'],
-            'alamat'=> 'required|max:200',
-            'nohp'=> 'required|string|max:13',
-        ],[
+            'alamat' => 'required|max:200',
+            'nohp' => 'required|string|max:13',
+        ], [
             'nohp.max' => 'Nomor whatsaap harus 13 karakter',
         ]);
 
 
         $user = User::create([
             'name' => $request->name,
+            'nik' => $request->nik,
+            'tempat_lahir' => $request->tempat_lahir,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'tgl_lahir' => $request->tgl_lahir,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'alamat' => $request->alamat,
@@ -112,11 +116,11 @@ class OrangTuaController extends Controller
     public function show(User $user)
     {
         return Inertia::render('admin/orangtua/show', [
-            'orangtua'=> $user,
-            'breadcrumb'=> array_merge(self::BASE_BREADCRUMB,[
+            'orangtua' => $user,
+            'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
-                    'title'=> 'detail data',
-                    'href'=> '/admin/orangtua/show',
+                    'title' => 'detail data',
+                    'href' => '/admin/orangtua/show',
                 ],
             ])
         ]);
@@ -128,11 +132,11 @@ class OrangTuaController extends Controller
     public function edit(User $user)
     {
         return Inertia::render('admin/orangtua/edit', [
-            'orangtua'=> $user,
-            'breadcrumb'=> array_merge(self::BASE_BREADCRUMB,[
+            'orangtua' => $user,
+            'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
-                    'title'=> 'edit data',
-                    'href'=> '/admin/orangtua/edit',
+                    'title' => 'edit data',
+                    'href' => '/admin/orangtua/edit',
                 ],
             ])
         ]);
@@ -145,16 +149,20 @@ class OrangTuaController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class.',email,'.$user->id,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class . ',email,' . $user->id,
             'password' => ['nullable'],
-            'alamat'=> 'required|max:200',
-            'nohp'=> 'required|string|max:13',
-        ],[
+            'alamat' => 'required|max:200',
+            'nohp' => 'required|string|max:13',
+        ], [
             'nohp.max' => 'Nomor whatsaap harus 13 karakter',
         ]);
 
         $user->update([
             'name' => $request->name,
+            'nik' => $request->nik,
+            'tempat_lahir' => $request->tempat_lahir,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'tgl_lahir' => $request->tgl_lahir,
             'email' => $request->email,
             'alamat' => $request->alamat,
             'nohp' => $request->nohp,

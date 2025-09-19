@@ -30,16 +30,16 @@ class LabelController extends Controller
         return Inertia::render("admin/label/index", [
             'label' => Label::orderBy('id', 'desc')->get(),
             'breadcrumb' => self::BASE_BREADCRUMB,
-            'titlePage'=> 'Label',
-            'can'=> [
-                'add'=> Auth::user()->can('add label'),
-                'edit'=> Auth::user()->can('edit label'),
-                'read'=> Auth::user()->can('read label'),
-                'delete'=> Auth::user()->can('delete label'),
+            'titlePage' => 'Label',
+            'can' => [
+                'add' => Auth::user()->can('add label'),
+                'edit' => Auth::user()->can('edit label'),
+                'read' => Auth::user()->can('read label'),
+                'delete' => Auth::user()->can('delete label'),
             ],
         ]);
     }
- private function applyFilters($query, Request $request): void
+    private function applyFilters($query, Request $request): void
     {
         if ($request->filled('q')) {
             $query->searchByName($request->input('q'));
@@ -67,8 +67,8 @@ class LabelController extends Controller
         return Inertia::render('admin/label/create', [
             'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
-                    'title' => 'tambah kategori',
-                    'href' => '/admin/kategori/create',
+                    'title' => 'tambah label',
+                    'href' => '/admin/label/create',
                 ]
             ]),
         ]);
@@ -99,8 +99,8 @@ class LabelController extends Controller
         return Inertia::render('admin/label/show', [
             'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
-                    'title' => 'detail kategori',
-                    'href' => '/admin/kategori/detail',
+                    'title' => 'detail label',
+                    'href' => '/admin/label/detail',
                 ]
             ]),
             'label' => $label,
@@ -115,8 +115,8 @@ class LabelController extends Controller
         return Inertia::render('admin/label/edit', [
             'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
-                    'title' => 'edit kategori',
-                    'href' => '/admin/kategori/edit',
+                    'title' => 'edit label',
+                    'href' => '/admin/label/edit',
                 ]
             ]),
             'label' => $label
@@ -131,8 +131,8 @@ class LabelController extends Controller
         $databaseHelper = App::make('databaseHelper');
         return $databaseHelper(
             operation: fn() => $label->update([
-                'nama'=> $request->nama,
-                'deskripsi'=> $request->deskripsi,
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
             ]),
             successMessage: 'Kategori Berhasil Di Update!',
             redirectRoute: 'admin.label.index'

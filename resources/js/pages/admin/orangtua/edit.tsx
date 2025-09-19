@@ -191,7 +191,21 @@ export default function OrangtuaUpdate({ breadcrumb, orangtua }: OrangtuaUpdater
                                 />
                                 <InputError message={errors.jenis_kelamin} />
                             </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="password">Password</Label>
 
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    required
+                                    tabIndex={2}
+                                    autoComplete="current-password"
+                                    value={data.password}
+                                    onChange={(e) => setData('password', e.target.value)}
+                                    placeholder="Password"
+                                />
+                                <InputError message={errors.password} />
+                            </div>
                             <div className="flex items-center gap-4">
                                 <Button disabled={processing}>Simpan</Button>
                             </div>

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Dataset;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -22,6 +23,8 @@ class DatabaseSeeder extends Seeder
             KriteriaSeeder::class,
             LabelSeeder::class,
             DatasetSeeder::class,
+            GejalaSeeder::class,
+            DatasetSayuranSeeder::class,
             // JenisTanamanSeeder::class,
         ]);
     }
