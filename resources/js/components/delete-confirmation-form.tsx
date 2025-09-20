@@ -23,7 +23,9 @@ export const DeleteConfirmationForm = ({ url, title, id }: DeleteConfirmationFor
         if (id) {
             destroy(url, {
                 preserveState: true,
-                onSuccess: () => {},
+                onSuccess: () => {
+                    closeDialog();
+                },
                 onError: (errors) => {
                     console.error(errors);
                 },
@@ -45,7 +47,7 @@ export const DeleteConfirmationForm = ({ url, title, id }: DeleteConfirmationFor
                     <Button variant="destructive" onClick={closeDialog} disabled={processing}>
                         Batal
                     </Button>
-                    <Button type='button' variant="default" onClick={deleteSubmit} disabled={processing}>
+                    <Button type="button" variant="default" onClick={deleteSubmit} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Hapus
                     </Button>

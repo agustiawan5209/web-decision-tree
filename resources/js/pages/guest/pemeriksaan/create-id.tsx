@@ -35,6 +35,8 @@ export interface PemeriksaanGuestCreateProps {
 
 type CreateForm = {
     orang_tua_id: string;
+    rme: string;
+    nik: string;
     nama: string;
     tempat_lahir: string;
     tanggal_lahir: string;
@@ -54,6 +56,8 @@ type CreateForm = {
     gejala: string;
     usia_balita: string;
     detail: string[];
+    klasifikasiUsia: string[];
+    statusGizi: string[];
 };
 
 export default function PemeriksaanGuestCreate({ breadcrumb, balita, kriteria, orangtua }: PemeriksaanGuestCreateProps) {
@@ -78,6 +82,8 @@ export default function PemeriksaanGuestCreate({ breadcrumb, balita, kriteria, o
     const today = new Date();
     const day = today.toISOString().split('T')[0];
     const { data, setData, post, processing, errors } = useForm<CreateForm>({
+        rme: '',
+        nik: '',
         orang_tua_id: auth.user.id.toString(),
         nama: '',
         tempat_lahir: '',
@@ -92,6 +98,8 @@ export default function PemeriksaanGuestCreate({ breadcrumb, balita, kriteria, o
         gejala: '',
         usia_balita: '',
         detail: [],
+        klasifikasiUsia: [],
+        statusGizi: [],
     });
 
     const submit: FormEventHandler = (e) => {
@@ -99,19 +107,20 @@ export default function PemeriksaanGuestCreate({ breadcrumb, balita, kriteria, o
 
         if (data.label == '') {
             setData('label', prediction?.label?.toString() ?? '');
+        } else {
+            post(route('pemeriksaan.store'), {
+                onError: (errors) => {
+                    console.log(errors);
+                    setToast({
+                        title: 'Error',
+                        show: true,
+                        message: JSON.stringify(errors),
+                        type: 'error',
+                    });
+                },
+                preserveState: true,
+            });
         }
-        post(route('pemeriksaan.store'), {
-            onError: (errors) => {
-                console.log(errors);
-                setToast({
-                    title: 'Error',
-                    show: true,
-                    message: JSON.stringify(errors),
-                    type: 'error',
-                });
-            },
-            preserveState: true,
-        });
     };
 
     useEffect(() => {

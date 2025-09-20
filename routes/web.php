@@ -214,3 +214,8 @@ Route::get('/api/get-gejala', [GejalaController::class, 'getGejala'])->name('api
 
 // get balita by nik
 Route::get('/api/get-balita-by-nik/{user_id}/{nik}', [BalitaController::class, 'getByNik'])->name('api.get.balita-by-nik');
+
+
+// get klasifikasi usia berdasarkan dari parameter $usia
+Route::get('/api/klasifiksi-usia/{usia}', [KlasifikasiUsiaController::class, 'getUsiaKlasifikasi'])->name('api.get.klasifikasi-by-usia');
+Route::get('/api/label-sayuran/{label}', [LabelSayuranController::class, 'getDataByLabel'])->name('api.get.label-sayuran-by-label');

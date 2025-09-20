@@ -18,6 +18,9 @@ return new class extends Migration
             $table->text('nutrisi')->nullable();
             $table->string('status')->comment('baik, buruk');
             $table->string('gejala')->comment('dapat memasukkan gejala lebih dari satu');
+            $table->text('porsi')->nullable();
+            $table->text('porsi_hari')->nullable();
+            $table->text('penyajian')->nullable();
             $table->timestamps();
         });
     }

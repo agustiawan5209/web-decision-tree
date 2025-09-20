@@ -144,6 +144,8 @@ class PemeriksaanController extends Controller
                 'tgl_pemeriksaan' => $request->input('tanggal_pemeriksaan'),
                 'label' => $request->input('label'),
                 'rekomendasi' => $request->input('rekomendasi'),
+                'klasifikasiUsia' => $request->input('klasifikasiUsia'),
+                'statusGizi' => $request->input('statusGizi'),
                 'gejala' => $request->input('gejala'),
             ];
             $pemeriksaan = Pemeriksaan::create($pemeriksaanData);

@@ -1,4 +1,6 @@
 import TableDatasetSayuran from '@/components/table-dataset-sayuran';
+import TableKlasifikasiUsia from '@/components/table-klasifikasi-usia';
+import TableLabelSayuran from '@/components/table-label-sayuran';
 import UserAuthLayout from '@/layouts/guest/user-auth-layout';
 import { BalitaTypes, DetailPemeriksaanTypes, PemeriksaanTypes, SharedData, User, type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
@@ -152,7 +154,9 @@ export default function PemeriksaanShow({
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-span-full rounded-lg border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-900/20">
+                            <div className="col-span-full flex flex-col gap-4 rounded-lg border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-900/50 dark:bg-emerald-900/20">
+                                <TableKlasifikasiUsia data={pemeriksaan.klasifikasiUsia} />
+                                <TableLabelSayuran data={pemeriksaan.statusGizi} />
                                 <TableDatasetSayuran data={pemeriksaan.rekomendasi} />
                             </div>
                         </div>

@@ -15,6 +15,8 @@ import ReactSelect from 'react-select';
 import makeAnimated from 'react-select/animated';
 import InputError from './input-error';
 import TableDatasetSayuran from './table-dataset-sayuran';
+import TableKlasifikasiUsia from './table-klasifikasi-usia';
+import TableLabelSayuran from './table-label-sayuran';
 import { Button } from './ui/button';
 
 type Dataset = {
@@ -40,6 +42,8 @@ type Dataset = {
     gejala: string;
     usia_balita: string;
     detail: string[];
+    klasifikasiUsia: string[];
+    statusGizi: string[];
 };
 
 interface PredictionResult {
@@ -74,7 +78,7 @@ const ClassifyPemeriksaan = ({
     processing: boolean;
     errors: Dataset;
     kriteria: KriteriaTypes[];
-    setResult?: (predict: PredictionResult) => void;
+    setResult: (predict: PredictionResult) => void;
     setFeature?: (feature: any) => void;
     submit: () => FormEventHandler;
 }) => {
@@ -103,18 +107,22 @@ const ClassifyPemeriksaan = ({
         message: '',
         type: 'success',
     });
-    const handleTanggalLahirChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = e.target;
-        const umurIndex = kriteria.findIndex((k) => k.nama.toLowerCase().includes('umur'));
-        setData((prev) => {
+    const handleTanggalLahirChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            const { value } = e.target;
+            const umurIndex = kriteria.findIndex((k) => k.nama.toLowerCase().includes('umur'));
             const usiaBulan = hitungUsiaBulan(value);
-            return {
-                ...prev,
-                tanggal_lahir: value, // Mengupdate tanggal_lahir, bukan tempat_lahir
-                kriteria: prev.kriteria?.map((item, i) => (i === umurIndex ? { ...item, nilai: usiaBulan.toString() } : item)),
-            };
-        });
-    };
+            fetchByKlasifikasiUsia(Number(Number(usiaBulan) / 12).toFixed(1));
+            setData((prev) => {
+                return {
+                    ...prev,
+                    tanggal_lahir: value, // Mengupdate tanggal_lahir, bukan tempat_lahir
+                    kriteria: prev.kriteria?.map((item, i) => (i === umurIndex ? { ...item, nilai: usiaBulan.toString() } : item)),
+                };
+            });
+        },
+        [data, setData],
+    );
 
     // Input handlers
     const handleChange = useCallback(
@@ -163,6 +171,41 @@ const ClassifyPemeriksaan = ({
         [kriteria, setData],
     );
 
+    const fetchByLabelSayuran = async (label: string) => {
+        try {
+            const response = await axios.get(route('api.get.label-sayuran-by-label', { label: label }));
+            if (response.status !== 200) throw new Error('Failed to fetch label sayuran');
+            const data: any = await response.data;
+            console.log(data);
+            setData((prev) => ({ ...prev, statusGizi: data }));
+        } catch (error) {
+            console.error(error);
+            setToast({
+                title: 'Error',
+                show: true,
+                message: (error as Error).message,
+                type: 'error',
+            });
+            return null;
+        }
+    };
+    const fetchByKlasifikasiUsia = async (usia: string) => {
+        try {
+            const response = await axios.get(route('api.get.klasifikasi-by-usia', { usia: usia }));
+            if (response.status !== 200) throw new Error('Failed to fetch klasifikasi usia');
+            const data: any = await response.data;
+            setData((prev) => ({ ...prev, klasifikasiUsia: data }));
+        } catch (error) {
+            console.error(error);
+            setToast({
+                title: 'Error',
+                show: true,
+                message: (error as Error).message,
+                type: 'error',
+            });
+            return null;
+        }
+    };
     const fetchGejala = async () => {
         try {
             const response = await axios.get(route('api.get.gejala'));
@@ -185,8 +228,8 @@ const ClassifyPemeriksaan = ({
         try {
             const response = await axios.get(route('api.get.dataset.sayuran', { status: label, gejala: gejala }));
             if (response.status !== 200) throw new Error('Failed to fetch dataset');
-            const responsData: DatasetSayuranTypes[] = await response.data;
-            setOptDatasetSayuran(responsData);
+            const responsData: any = await response.data;
+            setOptDatasetSayuran(responsData as DatasetSayuranTypes[]);
             setData({ ...data, rekomendasi: responsData, gejala: gejala });
         } catch (error) {
             console.error(error);
@@ -206,9 +249,9 @@ const ClassifyPemeriksaan = ({
             if (response.status !== 200) throw new Error('Failed to fetch balita');
             const data: BalitaTypes = await response.data;
             if (data) {
-                console.log(data);
-
                 const tanggalLahir = data.tanggal_lahir || '';
+                const usiaBulan = hitungUsiaBulan(tanggalLahir);
+                fetchByKlasifikasiUsia(Number(Number(usiaBulan) / 12).toFixed(1));
                 setData((prev) => ({
                     ...prev,
                     orang_tua_id: data.orang_tua_id || '',
@@ -219,7 +262,7 @@ const ClassifyPemeriksaan = ({
                     jenis_kelamin: data.jenis_kelamin,
                     kriteria: prev.kriteria?.map((item) =>
                         item.name.toLowerCase().includes('umur')
-                            ? { ...item, nilai: tanggalLahir ? hitungUsiaBulan(tanggalLahir).toString() : '' }
+                            ? { ...item, nilai: tanggalLahir ? usiaBulan.toString() : '' }
                             : item.name.toLowerCase().includes('jenis kelamin')
                               ? { ...item, nilai: data.jenis_kelamin || '' }
                               : item,
@@ -330,13 +373,14 @@ const ClassifyPemeriksaan = ({
                         setFeature(data.kriteria);
                     }
                     if (result.label !== undefined && result.label !== null) {
-                        setData({ ...data, label: result.label.toString() ?? 'tidak dikenali' });
-
-                        if (setResult) {
-                            setResult(result);
-                            const gejala = inputGejala.join(', ');
-                            fetchDatasetSayuran(result.label ?? '', gejala);
-                        }
+                        const newLabel = result.label.toString();
+                        console.log('Setting label to:', newLabel);
+                        setData((prevData) => ({ ...prevData, label: newLabel }));
+                        console.log('Data after set (may not be updated yet):', data);
+                        setResult(result);
+                        const gejala = inputGejala.join(', ');
+                        fetchDatasetSayuran(result.label?.toString() ?? '', gejala);
+                        fetchByLabelSayuran(result.label?.toString() ?? '');
                         handleOpenDialog();
                     }
                 }
@@ -353,6 +397,12 @@ const ClassifyPemeriksaan = ({
             setLoading(false);
         }
     };
+    useEffect(() => {
+        if (prediction && prediction.label) {
+            console.log('Prediction label changed:', prediction.label);
+            setData('label', prediction.label.toString());
+        }
+    }, [prediction]);
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -666,6 +716,8 @@ const ClassifyPemeriksaan = ({
                                 </p>
                             </div>
                         </div>
+                        <TableKlasifikasiUsia data={data.klasifikasiUsia} />
+                        <TableLabelSayuran data={data.statusGizi} />
                         <TableDatasetSayuran data={optDatasetSayuran} />
                         <Button type="button" variant="default" size="sm" className="w-full" disabled={processing} onClick={submit}>
                             {processing ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : null}

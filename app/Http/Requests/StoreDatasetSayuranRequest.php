@@ -27,6 +27,9 @@ class StoreDatasetSayuranRequest extends FormRequest
             'nutrisi' => 'nullable|string',
             'status' => 'required|string',
             'gejala' => 'required|string',
+            'porsi' => 'nullable|string',
+            'porsi_hari' => 'nullable|string',
+            'penyajian' => 'nullable|string',
         ];
     }
 }

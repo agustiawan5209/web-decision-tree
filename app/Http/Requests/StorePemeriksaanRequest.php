@@ -33,11 +33,62 @@ class StorePemeriksaanRequest extends FormRequest
             "gejala" => "required|string|max:100",
             "label" => "required|string|max:100",
 
-            "rekomendasi" => "nullable",
+            "rekomendasi" => "nullable|array",
+            "klasifikasiUsia" => "nullable|array",
+            "statusGizi" => "nullable|array",
             'kriteria' => 'required|array',
             'kriteria.*.nilai' => 'required|string',
             'kriteria.*.kriteria_id' => 'required|exists:kriterias,id',
 
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'orang_tua_id.required' => 'Orang tua wajib diisi.',
+            'orang_tua_id.integer' => 'Orang tua harus berupa angka.',
+            'orang_tua_id.exists' => 'Orang tua tidak ditemukan.',
+
+            'rme.unique' => 'RME sudah digunakan.',
+
+            'nik.required' => 'NIK wajib diisi.',
+            'nik.string' => 'NIK harus berupa string.',
+            'nik.max' => 'NIK maksimal 50 karakter.',
+
+            'nama.required' => 'Nama wajib diisi.',
+            'nama.string' => 'Nama harus berupa string.',
+            'nama.max' => 'Nama maksimal 100 karakter.',
+
+            'tempat_lahir.required' => 'Tempat lahir wajib diisi.',
+            'tempat_lahir.string' => 'Tempat lahir harus berupa string.',
+            'tempat_lahir.max' => 'Tempat lahir maksimal 100 karakter.',
+
+            'tanggal_lahir.required' => 'Tanggal lahir wajib diisi.',
+            'tanggal_lahir.date' => 'Tanggal lahir harus berupa tanggal yang valid.',
+
+            'jenis_kelamin.required' => 'Jenis kelamin wajib diisi.',
+            'jenis_kelamin.string' => 'Jenis kelamin harus berupa string.',
+            'jenis_kelamin.in' => 'Jenis kelamin harus Laki-laki atau Perempuan.',
+
+            'tanggal_pemeriksaan.required' => 'Tanggal pemeriksaan wajib diisi.',
+            'tanggal_pemeriksaan.date' => 'Tanggal pemeriksaan harus berupa tanggal yang valid.',
+
+            'gejala.required' => 'Gejala wajib diisi.',
+            'gejala.string' => 'Gejala harus berupa string.',
+            'gejala.max' => 'Gejala maksimal 100 karakter.',
+
+            'label.required' => 'Label wajib diisi.',
+            'label.string' => 'Label harus berupa string.',
+            'label.max' => 'Label maksimal 100 karakter.',
+
+            'rekomendasi.required' => 'Rekomendasi wajib diisi.',
+            'rekomendasi.array' => 'Rekomendasi harus berupa array.',
+
+            'klasifikasiUsia.required' => 'Klasifikasi usia wajib diisi.',
+            'klasifikasiUsia.array' => 'Klasifikasi usia harus berupa array.',
+
+            'statusGizi.required' => 'Status gizi wajib diisi.',
+            'statusGizi.array' => 'Status gizi harus berupa array.',
         ];
     }
 }

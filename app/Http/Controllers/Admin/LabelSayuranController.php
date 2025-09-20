@@ -24,6 +24,18 @@ class LabelSayuranController extends Controller
             'href' => '/admin/labelSayuran/',
         ],
     ];
+
+    public function getDataByLabel($label)
+    {
+        $labelSayuran = LabelSayuran::whereHas('label', function ($query) use ($label) {
+            $query->where('nama', 'like', '%' . $label . '%');
+        })->with(['label'])->get();
+        if ($labelSayuran->count() > 0) {
+            return $labelSayuran;
+        } else {
+            return [];
+        }
+    }
     /**
      * Display a listing of the resource.
      */

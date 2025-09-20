@@ -24,6 +24,8 @@ return new class extends Migration
             $table->text('rekomendasi')->nullable();
             $table->string('label', 50)->nullable();
             $table->text('keterangan')->nullable();
+            $table->json('klasifikasiUsia')->nullable();
+            $table->json('statusGizi')->nullable();
             $table->timestamps();
         });
     }

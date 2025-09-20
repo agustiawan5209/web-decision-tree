@@ -30,6 +30,9 @@ type CreateForm = {
     manfaat: string;
     status: string;
     gejala: string;
+    porsi: string;
+    porsi_hari: string;
+    penyajian: string;
 };
 
 export default function DatasetSayuranCreate({ breadcrumb, gejala, label, datasetSayuran }: DatasetSayuranCreateProps) {
@@ -78,6 +81,9 @@ export default function DatasetSayuranCreate({ breadcrumb, gejala, label, datase
         manfaat: datasetSayuran?.manfaat ?? '',
         status: '',
         gejala: '',
+        porsi: datasetSayuran?.porsi ?? '40 - 50 gram ',
+        porsi_hari: datasetSayuran?.porsi_hari ?? '50 - 70 gram',
+        penyajian: datasetSayuran?.penyajian ?? '',
     });
 
     // Update form data when inputGejala or inputLabel changes
@@ -178,9 +184,55 @@ export default function DatasetSayuranCreate({ breadcrumb, gejala, label, datase
                                         />
                                         <InputError message={errors.manfaat} />
                                     </div>
+
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="penyajian">Cara Penyajian</Label>
+                                        <Input
+                                            id="penyajian"
+                                            type="text"
+                                            required
+                                            tabIndex={3}
+                                            autoComplete="penyajian"
+                                            value={data.penyajian}
+                                            onChange={(e) => setData('penyajian', e.target.value)}
+                                            disabled={processing}
+                                            placeholder="Masukkan Cara Penyajian Makanan"
+                                        />
+                                        <InputError message={errors.penyajian} />
+                                    </div>
                                 </div>
 
                                 <div className="grid gap-4">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="porsi">Porsi Per Saji (usia 1-3 Tahun)</Label>
+                                        <Input
+                                            id="porsi"
+                                            type="text"
+                                            required
+                                            tabIndex={3}
+                                            autoComplete="porsi"
+                                            value={data.porsi}
+                                            onChange={(e) => setData('porsi', e.target.value)}
+                                            disabled={processing}
+                                            placeholder="Masukkan Porsi Per Saji (usia 1-3 Tahun)"
+                                        />
+                                        <InputError message={errors.porsi} />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="porsi_hari">Porsi Per Saji (usia 4-6 Tahun)</Label>
+                                        <Input
+                                            id="porsi_hari"
+                                            type="text"
+                                            required
+                                            tabIndex={3}
+                                            autoComplete="porsi_hari"
+                                            value={data.porsi_hari}
+                                            onChange={(e) => setData('porsi_hari', e.target.value)}
+                                            disabled={processing}
+                                            placeholder="Masukkan Porsi Per Saji (usia 4-6 Tahun)"
+                                        />
+                                        <InputError message={errors.porsi_hari} />
+                                    </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="gejala">Gejala</Label>
                                         <Select

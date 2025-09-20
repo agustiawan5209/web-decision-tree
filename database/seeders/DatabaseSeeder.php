@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             DatasetSeeder::class,
             GejalaSeeder::class,
             DatasetSayuranSeeder::class,
+            LabelSayuranSeeder::class,
+            KlasifikasiUsiaSeeder::class,
             // JenisTanamanSeeder::class,
         ]);
     }

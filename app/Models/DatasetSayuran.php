@@ -16,5 +16,8 @@ class DatasetSayuran extends Model
         'nutrisi',
         'status',
         'gejala',
+        'porsi',
+        'porsi_hari',
+        'penyajian',
     ];
 }

@@ -22,9 +22,16 @@ class LabelSeeder extends Seeder
                 "updated_at" => "2025-07-17 10:21:01",
             ),
             array(
-                "id" => 3,
+                "id" => 2,
                 "nama" => "Baik",
                 "deskripsi" => "Baik",
+                "created_at" => "2025-07-17 10:21:27",
+                "updated_at" => "2025-07-17 10:21:27",
+            ),
+            array(
+                "id" => 3,
+                "nama" => "Obesitas",
+                "deskripsi" => "Obesitas",
                 "created_at" => "2025-07-17 10:21:27",
                 "updated_at" => "2025-07-17 10:21:27",
             ),

@@ -21,10 +21,14 @@ class Pemeriksaan extends Model
         "label",
         "gejala",
         "rekomendasi",
+        "klasifikasiUsia",
+        "statusGizi",
     ];
 
     protected $casts = [
         'data_balita' => 'array',
+        'klasifikasiUsia' => 'array',
+        'statusGizi' => 'array',
         'data_pemeriksaan' => 'array',
         'rekomendasi' => 'array',
 

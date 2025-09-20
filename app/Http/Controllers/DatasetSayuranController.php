@@ -21,7 +21,7 @@ class DatasetSayuranController extends Controller
         ],
         [
             'title' => 'datasetSayuran',
-            'href' => '/admin/datasetSayuran/',
+            'href' => '/admin/dataset-sayuran/',
         ],
     ];
 
@@ -37,19 +37,19 @@ class DatasetSayuranController extends Controller
     public function index(Request $request)
     {
         return Inertia::render("admin/datasetSayuran/index", [
-            'datasetSayuran' => DatasetSayuran::orderBy('id', 'desc')->paginate($request->input('per_page', 10)),
+            'datasetSayuran' => DatasetSayuran::orderBy('nama_sayuran', 'asc')->paginate($request->input('per_page', 30)),
             'breadcrumb' => self::BASE_BREADCRUMB,
 
-            'titlePage'=> 'DatasetSayuran',
-            'can'=> [
-                'add'=> Auth::user()->can('add label'),
-                'edit'=> Auth::user()->can('edit label'),
-                'read'=> Auth::user()->can('read label'),
-                'delete'=> Auth::user()->can('delete label'),
+            'titlePage' => 'DatasetSayuran',
+            'can' => [
+                'add' => Auth::user()->can('add label'),
+                'edit' => Auth::user()->can('edit label'),
+                'read' => Auth::user()->can('read label'),
+                'delete' => Auth::user()->can('delete label'),
             ],
         ]);
     }
- private function applyFilters($query, Request $request): void
+    private function applyFilters($query, Request $request): void
     {
         if ($request->filled('q')) {
             $query->searchByName($request->input('q'));
@@ -78,11 +78,11 @@ class DatasetSayuranController extends Controller
             'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
                     'title' => 'tambah datasetSayuran',
-                    'href' => '/admin/datasetSayuran/create',
+                    'href' => '/admin/dataset-sayuran/create',
                 ]
             ]),
-            'gejala'=> Gejala::orderBy('nama', 'asc')->get(),
-              'label'=> Label::orderBy('nama', 'asc')->get(),
+            'gejala' => Gejala::orderBy('nama', 'asc')->get(),
+            'label' => Label::orderBy('nama', 'asc')->get(),
         ]);
     }
 
@@ -93,7 +93,9 @@ class DatasetSayuranController extends Controller
     {
         $databaseHelper = App::make('databaseHelper');
         return $databaseHelper(
-            operation: fn() => DatasetSayuran::create($request->validated()),
+            operation: fn() => DatasetSayuran::updateOrCreate([
+                'id' => $request->id,
+            ], $request->validated()),
             successMessage: 'DatasetSayuran Berhasil Ditambahkan!',
             redirectRoute: 'admin.datasetSayuran.index'
         );
@@ -109,7 +111,7 @@ class DatasetSayuranController extends Controller
             'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
                     'title' => 'detail datasetSayuran',
-                    'href' => '/admin/datasetSayuran/detail',
+                    'href' => '/admin/dataset-sayuran/detail',
                 ]
             ]),
             'datasetSayuran' => $datasetSayuran,
@@ -125,12 +127,12 @@ class DatasetSayuranController extends Controller
             'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
                     'title' => 'edit datasetSayuran',
-                    'href' => '/admin/datasetSayuran/edit',
+                    'href' => '/admin/dataset-sayuran/edit',
                 ]
             ]),
             'datasetSayuran' => $datasetSayuran,
-             'gejala'=> Gejala::orderBy('nama', 'asc')->get(),
-             'label'=> Label::orderBy('nama', 'asc')->get(),
+            'gejala' => Gejala::orderBy('nama', 'asc')->get(),
+            'label' => Label::orderBy('nama', 'asc')->get(),
         ]);
     }
 

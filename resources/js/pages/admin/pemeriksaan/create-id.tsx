@@ -59,6 +59,8 @@ type CreateForm = {
     gejala: string;
     usia_balita: string;
     detail: string[];
+    klasifikasiUsia: string[];
+    statusGizi: string[];
 };
 
 export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangtua }: PemeriksaanCreateProps) {
@@ -99,24 +101,27 @@ export default function PemeriksaanCreate({ breadcrumb, balita, kriteria, orangt
         gejala: '',
         usia_balita: '',
         detail: [],
+        klasifikasiUsia: [],
+        statusGizi: [],
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         if (data.label == '') {
             setData('label', prediction?.label?.toString() ?? '');
+        } else {
+            post(route('pemeriksaan.store', { label: prediction?.label?.toString() }), {
+                onError: (errors) => {
+                    setToast({
+                        title: 'Error',
+                        show: true,
+                        message: JSON.stringify(errors),
+                        type: 'error',
+                    });
+                },
+                preserveState: true,
+            });
         }
-        post(route('pemeriksaan.store'), {
-            onError: (errors) => {
-                console.log(errors);
-                setToast({
-                    title: 'Error',
-                    show: true,
-                    message: JSON.stringify(errors),
-                    type: 'error',
-                });
-            },
-        });
     };
     // State for selected parent
     const [selectedOrangtua, setSelectedOrangtua] = useState<OrangTua | null>(null);

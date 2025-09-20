@@ -81,6 +81,7 @@ export interface KlasifikasiUsiaTypes {
     porsi: string;
     tekstur: string;
     frekuensi: string;
+    [key: string]: unknown; // This allows for additional properties...
 }
 
 export interface GejalaTypes {
@@ -144,6 +145,9 @@ interface DatasetSayuranTypes {
     nutrisi: string;
     status: string;
     gejala: string;
+    porsi: string;
+    porsi_hari: string;
+    penyajian: string;
 }
 
 export interface PemeriksaanTypes {
@@ -159,4 +163,6 @@ export interface PemeriksaanTypes {
     label: string;
     rekomendasi: DatasetSayuranTypes[];
     detailpemeriksaan: DetailPemeriksaanTypes[];
+    klasifikasiUsia: KlasifikasiUsiaTypes[];
+    statusGizi: LabelSayuranTypes[];
 }

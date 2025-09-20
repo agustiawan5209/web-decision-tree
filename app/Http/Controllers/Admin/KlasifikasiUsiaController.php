@@ -24,6 +24,18 @@ class KlasifikasiUsiaController extends Controller
             'href' => '/admin/klasifikasiUsia/',
         ],
     ];
+
+    public function getUsiaKlasifikasi($usia)
+    {
+        $klasifikasiUsia = KlasifikasiUsia::where('min_usia', '<=', $usia)
+            ->where('max_usia', '>=', $usia)
+            ->get();
+        if ($klasifikasiUsia->count() > 0) {
+            return $klasifikasiUsia;
+        } else {
+            return KlasifikasiUsia::orderBy('max_usia', 'desc')->latest()->first();
+        }
+    }
     /**
      * Display a listing of the resource.
      */

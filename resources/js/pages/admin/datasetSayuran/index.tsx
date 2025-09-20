@@ -134,7 +134,6 @@ export default function DatasetSayuranIndex({ datasetSayuran, breadcrumb, filter
         }
     };
     /** END Request Per_page */
-    console.log('datasetSayuran', datasetSayuran?.data);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="DatasetSayuran" />
@@ -161,11 +160,14 @@ export default function DatasetSayuranIndex({ datasetSayuran, breadcrumb, filter
                                     <TableHead>Manfaat</TableHead>
                                     <TableHead>Status Nutrisi</TableHead>
                                     <TableHead>Gejala</TableHead>
+                                    <TableHead>Porsi per Saji (Usia 1 -3 Tahun)</TableHead>
+                                    <TableHead>Porsi per Hari (Usia 4 -6 Tahun)</TableHead>
+                                    <TableHead>Cara Penyajian</TableHead>
                                     <TableHead>Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody className={processing ? 'opacity-50' : ''}>
-                                {datasetSayuran?.data?.length > 0 &&
+                                {datasetSayuran?.data.length > 0 &&
                                     datasetSayuran?.data.map((item: any, index: number) => (
                                         <TableRow key={index}>
                                             <TableCell>{index + 1 + (datasetSayuran?.current_page - 1) * datasetSayuran?.per_page}</TableCell>
@@ -174,6 +176,9 @@ export default function DatasetSayuranIndex({ datasetSayuran, breadcrumb, filter
                                             <TableCell> {item.manfaat} </TableCell>
                                             <TableCell> {item.status} </TableCell>
                                             <TableCell> {item.gejala} </TableCell>
+                                            <TableCell> {item.porsi} </TableCell>
+                                            <TableCell> {item.porsi_hari} </TableCell>
+                                            <TableCell> {item.penyajian} </TableCell>
                                             <TableCell>
                                                 <div className="flex flex-row items-center gap-2">
                                                     <DeleteConfirmationForm
