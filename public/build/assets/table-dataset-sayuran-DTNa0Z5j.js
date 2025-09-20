@@ -1,6 +1,0 @@
-import{j as s}from"./app-p1d1iYTT.js";import{T as t,a as i,b as c,c as e,d as x,e as n}from"./table-D1Aj9FeW.js";import{a as h}from"./proxy-Nz_H2BkD.js";/**
- * @license lucide-react v0.475.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */const j=[["path",{d:"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2",key:"cjf0a3"}],["path",{d:"M7 2v20",key:"1473qp"}],["path",{d:"M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7",key:"j28e5"}]],d=h("Utensils",j);function u({data:a}){return s.jsxs(t,{className:"w-full",children:[s.jsxs(i,{children:[s.jsx(c,{children:s.jsx(e,{colSpan:7,children:s.jsxs("h3",{className:"mb-3 flex items-center justify-center gap-2 text-center text-sm font-semibold text-white",children:[s.jsx(d,{className:"h-4 w-4"}),"Rekomendasi Jenis Sayuran"]})})}),s.jsxs(c,{children:[s.jsx(e,{className:"w-10",children:"No."}),s.jsx(e,{children:"Nama Sayuran"}),s.jsx(e,{children:"Nutrisi"}),s.jsx(e,{children:"Manfaat"})]})]}),s.jsx(x,{children:(a==null?void 0:a.length)>0&&a.map((l,r)=>s.jsxs(c,{children:[s.jsx(n,{children:r+1}),s.jsxs(n,{children:[" ",l.nama_sayuran," "]}),s.jsxs(n,{className:"text-xs",children:[" ",l.nutrisi," "]}),s.jsxs(n,{className:"text-xs",children:[" ",l.manfaat," "]})]},r))})]})}export{u as T};
