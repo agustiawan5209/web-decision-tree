@@ -27,8 +27,7 @@ class DatasetSayuranController extends Controller
 
     public function getDataByStatus($status, $gejala)
     {
-        return DatasetSayuran::where('status', 'like', "%$status%")
-            ->where('gejala', 'like', "%$gejala%")
+        return DatasetSayuran::where('gejala', 'like', "%$gejala%")
             ->get();
     }
     /**

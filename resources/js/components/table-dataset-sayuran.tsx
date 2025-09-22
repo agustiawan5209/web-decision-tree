@@ -19,7 +19,6 @@ export default function TableDatasetSayuran({ data }: { data: DatasetSayuranType
                     <TableHead className="w-10">No.</TableHead>
                     <TableHead>Nama Sayuran</TableHead>
                     <TableHead>Nutrisi</TableHead>
-                    <TableHead>Manfaat</TableHead>
                     <TableHead>Porsi per Saji (Usia 1 -3 Tahun)</TableHead>
                     <TableHead>Porsi per Hari (Usia 4 -6 Tahun)</TableHead>
                     <TableHead>Cara Penyajian</TableHead>
@@ -32,7 +31,6 @@ export default function TableDatasetSayuran({ data }: { data: DatasetSayuranType
                             <TableCell>{index + 1}</TableCell>
                             <TableCell> {item.nama_sayuran} </TableCell>
                             <TableCell className="text-xs"> {item.nutrisi} </TableCell>
-                            <TableCell className="text-xs"> {item.manfaat} </TableCell>
                             <TableCell> {item.porsi} </TableCell>
                             <TableCell> {item.porsi_hari} </TableCell>
                             <TableCell> {item.penyajian} </TableCell>

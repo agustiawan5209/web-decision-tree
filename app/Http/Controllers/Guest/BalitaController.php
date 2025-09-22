@@ -21,9 +21,7 @@ class BalitaController extends Controller
     public function index(Request $request)
     {
         $balita = Balita::where('orang_tua_id', '=', Auth::user()->id)->latest()->first();
-        return Inertia::render('guest/biodata', [
-            'balita' => $balita,
-        ]);
+        return Inertia::render('guest/biodata');
     }
 
     public function store(Request $request)
