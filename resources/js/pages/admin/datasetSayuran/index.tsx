@@ -157,7 +157,7 @@ export default function DatasetSayuranIndex({ datasetSayuran, breadcrumb, filter
                                     <TableHead className="w-10">No.</TableHead>
                                     <TableHead>Nama Sayuran</TableHead>
                                     <TableHead>Nutrisi</TableHead>
-                                    <TableHead>Manfaat</TableHead>
+                                    {/* <TableHead>Manfaat</TableHead> */}
                                     <TableHead>Status Nutrisi</TableHead>
                                     <TableHead>Gejala</TableHead>
                                     <TableHead>Porsi per Saji (Usia 1 -3 Tahun)</TableHead>
@@ -173,7 +173,7 @@ export default function DatasetSayuranIndex({ datasetSayuran, breadcrumb, filter
                                             <TableCell>{index + 1 + (datasetSayuran?.current_page - 1) * datasetSayuran?.per_page}</TableCell>
                                             <TableCell> {item.nama_sayuran} </TableCell>
                                             <TableCell> {item.nutrisi} </TableCell>
-                                            <TableCell> {item.manfaat} </TableCell>
+                                            {/* <TableCell> {item.manfaat} </TableCell> */}
                                             <TableCell> {item.status} </TableCell>
                                             <TableCell> {item.gejala} </TableCell>
                                             <TableCell> {item.porsi} </TableCell>

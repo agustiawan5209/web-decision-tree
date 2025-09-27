@@ -169,7 +169,7 @@ export default function DatasetSayuranCreate({ breadcrumb, gejala, label, datase
                                         <InputError message={errors.nutrisi} className="mt-2" />
                                     </div>
 
-                                    <div className="grid gap-2">
+                                    {/* <div className="grid gap-2">
                                         <Label htmlFor="manfaat">Manfaat</Label>
                                         <Input
                                             id="manfaat"
@@ -183,7 +183,7 @@ export default function DatasetSayuranCreate({ breadcrumb, gejala, label, datase
                                             placeholder="Manfaat sayuran"
                                         />
                                         <InputError message={errors.manfaat} />
-                                    </div>
+                                    </div> */}
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="penyajian">Cara Penyajian</Label>

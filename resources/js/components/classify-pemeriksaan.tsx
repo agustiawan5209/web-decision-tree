@@ -15,8 +15,6 @@ import ReactSelect from 'react-select';
 import makeAnimated from 'react-select/animated';
 import InputError from './input-error';
 import TableDatasetSayuran from './table-dataset-sayuran';
-import TableKlasifikasiUsia from './table-klasifikasi-usia';
-import TableLabelSayuran from './table-label-sayuran';
 import { Button } from './ui/button';
 
 type Dataset = {
@@ -698,6 +696,19 @@ const ClassifyPemeriksaan = ({
                                 <p className="text-sm font-medium text-muted-foreground">Usia</p>
                                 <p className="text-sm font-medium">{hitungUsia(data.tanggal_lahir)}</p>
                             </div>
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium text-muted-foreground">Gejala</p>
+                                <p className="text-sm font-medium">
+                                    {data.gejala.split(', ').map((gejala, index) => (
+                                        <span
+                                            key={index}
+                                            className="mr-1 mb-1 inline-block rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800"
+                                        >
+                                            {gejala}
+                                        </span>
+                                    ))}
+                                </p>
+                            </div>
 
                             <div className="space-y-1">
                                 <p className={'text-sm font-medium text-muted-foreground ' + predictionColor}>status IMT</p>
@@ -716,8 +727,8 @@ const ClassifyPemeriksaan = ({
                                 </p>
                             </div>
                         </div>
-                        <TableKlasifikasiUsia data={data.klasifikasiUsia} />
-                        <TableLabelSayuran data={data.statusGizi} />
+                        {/* <TableKlasifikasiUsia data={data.klasifikasiUsia} />
+                        <TableLabelSayuran data={data.statusGizi} /> */}
                         <TableDatasetSayuran data={optDatasetSayuran} />
                         <Button type="button" variant="default" size="sm" className="w-full" disabled={processing} onClick={submit}>
                             {processing ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : null}
