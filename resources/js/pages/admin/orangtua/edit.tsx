@@ -3,7 +3,7 @@ import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
-import { Input, InputRadio } from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { User, type BreadcrumbItem } from '@/types';
@@ -105,7 +105,7 @@ export default function OrangtuaUpdate({ breadcrumb, orangtua }: OrangtuaUpdater
                                 />
                                 <InputError message={errors.email} />
                             </div>
-                            <div className="grid gap-2">
+                            {/* <div className="grid gap-2">
                                 <Label htmlFor="alamat">Alamat Lengkap</Label>
                                 <Input
                                     id="alamat"
@@ -190,7 +190,7 @@ export default function OrangtuaUpdate({ breadcrumb, orangtua }: OrangtuaUpdater
                                     labelClassName="text-gray-800 dark:text-white"
                                 />
                                 <InputError message={errors.jenis_kelamin} />
-                            </div>
+                            </div> */}
                             <div className="grid gap-2">
                                 <Label htmlFor="password">Password</Label>
 

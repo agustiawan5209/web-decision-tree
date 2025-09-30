@@ -3,7 +3,7 @@ import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
-import { Input, InputRadio } from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -105,7 +105,7 @@ export default function OrangtuaCreate({ breadcrumb }: OrangtuaCreaterops) {
                                 />
                                 <InputError message={errors.email} />
                             </div>
-                            <div className="grid gap-2">
+                            {/* <div className="grid gap-2">
                                 <Label htmlFor="alamat">Alamat Lengkap</Label>
                                 <Input
                                     id="alamat"
@@ -134,8 +134,8 @@ export default function OrangtuaCreate({ breadcrumb }: OrangtuaCreaterops) {
                                     placeholder="masukkan nohp"
                                 />
                                 <InputError message={errors.nohp} />
-                            </div>
-                            <div className="flex items-center gap-2">
+                            </div> */}
+                            {/* <div className="flex items-center gap-2">
                                 <div className="col-span-1 grid gap-2">
                                     <Label htmlFor="tempat_lahir">Tempat</Label>
                                     <Input
@@ -166,8 +166,8 @@ export default function OrangtuaCreate({ breadcrumb }: OrangtuaCreaterops) {
                                     />
                                     <InputError message={errors.tgl_lahir} />
                                 </div>
-                            </div>
-                            <div className="grid gap-2">
+                            </div> */}
+                            {/* <div className="grid gap-2">
                                 <Label htmlFor="jenis_kelamin">Jenis Kelamin</Label>
                                 <InputRadio
                                     id="jenis1"
@@ -190,7 +190,7 @@ export default function OrangtuaCreate({ breadcrumb }: OrangtuaCreaterops) {
                                     labelClassName="text-gray-800 dark:text-white"
                                 />
                                 <InputError message={errors.jenis_kelamin} />
-                            </div>
+                            </div> */}
                             <div className="grid gap-2">
                                 <Label htmlFor="password">Password</Label>
 

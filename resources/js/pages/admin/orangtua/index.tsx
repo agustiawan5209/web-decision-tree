@@ -185,13 +185,13 @@ export default function OrangtuaIndex({ orangtua, breadcrumb, filter }: Orangtua
                             <TableHeader>
                                 <TableRow>
                                     <TableHead className="w-10">No.</TableHead>
-                                    <TableHead>NIK</TableHead>
+                                    {/* <TableHead>NIK</TableHead> */}
                                     <TableHead>Nama </TableHead>
                                     <TableHead>Email</TableHead>
-                                    <TableHead>No. Whatsapp</TableHead>
-                                    <TableHead>Alamat</TableHead>
+                                    {/* <TableHead>No. Whatsapp</TableHead> */}
+                                    {/* <TableHead>Alamat</TableHead>
                                     <TableHead>Tempat/Tanggal Lahir</TableHead>
-                                    <TableHead>Jenis Kelamin</TableHead>
+                                    <TableHead>Jenis Kelamin</TableHead> */}
                                     <TableHead>Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -200,16 +200,16 @@ export default function OrangtuaIndex({ orangtua, breadcrumb, filter }: Orangtua
                                     orangtua?.data.map((item: any, index: number) => (
                                         <TableRow key={index}>
                                             <TableCell>{index + 1 + (orangtua?.current_page - 1) * orangtua?.per_page}</TableCell>
-                                            <TableCell> {item.nik} </TableCell>
+                                            {/* <TableCell> {item.nik} </TableCell> */}
                                             <TableCell> {item.name} </TableCell>
                                             <TableCell> {item.email} </TableCell>
-                                            <TableCell> {item.nohp} </TableCell>
+                                            {/* <TableCell> {item.nohp} </TableCell> */}
                                             <TableCell> {item.alamat} </TableCell>
-                                            <TableCell>
+                                            {/* <TableCell>
                                                 {' '}
                                                 {item.tempat_lahir} / {item.tgl_lahir}{' '}
                                             </TableCell>
-                                            <TableCell> {item.jenis_kelamin} </TableCell>
+                                            <TableCell> {item.jenis_kelamin} </TableCell> */}
                                             <TableCell>
                                                 <div className="flex flex-row items-center gap-2">
                                                     <DeleteConfirmationForm
