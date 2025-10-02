@@ -30,7 +30,7 @@ export default function HeroSection() {
         <div className="container mx-auto max-w-6xl">
             <motion.div className="flex flex-col items-center gap-12 md:flex-row" variants={containerVariants} initial="hidden" animate="visible">
                 <motion.div className="flex-1" variants={itemVariants}>
-                    <h1 className="mb-6 text-3xl font-bold text-primary md:text-5xl">Rekomendasi Jenis Sayuran Berdasarkan Nutrisi untuk Anak</h1>
+                    <h1 className="mb-6 text-3xl font-bold text-primary md:text-5xl">Rekomendasi Jenis Sayuran </h1>
                     <p className="mb-8 text-lg text-muted-foreground">
                         Sistem cerdas menggunakan algoritma decision tree untuk membantu orang tua merekomendasikan sayuran untuk anak berdasarkan
                         kondisi kesehatannya

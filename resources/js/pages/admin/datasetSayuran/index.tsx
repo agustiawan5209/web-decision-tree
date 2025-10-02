@@ -161,7 +161,7 @@ export default function DatasetSayuranIndex({ datasetSayuran, breadcrumb, filter
                                     <TableHead>Status Nutrisi</TableHead>
                                     <TableHead>Gejala</TableHead>
                                     <TableHead>Porsi per Saji (Usia 1 -3 Tahun)</TableHead>
-                                    <TableHead>Porsi per Hari (Usia 4 -6 Tahun)</TableHead>
+                                    <TableHead>Porsi per Saji (Usia 4 -6 Tahun)</TableHead>
                                     <TableHead>Cara Penyajian</TableHead>
                                     <TableHead>Aksi</TableHead>
                                 </TableRow>

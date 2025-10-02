@@ -204,7 +204,7 @@ export default function OrangtuaIndex({ orangtua, breadcrumb, filter }: Orangtua
                                             <TableCell> {item.name} </TableCell>
                                             <TableCell> {item.email} </TableCell>
                                             {/* <TableCell> {item.nohp} </TableCell> */}
-                                            <TableCell> {item.alamat} </TableCell>
+                                            {/* <TableCell> {item.alamat} </TableCell> */}
                                             {/* <TableCell>
                                                 {' '}
                                                 {item.tempat_lahir} / {item.tgl_lahir}{' '}

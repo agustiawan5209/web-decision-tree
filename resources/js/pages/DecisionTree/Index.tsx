@@ -17,14 +17,11 @@ interface DecisionTreeViewProps {
     jenisTanaman?: JenisTanamanTypes[];
 }
 
-
-
 export default function DecisionTreeView({ dataTraining, breadcrumb, titlePage, kriteria, jenisTanaman }: DecisionTreeViewProps) {
     const breadcrumbs: BreadcrumbItem[] = useMemo(
         () => (breadcrumb ? breadcrumb.map((item) => ({ title: item.title, href: item.href })) : []),
         [breadcrumb],
     );
-
 
     // Bagi data menjadi training dan test set
 
@@ -49,11 +46,10 @@ export default function DecisionTreeView({ dataTraining, breadcrumb, titlePage, 
                     </div>
                     {kriteria && jenisTanaman && (
                         <div className="mt-6">
-
-            <div className="mb-10 text-center">
-                <h1 className="mb-2 text-4xl font-bold text-gray-800">Nutrisi Rekomendasi</h1>
-                <p className="mx-auto max-w-2xl text-gray-600">Rekomendasi Jenis Sayuran Berdasarkan Nutrisi untuk Anak</p>
-            </div>
+                            <div className="mb-10 text-center">
+                                <h1 className="mb-2 text-4xl font-bold text-gray-800">Nutrisi Rekomendasi</h1>
+                                <p className="mx-auto max-w-2xl text-gray-600">Rekomendasi Jenis Sayuran </p>
+                            </div>
 
                             <FormClassifier kriteria={kriteria} canEvaluate={true} />
                         </div>

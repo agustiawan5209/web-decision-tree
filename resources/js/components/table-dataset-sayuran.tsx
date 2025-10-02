@@ -20,7 +20,7 @@ export default function TableDatasetSayuran({ data }: { data: DatasetSayuranType
                     <TableHead>Nama Sayuran</TableHead>
                     <TableHead>Nutrisi</TableHead>
                     <TableHead>Porsi per Saji (Usia 1 -3 Tahun)</TableHead>
-                    <TableHead>Porsi per Hari (Usia 4 -6 Tahun)</TableHead>
+                    <TableHead>Porsi per Saji (Usia 4 -6 Tahun)</TableHead>
                     <TableHead>Cara Penyajian</TableHead>
                 </TableRow>
             </TableHeader>

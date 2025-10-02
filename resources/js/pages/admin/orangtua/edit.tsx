@@ -59,7 +59,7 @@ export default function OrangtuaUpdate({ breadcrumb, orangtua }: OrangtuaUpdater
                 <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                     <div className="p-4 md:p-6">
                         <form onSubmit={submit} className="space-y-6">
-                            <div className="grid gap-2">
+                            {/* <div className="grid gap-2">
                                 <Label htmlFor="nik">nik</Label>
 
                                 <Input
@@ -73,7 +73,7 @@ export default function OrangtuaUpdate({ breadcrumb, orangtua }: OrangtuaUpdater
                                 />
 
                                 <InputError className="mt-2" message={errors.name} />
-                            </div>
+                            </div> */}
                             <div className="grid gap-2">
                                 <Label htmlFor="name">Nama</Label>
 
