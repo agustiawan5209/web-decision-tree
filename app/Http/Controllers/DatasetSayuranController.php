@@ -27,8 +27,14 @@ class DatasetSayuranController extends Controller
 
     public function getDataByStatus($status, $gejala)
     {
-        return DatasetSayuran::where('gejala', 'like', "%$gejala%")
-            ->get();
+        $data = explode(',', $gejala);
+        $query = DatasetSayuran::query();
+
+        foreach ($data as $g) {
+            $query->orWhere('gejala', 'like', '%' . trim($g) . '%');
+        }
+
+        return $query->get();
     }
     /**
      * Display a listing of the resource.
