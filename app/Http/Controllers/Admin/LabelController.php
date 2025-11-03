@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Inertia\Inertia;
 use App\Models\Label;
+use App\Models\Dataset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
@@ -131,13 +132,22 @@ class LabelController extends Controller
     {
         $databaseHelper = App::make('databaseHelper');
         return $databaseHelper(
-            operation: fn() => $label->update([
-                'nama' => $request->nama,
-                'deskripsi' => $request->deskripsi,
-            ]),
+            operation: fn() => $this->updateLabel($label, $request),
             successMessage: 'Kategori Berhasil Di Update!',
             redirectRoute: 'admin.label.index'
         );
+    }
+
+    private function updateLabel(Label $label, UpdateLabelRequest $request)
+    {
+
+        if ($request->has('nama')) {
+            Dataset::where('label', $label->nama)->update(['label' => $request->nama]);
+        }
+        $label->update([
+            'nama' => $request->nama,
+            'deskripsi' => $request->deskripsi,
+        ]);
     }
 
     /**
