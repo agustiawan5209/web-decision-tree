@@ -30,7 +30,7 @@ export default function Dashboard({ distributionLabel, label, training, kriteria
                 <section className="mb-8 flex gap-3">
                     <div>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-                            {label.map((item: any, index) => {
+                            {/* {label.map((item: any, index) => {
                                 if (item.nama.toLowerCase() !== 'obesitas') {
                                 }
                                 return (
@@ -43,7 +43,7 @@ export default function Dashboard({ distributionLabel, label, training, kriteria
                                         trend="up"
                                     />
                                 );
-                            })}
+                            })} */}
                             <KPICard title={`Total Dataset`} value={training} unit={'data'} status="normal" trend="up" />
                             <KPICard title={`Total Kriteria`} value={kriteria} unit={'data'} status="normal" trend="up" />
                         </div>
