@@ -21,14 +21,16 @@ class BalitaController extends Controller
     public function index(Request $request)
     {
         $balita = Balita::where('orang_tua_id', '=', Auth::user()->id)->latest()->first();
-        return Inertia::render('guest/biodata');
+        return Inertia::render('guest/biodata', [
+            'balita' => $balita,
+        ]);
     }
 
     public function store(Request $request)
     {
         $id = $request->id;
         $request->validate([
-            "nik" => "required|string|max:16|unique:balitas,nik",
+            "nik" => "required|string|max:16|unique:balitas,nik," . $id,
             "nama" => "required|string|max:100",
             "tempat_lahir" => "required|string|max:100",
             "tanggal_lahir" => "required|date",

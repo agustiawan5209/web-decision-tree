@@ -17,6 +17,7 @@ interface OrangTua {
 
 export interface BalitaTypes {
     id: string;
+    nik: string;
     nama: string;
     tanggal_lahir: string;
     tempat_lahir: string;
@@ -30,6 +31,7 @@ export interface BalitaTypes {
 export interface PemeriksaanGuestCreateProps {
     breadcrumb?: { title: string; href: string }[];
     balita: BalitaTypes[];
+    balitaId: BalitaTypes | null;
     kriteria: KriteriaTypes[];
     orangtua: OrangTua[];
 }
@@ -61,7 +63,7 @@ type CreateForm = {
     statusGizi: string[];
 };
 
-export default function PemeriksaanGuestCreate({ breadcrumb, balita, kriteria, orangtua }: PemeriksaanGuestCreateProps) {
+export default function PemeriksaanGuestCreate({ breadcrumb, balita, balitaId, kriteria, orangtua }: PemeriksaanGuestCreateProps) {
     const { auth } = usePage<SharedData>().props;
     // Memoize breadcrumbs to prevent unnecessary recalculations
     const breadcrumbs: BreadcrumbItem[] = useMemo(
@@ -84,13 +86,13 @@ export default function PemeriksaanGuestCreate({ breadcrumb, balita, kriteria, o
     const day = today.toISOString().split('T')[0];
     const { data, setData, post, processing, errors } = useForm<CreateForm>({
         rme: '',
-        nik: '',
+        nik: balitaId ? balitaId.nik : '',
         orang_tua_id: auth.user.id.toString(),
-        nama: '',
-        tempat_lahir: '',
-        tanggal_lahir: '',
-        jenis_kelamin: '',
-        alamat: '',
+        nama: balitaId ? balitaId.nama : '',
+        tempat_lahir: balitaId ? balitaId.tempat_lahir : '',
+        tanggal_lahir: balitaId ? balitaId.tanggal_lahir : '',
+        jenis_kelamin: balitaId ? balitaId.jenis_kelamin : '',
+        alamat: balitaId ? balitaId.alamat : '',
         tanggal_pemeriksaan: day,
         kriteria: kriteria.map((attr) => ({ nilai: null, kriteria_id: attr.id.toString(), name: attr.nama })),
         label: '',

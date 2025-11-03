@@ -93,7 +93,7 @@ const ClassifyPemeriksaan = ({
     const [optDatasetSayuran, setOptDatasetSayuran] = useState<DatasetSayuranTypes[]>([]);
     const [listGejala, setListGejala] = useState<GejalaTypes[]>([]);
 
-    const [nikBalita, setNikBalita] = useState('');
+    const [nikBalita, setNikBalita] = useState(data.nik || '');
     const [toast, setToast] = useState<{
         title: string;
         show: boolean;

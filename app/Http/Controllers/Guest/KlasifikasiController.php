@@ -110,6 +110,7 @@ class KlasifikasiController extends Controller
                 ->get(),
             'orangtua' => User::withoutRole(['admin', 'super_admin'])->get(),
             'balita' => Balita::orderBy('id')->where('orang_tua_id', Auth::user()->id)->with(['orangtua'])->get(),
+            'balitaId' => Balita::orderBy('id')->where('orang_tua_id', Auth::user()->id)->with(['orangtua'])->first(),
             'label' => array_map(fn($label) => ['nama' => $label], $statusLabel),
             'breadcrumb' => array_merge(self::BASE_BREADCRUMB, [
                 [
