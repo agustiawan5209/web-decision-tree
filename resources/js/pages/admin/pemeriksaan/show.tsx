@@ -155,6 +155,11 @@ export default function PemeriksaanShow({
                                                     <span className="col-span-1 text-sm text-gray-900 dark:text-gray-100">{item.nilai}</span>
                                                 </div>
                                             ))}
+
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <span className="col-span-2 text-sm font-medium text-gray-500 dark:text-gray-400">Gejala</span>
+                                            <span className="col-span-1 text-sm text-gray-900 dark:text-gray-100">{pemeriksaan.gejala}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

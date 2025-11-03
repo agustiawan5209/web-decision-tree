@@ -57,7 +57,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
         { name: 'Home', path: route('guest.dashboard'), icon: <Home className="h-4 w-4" /> },
         { name: 'Biodata', path: route('guest.biodata.index'), icon: <Settings className="h-4 w-4" /> },
         { name: 'mulai Rekomendasi', path: route('guest.klasifikasi.create-id'), icon: <FormInput className="h-4 w-4" /> },
-        { name: 'Riwayat Pemeriksaan', path: route('guest.klasifikasi.index'), icon: <TimerIcon className="h-4 w-4" /> },
+        { name: 'Riwayat Rekomendasi', path: route('guest.klasifikasi.index'), icon: <TimerIcon className="h-4 w-4" /> },
     ];
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);

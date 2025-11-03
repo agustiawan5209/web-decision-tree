@@ -54,7 +54,7 @@ const Sidebar = ({ className, collapsed = false, onToggleCollapse, handleSidebar
         { name: 'Training Data Nutrisi', icon: <FolderClockIcon size={20} />, href: route('admin.dataset.index'), active: 'dataset' },
         { name: 'Decision Tree', icon: <GalleryHorizontal size={20} />, href: route('DecisionTree.index'), active: 'decision-tree' },
         { name: 'Pemeriksaan', icon: <Clock8 size={20} />, href: route('pemeriksaan.index'), active: 'pemeriksaan' },
-        { name: 'Riwayat Pemeriksaan Pengguna', icon: <FolderClockIcon size={20} />, href: route('admin.riwayat.index'), active: 'riwayat-forest' },
+        { name: 'Riwayat Rekomendasi Pengguna', icon: <FolderClockIcon size={20} />, href: route('admin.riwayat.index'), active: 'riwayat-forest' },
         {
             name: 'Dataset Sayuran',
             icon: <FolderArchiveIcon size={20} />,
