@@ -174,37 +174,6 @@ export default function PemeriksaanGuestCreate({ breadcrumb, balita, balitaId, k
                                         </div>
                                     </div>
                                 )}
-                                <Table className="w-full">
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead colSpan={5} className="text-center text-lg font-semibold text-gray-100 dark:text-white">
-                                                Biodata Anak
-                                            </TableHead>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableHead className="w-10">No.</TableHead>
-                                            <TableHead>NIK</TableHead>
-                                            <TableHead>Nama</TableHead>
-                                            <TableHead>Tempat/Tanggal Lahir</TableHead>
-                                            <TableHead>Jenis Kelamin</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody className={processing ? 'opacity-50' : ''}>
-                                        {balita.length > 0 &&
-                                            balita?.map((item: any, index: number) => (
-                                                <TableRow key={index}>
-                                                    <TableCell>{index + 1}</TableCell>
-                                                    <TableCell> {item.nik} </TableCell>
-                                                    <TableCell> {item.nama} </TableCell>
-                                                    <TableCell>
-                                                        {' '}
-                                                        {item.tempat_lahir}/ {item.tanggal_lahir}{' '}
-                                                    </TableCell>
-                                                    <TableCell> {item.jenis_kelamin} </TableCell>
-                                                </TableRow>
-                                            ))}
-                                    </TableBody>
-                                </Table>
 
                                 {/* Classification Section */}
                                 {kriteria && (
